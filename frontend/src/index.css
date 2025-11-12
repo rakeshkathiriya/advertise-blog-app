@@ -1,0 +1,30 @@
+@import "tailwindcss";
+
+:root {
+  --primary: #323c91;
+  --bodyBgColor: #f1f5f9;
+}
+
+body {
+  background: var(--bodyBgColor);
+  font-family: Arial, Helvetica, sans-serif;
+  margin: 0;
+  padding: 0;
+  min-height: 100vh;
+  min-width: 100vh;
+  box-sizing: border-box;
+}
+
+::-webkit-scrollbar {
+  height: 7px;
+  width: 7px;
+}
+
+::-webkit-scrollbar-track {
+  background: var(--primary/4);
+}
+
+::-webkit-scrollbar-thumb {
+  background: var(--primary);
+  border-radius: 10px;
+}
