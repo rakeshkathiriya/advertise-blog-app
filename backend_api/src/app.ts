@@ -1,14 +1,11 @@
 import cookieParser from "cookie-parser";
 import cors from "cors";
-import dotenv from "dotenv";
+import "dotenv/config";
 import express, { NextFunction, Request, Response } from "express";
 import mongoSanitize from "express-mongo-sanitize";
 import helmet from "helmet";
 import createHttpError, { HttpError } from "http-errors";
 import morgan from "morgan";
-
-// Load environment variables
-dotenv.config();
 
 // Create express app
 const app = express();
