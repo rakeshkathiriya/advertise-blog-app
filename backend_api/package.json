@@ -1,13 +1,12 @@
 {
   "name": "backend_api",
   "version": "1.0.0",
-  "main": "index.js",
+  "main": "index.ts",
   "license": "MIT",
-  "type": "module",
   "scripts": {
-    "start": "node ./src/index.js",
-    "dev": "cross-env NODE_ENV=development nodemon ./src/index.js",
-    "build": "npm install --production"
+    "start": "ts-node ./src/index.ts",
+    "dev": "cross-env NODE_ENV=development nodemon --exec ts-node ./src/index.ts",
+    "build": "tsc"
   },
   "author": "",
   "description": "",
