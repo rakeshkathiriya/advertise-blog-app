@@ -2,10 +2,13 @@ import cookieParser from "cookie-parser";
 import cors from "cors";
 import "dotenv/config";
 import express, { NextFunction, Request, Response } from "express";
-import mongoSanitize from "express-mongo-sanitize";
 import helmet from "helmet";
 import createHttpError, { HttpError } from "http-errors";
 import morgan from "morgan";
+import { authMiddleware, RequestWithUser } from "./middlewares/auth.middleware";
+import { isAdmin } from "./middlewares/isAdmin.middleware";
+import router from "./routes";
+
 
 // Create express app
 const app = express();
@@ -25,7 +28,7 @@ app.use(express.json());
 app.use(express.urlencoded({ extended: true }));
 
 // Sanitize request data to prevent NoSQL injection
-app.use(mongoSanitize());
+// app.use(ExpressMongoSanitize({allowDots: true}));
 
 // Enable cookie parsing
 app.use(cookieParser());
@@ -41,10 +44,32 @@ app.use(
   })
 );
 
-// ✅ API v1 route
-app.get("/", (req: Request, res: Response): void => {
-  res.status(200).json({ message: "Server running fine 🚀" });
+
+app.get(
+  "/user",
+  authMiddleware,
+  isAdmin,
+  (req: RequestWithUser, res: Response) => {
+    if (!req.user) {
+      return res.status(401).json({ message: "User not found in request." });
+    }
+
+    res.json({
+      message: "This route is for Admin users only",
+      admin: req.user, // shows admin user details
+    });
+  }
+);
+app.get("/guest",authMiddleware ,(req: RequestWithUser, res: Response) => {
+  res.json({
+    message: "This route is for Guest users",
+    user:req.user
+  });
 });
+
+
+// ✅ API v1 route
+app.use("/aba",router);
 
 // ✅ 404 handler
 app.use((req: Request, res: Response, next: NextFunction): void => {
