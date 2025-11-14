@@ -26,7 +26,7 @@ export const authMiddleware = (
     if (!secret) return next(createHttpError.InternalServerError());
 
     const user = jwt.verify(token, secret) as AuthPayload;
-    
+       
     // Attach user to req
     req.user = user;
     next();
