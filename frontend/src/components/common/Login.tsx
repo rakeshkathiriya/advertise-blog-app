@@ -15,7 +15,7 @@ export const Login = () => {
   };
 
   return (
-    <div className="flex min-h-screen items-center justify-center bg-gradient-to-br from-[#f7f7f7] to-[#eaeaea] p-6">
+    <div className="flex min-h-screen items-center justify-center bg-linear-to-br from-[#f7f7f7] to-[#eaeaea] p-6">
       <motion.div
         initial={{ opacity: 0, y: 40 }}
         animate={{ opacity: 1, y: 0 }}
@@ -48,7 +48,7 @@ export const Login = () => {
                   }`}
                   placeholder="example@mail.com"
                 />
-                <div className="min-h-[20px]">
+                <div className="min-h-5">
                   <ErrorMessage name="email" component="p" className="text-xs text-red-500" />
                 </div>
               </div>
@@ -67,7 +67,7 @@ export const Login = () => {
                   }`}
                   placeholder="••••••••"
                 />
-                <div className="min-h-[20px]">
+                <div className="min-h-5">
                   <ErrorMessage name="password" component="p" className="text-xs text-red-500" />
                 </div>
               </div>
