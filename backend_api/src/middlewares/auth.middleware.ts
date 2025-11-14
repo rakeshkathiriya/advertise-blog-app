@@ -25,11 +25,10 @@ export const authMiddleware = (
     const secret = process.env.ACCESS_TOKEN_SECRET;
     if (!secret) return next(createHttpError.InternalServerError());
 
-    const {err, decoded} = jwt.verify(token, secret) as AuthPayload;
+    const user = jwt.verify(token, secret) as AuthPayload;
     
-    if (err) return next(createHttpError.Unauthorized());
     // Attach user to req
-    req.user = decoded;
+    req.user = user;
     next();
   } catch (error: unknown) {
     next(error);
