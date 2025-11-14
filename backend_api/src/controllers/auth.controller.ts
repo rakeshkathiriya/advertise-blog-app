@@ -1,38 +1,32 @@
 import { NextFunction, Request, Response } from "express";
-import logger from "../configs/logger.config";
 import { loginUser, registerUser } from "../services/auth.service";
-import { AppError } from "../utils/types/type";
 
-export const register = async (req: Request, res: Response,next:NextFunction) => {
+// ******************* Register ************************
+export const register = async (req: Request, res: Response, next:NextFunction) => {
   try {
-    console.log(req.body);
+    // Create new User
     const user = await registerUser(req.body);
+
     res.status(201).json({
       success: true,
       message: "User registered successfully",
-      user,
+      data:user,
     });
   } catch (error: unknown) {
-     const appError: AppError =
-      error instanceof Error
-        ? { message: error.message }
-        : { message: "Something went wrong" };
-  
-    return res.status(400).json({
-      success: false,
-      message: appError.message,
-    });
+     next(error)
     }
 };
 
-export const login = async (req: Request, res: Response,next:NextFunction) => {
+// ******************* Login ************************
+export const login = async (req: Request, res: Response, next:NextFunction) => {
   try {
     const { email, password } = req.body;
-    logger.info(`Login attempt for email: ${email}`);
-    const data = await loginUser(email, password);
+
+    // Login user
+    const {token, user} = await loginUser(email, password);
 
     // Set cookie
-    res.cookie("token", data.token, {
+    res.cookie("token", token, {
       httpOnly: true,
       secure: process.env.NODE_ENV === "production", // HTTPS only in production
       sameSite: "strict",
@@ -42,29 +36,28 @@ export const login = async (req: Request, res: Response,next:NextFunction) => {
     res.status(200).json({
       success: true,
       message: "Login successful",
-      user: data.user,
+      data: user,
     });
   } catch (error: unknown) {
-     const appError: AppError =
-      error instanceof Error
-        ? { message: error.message }
-        : { message: "Something went wrong" };
-  
-    return res.status(400).json({
-      success: false,
-      message: appError.message,
-    });
-    }
+     next(error);
+  }
 };
 
-export const logout = (req: Request, res: Response) => {
-  res.clearCookie("token", {
-    httpOnly: true,
-    secure: process.env.NODE_ENV === "production",
-    sameSite: "strict",
-  });
-  res.status(200).json({
-    success: true,
-    message: "Logged out successfully",
-  });
+// ******************* Logout ************************
+export const logout = (req: Request, res: Response, next:NextFunction) => {
+  try {
+    res.clearCookie("token", {
+      httpOnly: true,
+      secure: process.env.NODE_ENV === "production",
+      sameSite: "strict",
+    });
+
+    res.status(200).json({
+      success: true,
+      message: "Logged out successfully",
+      data:null
+    });
+  } catch (error) {
+    next(error);
+  } 
 }

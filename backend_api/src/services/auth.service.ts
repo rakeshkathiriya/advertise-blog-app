@@ -4,12 +4,13 @@ import jwt from "jsonwebtoken";
 import { UserModel } from "../models/userModel";
 import { IUser } from "../utils/types/type";
 
+// ******************* Register ************************
 export const registerUser = async (data: IUser) => {
-  console.log(data);
-
+  //check if fields are empty
   if(!data.firstname || !data.lastname || !data.email || !data.password){
     throw createHttpError.BadRequest("All fields are required");
   }
+
   // Check if email already exists
   const existingUser = await UserModel.findOne({ email: data.email });
   if (existingUser) {
@@ -22,24 +23,34 @@ export const registerUser = async (data: IUser) => {
   // Create new user
   const user = await UserModel.create({
     ...data,
+    email: data.email.toLowerCase(),
     password: hashedPassword,
   });
 
   return user;
 };
 
+// ******************* Login ************************
 export const loginUser = async (email: string, password: string) => {
+  //check if fields are empty
+  if(!email || !password){
+    throw createHttpError.BadRequest("All fields are required");
+  }
+
+  const normalizedEmail = email.toLowerCase();
+    
   // Check user exists
-  const user = await UserModel.findOne({ email });
+  const user = await UserModel.findOne({ email: normalizedEmail }).lean().select("+password");
+
+  //check if user exist
   if (!user) {
-    throw createHttpError.Unauthorized("Invalid email or password");
+    throw createHttpError.NotFound("No account with this email has been registered.");
   }
 
   // Check password
   const isMatch = await bcrypt.compare(password, user.password);
-  if (!isMatch) {
-    throw createHttpError.Unauthorized("Invalid email or password");
-  }
+
+  if (!isMatch) throw createHttpError.NotFound("Invalid credentials.");
 
   // Generate token
   const token = jwt.sign(

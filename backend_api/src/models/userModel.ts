@@ -1,5 +1,6 @@
 import mongoose, { Schema } from "mongoose";
 import { IUser } from "../utils/types/type";
+
 // --------------------------------------
 // Mongoose Schema
 // --------------------------------------

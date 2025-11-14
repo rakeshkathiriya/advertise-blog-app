@@ -20,14 +20,11 @@ export const userSignupSchema = Joi.object({
     "string.max": "First name cannot exceed {#limit} characters",
     "any.required": "First name is required",
   }),
-
   lastname: Joi.string().min(3).max(30).required().messages({
     "string.min": "Last name must be at least {#limit} characters",
     "string.max": "Last name cannot exceed {#limit} characters",
     "any.required": "Last name is required",
-  }),
-
- 
+  }), 
   email: Joi.string()
     .email({ tlds: { allow: true } })
     .required()
@@ -37,7 +34,6 @@ export const userSignupSchema = Joi.object({
     }),
     role: Joi.string().valid("Admin", "User").default("User"),
   isActive: Joi.boolean().default(false),
-
   password: passwordValidation,
 }).options({
   abortEarly: false,
