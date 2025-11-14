@@ -27,6 +27,9 @@ export default [
         version: 'detect',
       },
     },
+    parserOptions: {
+      project: './tsconfig.json',
+    },
     rules: {
       ...pluginReact.configs.recommended.rules,
       'react/react-in-jsx-scope': 'off',
