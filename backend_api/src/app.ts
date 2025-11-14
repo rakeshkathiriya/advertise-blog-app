@@ -80,7 +80,8 @@ app.use(
   (err: HttpError, req: Request, res: Response, next: NextFunction): void => {
     res.status(err.status || 500).json({
       error: {
-        status: err.status || 500,
+        statusCode: err.status || 500,
+        status: false,
         message: err.message,
       },
     });

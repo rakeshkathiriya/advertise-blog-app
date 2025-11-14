@@ -5,12 +5,12 @@ import { loginUser, registerUser } from "../services/auth.service";
 export const register = async (req: Request, res: Response, next:NextFunction) => {
   try {
     // Create new User
-    const user = await registerUser(req.body);
+    await registerUser(req.body);
 
     res.status(201).json({
       success: true,
       message: "User registered successfully",
-      data:user,
+      data:null,
     });
   } catch (error: unknown) {
      next(error)
@@ -24,6 +24,7 @@ export const login = async (req: Request, res: Response, next:NextFunction) => {
 
     // Login user
     const {token, user} = await loginUser(email, password);
+    const {password: _, ...userWithoutPassword} = user;
 
     // Set cookie
     res.cookie("token", token, {
@@ -36,7 +37,7 @@ export const login = async (req: Request, res: Response, next:NextFunction) => {
     res.status(200).json({
       success: true,
       message: "Login successful",
-      data: user,
+      data: {userWithoutPassword},
     });
   } catch (error: unknown) {
      next(error);
