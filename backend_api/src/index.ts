@@ -1,11 +1,20 @@
+import mongoose from "mongoose";
 import { Server } from "node:http";
 import app from "./app";
+import { connectDB } from "./configs/connectDB.config";
 import logger from "./configs/logger.config";
-
 // Environment variables
 const PORT = process.env.PORT || 8000;
 const HOSTNAME = process.env.HOSTNAME || "localhost";
 const NODE_ENV = process.env.NODE_ENV || "production";
+
+// Enable mongoose debug mode in non-production environments
+if (NODE_ENV !== "production") {
+  mongoose.set("debug", true);
+}
+
+// DB Connection
+connectDB()
 
 // Create server
 let server:Server;
