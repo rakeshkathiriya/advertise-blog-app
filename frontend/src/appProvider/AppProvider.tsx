@@ -1,4 +1,5 @@
 import { QueryClient, QueryClientProvider } from '@tanstack/react-query';
+import { ReactQueryDevtools } from '@tanstack/react-query-devtools';
 import { ToastContainer } from 'react-toastify';
 import { RoutesHolder } from '../routes/RoutesHolder';
 
@@ -14,6 +15,7 @@ export const AppProvider = () => {
     <QueryClientProvider client={queryClient}>
       <RoutesHolder />
       <ToastContainer />
+      <ReactQueryDevtools initialIsOpen={false} />
     </QueryClientProvider>
   );
 };

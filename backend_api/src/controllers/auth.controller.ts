@@ -8,7 +8,7 @@ export const register = async (req: Request, res: Response, next:NextFunction) =
     await registerUser(req.body);
 
     res.status(201).json({
-      success: true,
+      status: true,
       message: "User registered successfully",
       data:null,
     });
@@ -35,7 +35,7 @@ export const login = async (req: Request, res: Response, next:NextFunction) => {
     });
 
     res.status(200).json({
-      success: true,
+      status: true,
       message: "Login successful",
       data: userWithoutPassword,
     });
@@ -54,7 +54,7 @@ export const logout = (req: Request, res: Response, next:NextFunction) => {
     });
 
     res.status(200).json({
-      success: true,
+      status: true,
       message: "Logged out successfully",
       data:null
     });
