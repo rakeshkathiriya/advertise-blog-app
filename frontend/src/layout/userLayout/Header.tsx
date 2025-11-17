@@ -1,7 +1,11 @@
-import React from 'react'
+import React from 'react';
+import { LogoutButton } from '../../components/common/LogoutButton';
 
-export const Header:React.FC = () => {
+export const Header: React.FC = () => {
   return (
-    <div>Header</div>
-  )
-}
+    <>
+      <div>Header</div>
+      <LogoutButton />
+    </>
+  );
+};

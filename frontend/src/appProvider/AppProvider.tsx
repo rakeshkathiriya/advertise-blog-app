@@ -10,6 +10,7 @@ const queryClient = new QueryClient({
     },
   },
 });
+
 export const AppProvider = () => {
   return (
     <QueryClientProvider client={queryClient}>

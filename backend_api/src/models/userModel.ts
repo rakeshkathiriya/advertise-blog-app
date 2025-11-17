@@ -1,5 +1,5 @@
-import mongoose, { Schema } from "mongoose";
-import { IUser } from "../utils/types/type";
+import mongoose, { Schema } from 'mongoose';
+import { IUser } from '../utils/types/type';
 
 // --------------------------------------
 // Mongoose Schema
@@ -16,25 +16,25 @@ const userSchema: Schema<IUser> = new Schema(
       required: true,
       trim: true,
     },
-   email: {
-  type: String,
-  required: true,
-  trim: true,
-  unique: true,
-  lowercase: true,
-},
+    email: {
+      type: String,
+      required: true,
+      trim: true,
+      unique: true,
+      lowercase: true,
+    },
 
     password: {
       type: String,
       required: true,
       trim: true,
-      minLength: [6, "Password must be at least 6 characters long"],
-      maxLength: [64, "Password cannot exceed 64 characters"],
+      minLength: [6, 'Password must be at least 6 characters long'],
+      maxLength: [64, 'Password cannot exceed 64 characters'],
     },
     role: {
       type: String,
-      enum: ["Admin", "User"],
-      default: "User",
+      enum: ['Admin', 'User'],
+      default: 'User',
     },
     isActive: {
       type: Boolean,
@@ -47,4 +47,4 @@ const userSchema: Schema<IUser> = new Schema(
 // --------------------------------------
 // Model Export
 // --------------------------------------
-export const UserModel = mongoose.model<IUser>("User", userSchema);
+export const UserModel = mongoose.model<IUser>('User', userSchema);

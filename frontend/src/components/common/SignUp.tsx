@@ -3,9 +3,10 @@ import { motion } from 'framer-motion';
 import { useCallback, useState } from 'react';
 import { useNavigate } from 'react-router-dom';
 import { toast } from 'react-toastify';
-import { useUserRegistration } from '../../querys/auth.query';
+import { useUserRegistration } from '../../queries/auth.query';
 import type { RegisterUserPayload } from '../../utils/types/auth';
 import { registerSchema } from '../../utils/validationSchema/registerSchema';
+import { FacebookLoginButton } from './FacebookLoginButton';
 
 export const SignUp = () => {
   const navigate = useNavigate();
@@ -152,14 +153,7 @@ export const SignUp = () => {
           </motion.button>
 
           {/* FACEBOOK */}
-          <motion.button
-            type="button"
-            whileTap={{ scale: 0.95 }}
-            whileHover={{ scale: 1.03 }}
-            className="mt-2 w-full rounded-lg bg-[#1877F2] py-3 font-semibold text-white shadow-lg"
-          >
-            Login with Facebook
-          </motion.button>
+          <FacebookLoginButton />
           <p className="mt-4 text-center text-sm text-gray-600">
             Already an account?{' '}
             <a href="/login" className="font-semibold text-[#1877F2] hover:underline">

@@ -1,6 +1,6 @@
 import axios from 'axios';
 
-import type { AxiosInstance, AxiosResponse } from 'axios';
+import type { AxiosError, AxiosInstance, AxiosResponse } from 'axios';
 
 const api: AxiosInstance = axios.create({
   baseURL: 'http://localhost:8000/aba/',
@@ -11,6 +11,11 @@ const api: AxiosInstance = axios.create({
 api.interceptors.request.use(
   (config) => {
     console.log('Request Sent To:', config.url);
+    const token = localStorage.getItem('accessToken');
+    if (token) {
+      config.headers = config.headers || {};
+      config.headers.Authorization = `Bearer ${token}`;
+    }
     return config;
   },
   (error) => {
@@ -24,9 +29,13 @@ api.interceptors.response.use(
     console.log(' Response Received:', response.status);
     return response;
   },
-  (error) => {
+  async (error: AxiosError) => {
+    if (error?.response && error?.response?.status === 401) {
+      localStorage.clear();
+      globalThis.window.location.href = '/';
+    }
     console.error(' Request Error:', error);
-    return Promise.reject(error);
+    throw error instanceof Error ? error : new Error('Request failed');
   },
 );
 

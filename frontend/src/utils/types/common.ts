@@ -7,6 +7,7 @@ export interface CommonNullResponse extends CommonResponse {
 export interface CommonResponse {
   status: boolean;
   message: string;
+  accessToken?: string;
 }
 
 export type CommonApiError<T = unknown> = AxiosError<{

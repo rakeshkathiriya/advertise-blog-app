@@ -2,7 +2,7 @@ import { useMutation } from '@tanstack/react-query';
 import axios from 'axios';
 import { api } from '../utils/axiosFactory';
 import { cleanPayload, handleErrorResponse, handleResponse } from '../utils/helper';
-import type { RegisterUserPayload } from '../utils/types/auth';
+import type { LoginUserResponse, RegisterUserPayload } from '../utils/types/auth';
 import type { CommonApiError, CommonNullResponse } from '../utils/types/common';
 
 export const useUserRegistration = () => {
@@ -22,12 +22,12 @@ export const useUserRegistration = () => {
 };
 
 export const useUserLogin = () => {
-  return useMutation<CommonNullResponse, CommonApiError, { email: string; password: string }>({
+  return useMutation<LoginUserResponse, CommonApiError, { email: string; password: string }>({
     mutationKey: ['useUserLogin'],
     mutationFn: async (payload: { email: string; password: string }) => {
       try {
         const cleanedPayload = cleanPayload(payload);
-        const response = await api.post<CommonNullResponse>('/auth/login', cleanedPayload);
+        const response = await api.post<LoginUserResponse>('/auth/login', cleanedPayload);
         return handleResponse(response);
       } catch (error) {
         if (axios.isAxiosError(error)) throw handleErrorResponse(error);

@@ -1,7 +1,8 @@
 import type { AxiosResponse } from 'axios';
+import { jwtDecode } from 'jwt-decode';
+import type { DecodedToken } from '../utils/types/auth';
 import { HTTP_OK, HTTP_OK_2 } from './constants';
 import type { ApiErrorResponse, CommonApiError } from './types/common';
-
 export const cleanPayload = <T extends object>(payload: T, clearEmpty: boolean = false): Partial<T> => {
   return Object.fromEntries(
     Object.entries(payload).filter(([_, value]) => {
@@ -48,4 +49,18 @@ export const handleResponse = async <T>(
   }
 
   return response.data;
+};
+
+export const getUserRole = () => {
+  const token = localStorage.getItem('accessToken');
+
+  if (!token) return null;
+
+  try {
+    const decoded: DecodedToken = jwtDecode(token);
+    return decoded.role || null;
+  } catch (error) {
+    console.error('Invalid Token:', error);
+    return null;
+  }
 };

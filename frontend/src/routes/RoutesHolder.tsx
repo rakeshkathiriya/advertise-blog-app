@@ -1,11 +1,12 @@
 import React, { lazy } from 'react';
 import { createBrowserRouter, RouterProvider } from 'react-router-dom';
-
+import { AdminRoute } from './AdminRoute';
+import { ProtectedRoute } from './ProtectedRoute';
 const MainLayout = lazy(() =>
   import('../layout/userLayout/MainLayout').then((module) => ({ default: module.MainLayout })),
 );
 
-const Article = lazy(() => import('../pages/Artical').then((module) => ({ default: module.Artical })));
+const Article = lazy(() => import('../pages/Article').then((module) => ({ default: module.Article })));
 
 const Blog = lazy(() => import('../pages/Blog').then((module) => ({ default: module.Blog })));
 const AdminLayout = lazy(() =>
@@ -21,33 +22,42 @@ const SignUp = lazy(() => import('../components/common/SignUp').then((module) =>
 
 const route = createBrowserRouter([
   {
-    path: '/',
-    element: <MainLayout />,
+    element: <ProtectedRoute />,
     children: [
       {
-        index: true,
-        element: <Article />,
-      },
-      {
-        path: 'blog',
-        element: <Blog />,
+        path: '/',
+        element: <MainLayout />,
+        children: [
+          {
+            index: true,
+            element: <Article />,
+          },
+          {
+            path: 'blog',
+            element: <Blog />,
+          },
+        ],
       },
     ],
   },
 
   {
-    path: '/aba-admin',
-    element: <AdminLayout />,
+    element: <AdminRoute />,
     children: [
       {
-        index: true,
-        element: <Post />,
+        path: '/aba-admin',
+        element: <AdminLayout />,
+        children: [
+          {
+            index: true,
+            element: <Post />,
+          },
+          {
+            path: 'user',
+            element: <User />,
+          },
+        ],
       },
-      {
-        path: 'user',
-        element: <User />,
-      },
-      {},
     ],
   },
 

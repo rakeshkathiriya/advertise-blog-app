@@ -1,18 +1,73 @@
-import { ErrorMessage, Field, Form, Formik, type FormikHelpers } from 'formik';
+import { useFormik } from 'formik';
 import { motion } from 'framer-motion';
+import { useCallback, useState } from 'react';
+import { useNavigate } from 'react-router-dom';
+import { toast } from 'react-toastify';
+import { useUserLogin } from '../../queries/auth.query';
+import { setUser } from '../../store/authSlice';
+import { useAppDispatch } from '../../store/hooks';
+import type { LoginUserPayload } from '../../utils/types/auth';
 import { loginSchema, type LoginFormValues } from '../../utils/validationSchema/loginSchema';
-
-const initialValues: LoginFormValues = {
-  email: '',
-  password: '',
-};
-
+import { FacebookLoginButton } from './FacebookLoginButton';
 export const Login = () => {
-  const handleSubmit = (values: LoginFormValues, actions: FormikHelpers<LoginFormValues>) => {
-    console.log('Login Data:', values);
-    actions.setSubmitting(false);
-    alert('Login Successful!');
-  };
+  const [initialValues] = useState<LoginFormValues>({
+    email: '',
+    password: '',
+  });
+
+  const navigate = useNavigate();
+  const dispatch = useAppDispatch();
+  const { mutate: loginMutate, isPending: loginPending } = useUserLogin();
+
+  const formik = useFormik({
+    enableReinitialize: true,
+    initialValues: { ...initialValues },
+    validationSchema: loginSchema,
+    validateOnBlur: true,
+    validateOnChange: true,
+    onSubmit: (val) => {
+      handleLogin(val);
+    },
+  });
+
+  const { values, handleSubmit, handleChange, handleBlur, touched, errors, resetForm } = formik;
+
+  const handleLogin = useCallback(
+    async (payload: LoginUserPayload) => {
+      loginMutate(payload, {
+        onSuccess: (data) => {
+          if (data?.status) {
+            toast.success(data?.message ?? 'Logged in successfully');
+            const userDetail = data?.data;
+            const userData = {
+              _id: userDetail?._id,
+              firstname: userDetail?.firstname,
+              lastname: userDetail?.lastname,
+              email: userDetail?.email,
+              role: userDetail?.role,
+            };
+            localStorage.setItem('accessToken', data?.accessToken ?? '');
+
+            dispatch(setUser(userData));
+            if (userData.role === 'Admin') {
+              navigate('/aba-admin');
+              return;
+            }
+            if (userData.role === 'User') {
+              navigate('/');
+              return;
+            }
+            resetForm();
+          }
+        },
+        onError: (error) => {
+          console.error('Error:', error);
+          toast.error(error.message ?? 'Login failed');
+        },
+      });
+    },
+    [loginMutate, navigate, resetForm],
+  );
 
   return (
     <div className="flex min-h-screen items-center justify-center bg-linear-to-br from-[#f7f7f7] to-[#eaeaea] p-6">
@@ -31,80 +86,66 @@ export const Login = () => {
           Welcome Back
         </motion.h2>
 
-        <Formik initialValues={initialValues} validationSchema={loginSchema} onSubmit={handleSubmit}>
-          {({ touched, errors }) => (
-            <Form className="space-y-6">
-              {/* Email */}
-              <div>
-                <label htmlFor="email" className="block text-sm font-medium text-gray-700">
-                  Email
-                </label>
-                <Field
-                  id="email"
-                  name="email"
-                  type="email"
-                  className={`mt-1 w-full rounded-lg border bg-gray-50 p-3 text-gray-900 focus:ring-2 focus:ring-[#1877F2] ${
-                    touched.email && errors.email ? 'border-red-500' : 'border-gray-300'
-                  }`}
-                  placeholder="example@mail.com"
-                />
-                <div className="min-h-5">
-                  <ErrorMessage name="email" component="p" className="text-xs text-red-500" />
-                </div>
-              </div>
+        <form onSubmit={handleSubmit} className="space-y-3">
+          {/* Email */}
+          <div>
+            <label htmlFor="email" className="block text-sm font-medium text-gray-700">
+              Email
+            </label>
+            <input
+              name="email"
+              type="email"
+              value={values.email}
+              onChange={handleChange}
+              onBlur={handleBlur}
+              className={`mt-1 w-full rounded-lg border bg-gray-50 p-3 ${
+                touched.email && errors.email ? 'border-red-500' : 'border-gray-300'
+              }`}
+              placeholder="example@mail.com"
+            />
+            <p className="min-h-5 text-xs text-red-500">{touched.email && errors.email}</p>
+          </div>
 
-              {/* Password */}
-              <div>
-                <label htmlFor="password" className="block text-sm font-medium text-gray-700">
-                  Password
-                </label>
-                <Field
-                  id="password"
-                  name="password"
-                  type="password"
-                  className={`mt-1 w-full rounded-lg border bg-gray-50 p-3 text-gray-900 focus:ring-2 focus:ring-[#1877F2] ${
-                    touched.password && errors.password ? 'border-red-500' : 'border-gray-300'
-                  }`}
-                  placeholder="••••••••"
-                />
-                <div className="min-h-5">
-                  <ErrorMessage name="password" component="p" className="text-xs text-red-500" />
-                </div>
-              </div>
+          {/* Password */}
+          <div>
+            <label htmlFor="password" className="block text-sm font-medium text-gray-700">
+              Password
+            </label>
+            <input
+              name="password"
+              type="password"
+              value={values.password}
+              onChange={handleChange}
+              onBlur={handleBlur}
+              className={`mt-1 w-full rounded-lg border bg-gray-50 p-3 ${
+                touched.password && errors.password ? 'border-red-500' : 'border-gray-300'
+              }`}
+              placeholder="••••••••"
+            />
+            <p className="min-h-5 text-xs text-red-500">{touched.password && errors.password}</p>
+          </div>
 
-              {/* Login Button */}
-              <motion.button
-                type="submit"
-                whileTap={{ scale: 0.95 }}
-                whileHover={{ scale: 1.03 }}
-                className="w-full rounded-lg bg-[#E4B85A] py-3 text-lg font-semibold text-white shadow-lg hover:bg-[#d2a149]"
-              >
-                Login
-              </motion.button>
+          {/* Login Button */}
+          <motion.button
+            type="submit"
+            disabled={loginPending}
+            whileTap={{ scale: 0.95 }}
+            whileHover={{ scale: 1.03 }}
+            className="w-full rounded-lg bg-[#E4B85A] py-3 text-lg font-semibold text-white shadow-lg"
+          >
+            {loginPending ? 'Logging in...' : 'Login'}
+          </motion.button>
 
-              {/* Login with Facebook */}
-              <motion.button
-                type="button"
-                whileTap={{ scale: 0.95 }}
-                whileHover={{ scale: 1.03 }}
-                className="mt-2 flex w-full items-center justify-center gap-3 rounded-lg bg-[#1877F2] py-3 text-white shadow-md hover:bg-[#0f63c9]"
-              >
-                <svg className="h-5 w-5" fill="currentColor" viewBox="0 0 24 24">
-                  <path d="M22 12a10 10 0 1 0-11.5 9.9v-7H8v-3h2.5V9.5c0-2.5 1.5-3.8 3.7-3.8 1.1 0 2.2.2 2.2.2v2.4h-1.2c-1.2 0-1.6.8-1.6 1.6V12H18l-.5 3h-2.7v7A10 10 0 0 0 22 12" />
-                </svg>
-                Login with Facebook
-              </motion.button>
+          {/* Facebook Button */}
+          <FacebookLoginButton />
 
-              {/* Sign Up Link */}
-              <p className="mt-4 text-center text-sm text-gray-600">
-                Don't have an account?{' '}
-                <a href="/signup" className="font-semibold text-[#1877F2] hover:underline">
-                  Sign up
-                </a>
-              </p>
-            </Form>
-          )}
-        </Formik>
+          <p className="mt-4 text-center text-sm text-gray-600">
+            Don't have an account?{' '}
+            <a href="/signup" className="font-semibold text-[#1877F2] hover:underline">
+              Sign up
+            </a>
+          </p>
+        </form>
       </motion.div>
     </div>
   );
