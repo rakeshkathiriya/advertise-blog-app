@@ -11,10 +11,12 @@ export interface CommonResponse {
 }
 
 export type CommonApiError<T = unknown> = AxiosError<{
-  message: string | string[];
-  error: string;
-  statusCode: number;
-  data?: T;
+  error?: {
+    message?: string;
+    status?: boolean;
+    statusCode?: number;
+    data?: T | null;
+  };
   errors?: string[];
 }>;
 

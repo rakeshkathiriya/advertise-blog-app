@@ -17,13 +17,13 @@ export const cleanPayload = <T extends object>(payload: T, clearEmpty: boolean =
 };
 
 export const handleErrorResponse = <T = null>(error: CommonApiError): ApiErrorResponse<T> => {
-  const errorData = error.response?.data;
+  const apiError = error.response?.data?.error;
   const errors = error?.response?.data?.errors;
 
   return {
-    message: errorData?.message ?? 'Unknown error occurred',
+    message: apiError?.message ?? error.message ?? 'Unknown error occurred',
     status: false,
-    data: (errorData?.data ?? null) as T,
+    data: (apiError?.data ?? null) as T,
     errors,
   };
 };

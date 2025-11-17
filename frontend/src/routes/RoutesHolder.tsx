@@ -2,6 +2,7 @@ import React, { lazy } from 'react';
 import { createBrowserRouter, RouterProvider } from 'react-router-dom';
 import { AdminRoute } from './AdminRoute';
 import { ProtectedRoute } from './ProtectedRoute';
+
 const MainLayout = lazy(() =>
   import('../layout/userLayout/MainLayout').then((module) => ({ default: module.MainLayout })),
 );
