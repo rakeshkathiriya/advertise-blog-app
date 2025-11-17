@@ -74,12 +74,14 @@ const InteractiveFlipBook: React.FC = () => {
   }, []);
 
   return (
-    <div className="flex w-screen flex-col items-center justify-center overflow-hidden bg-gray-700 py-10">
+    <div className="flex w-screen flex-col items-center justify-center overflow-hidden! bg-gray-700 py-10">
       <HTMLFlipBook
         {...({
           width: 500,
           height: 750,
           size: 'fixed',
+          maxWidth: '100%',
+          maxHeight: '100%',
           maxShadowOpacity: 0.5,
           drawShadow: true,
           showCover: isShowCover,
@@ -109,7 +111,7 @@ const InteractiveFlipBook: React.FC = () => {
           [<span>{currentPageNumber}</span> of <span>{totalPageCount}</span>]
           <button
             onClick={handleNextPageClick}
-            className="ml-3 cursor-pointer bg-white p-5 text-center text-black"
+            className="cursor-pointer bg-white p-5 text-center text-black"
             aria-label="Go to next page"
           >
             Next page
