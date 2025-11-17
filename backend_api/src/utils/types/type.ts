@@ -1,14 +1,14 @@
-import { Request } from "express";
+import { Request } from 'express';
 
 // --------------------------------------
 // User Interface (TypeScript typings)
 // --------------------------------------
-export interface IUser{
+export interface IUser {
   firstname: string;
   lastname: string;
   email: string;
   password: string;
-  role?: "Admin" | "User";
+  role?: 'Admin' | 'User';
   isActive?: boolean;
   createdAt: Date;
   updatedAt: Date;
