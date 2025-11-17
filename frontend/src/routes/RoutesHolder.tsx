@@ -3,23 +3,15 @@ import { createBrowserRouter, RouterProvider } from 'react-router-dom';
 import { AdminRoute } from './AdminRoute';
 import { ProtectedRoute } from './ProtectedRoute';
 
-const MainLayout = lazy(() =>
-  import('../layout/userLayout/MainLayout').then((module) => ({ default: module.MainLayout })),
-);
+const MainLayout = lazy(() => import('../layout/userLayout/MainLayout'));
+const AdminLayout = lazy(() => import('../layout/adminLayout/AdminLayout'));
 
-const Article = lazy(() => import('../pages/Article').then((module) => ({ default: module.Article })));
-
-const Blog = lazy(() => import('../pages/Blog').then((module) => ({ default: module.Blog })));
-const AdminLayout = lazy(() =>
-  import('../layout/adminLayout/AdminLayout').then((module) => ({ default: module.AdminLayout })),
-);
-
-const Login = lazy(() => import('../components/common/Login').then((module) => ({ default: module.Login })));
-
-const User = lazy(() => import('../pages/User').then((module) => ({ default: module.User })));
-
-const Post = lazy(() => import('../pages/Post').then((module) => ({ default: module.Post })));
-const SignUp = lazy(() => import('../components/common/SignUp').then((module) => ({ default: module.SignUp })));
+const ArticlePage = lazy(() => import('../pages/Article'));
+const BlogPage = lazy(() => import('../pages/Blog'));
+const LoginPage = lazy(() => import('../components/common/Login'));
+const User = lazy(() => import('../pages/User'));
+const Post = lazy(() => import('../pages/Post'));
+const SignUpPage = lazy(() => import('../components/common/SignUp'));
 
 const route = createBrowserRouter([
   {
@@ -31,11 +23,11 @@ const route = createBrowserRouter([
         children: [
           {
             index: true,
-            element: <Article />,
+            element: <ArticlePage />,
           },
           {
             path: 'blog',
-            element: <Blog />,
+            element: <BlogPage />,
           },
         ],
       },
@@ -64,11 +56,11 @@ const route = createBrowserRouter([
 
   {
     path: '/login',
-    element: <Login />,
+    element: <LoginPage />,
   },
   {
     path: '/signup',
-    element: <SignUp />,
+    element: <SignUpPage />,
   },
 ]);
 

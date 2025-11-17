@@ -9,7 +9,8 @@ import { useAppDispatch } from '../../store/hooks';
 import type { LoginUserPayload } from '../../utils/types/auth';
 import { loginSchema, type LoginFormValues } from '../../utils/validationSchema/loginSchema';
 import { FacebookLoginButton } from './FacebookLoginButton';
-export const Login = () => {
+
+const LoginPage = () => {
   const [initialValues] = useState<LoginFormValues>({
     email: '',
     password: '',
@@ -150,3 +151,5 @@ export const Login = () => {
     </div>
   );
 };
+
+export default LoginPage;

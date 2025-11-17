@@ -1,5 +1,8 @@
 import React from 'react';
+import InteractiveFlipBook from '../components/FlipBookArticals/InteractiveFlipBook';
 
-export const Article: React.FC = () => {
-  return <div>Article</div>;
+const ArticlePage: React.FC = () => {
+  return <InteractiveFlipBook />;
 };
+
+export default ArticlePage;
