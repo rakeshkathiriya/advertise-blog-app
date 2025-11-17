@@ -9,6 +9,7 @@ const InteractiveFlipBook: React.FC = () => {
   // States
   const [currentPageNumber, setCurrentPageNumber] = useState<number>(1);
   const [totalPageCount, setTotalPageCount] = useState<number>(0);
+  const [isShowCover, setIsShowCover] = useState<boolean>(true);
 
   // Navigate to next page
   const handleNextPageClick = useCallback(() => {
@@ -55,6 +56,23 @@ const InteractiveFlipBook: React.FC = () => {
     return () => clearTimeout(timer);
   }, []);
 
+  useEffect(() => {
+    const timer = setTimeout(() => {
+      setIsShowCover(false);
+      // Keep the book on the first page after cover is hidden
+      if (flipBookRef.current) {
+        try {
+          const flipBookInstance = flipBookRef.current.pageFlip();
+          flipBookInstance.flip(1); // Go to page 0 (first page)
+        } catch (error) {
+          console.error('Error flipping to first page:', error);
+        }
+      }
+    }, 1000);
+
+    return () => clearTimeout(timer);
+  }, []);
+
   return (
     <div className="flex w-screen flex-col items-center justify-center overflow-hidden bg-gray-700 py-10">
       <HTMLFlipBook
@@ -64,7 +82,7 @@ const InteractiveFlipBook: React.FC = () => {
           size: 'fixed',
           maxShadowOpacity: 0.5,
           drawShadow: true,
-          showCover: true,
+          showCover: isShowCover,
           flippingTime: 1500,
           mobileScrollSupport: true,
           onInit: handleFlipBookInit,
