@@ -1,6 +1,7 @@
 import React, { lazy } from 'react';
 import { createBrowserRouter, RouterProvider } from 'react-router-dom';
 import { AdminRoute } from './AdminRoute';
+import { IsAuthenticate } from './IsAuthenticate';
 import { ProtectedRoute } from './ProtectedRoute';
 const MainLayout = lazy(() =>
   import('../layout/userLayout/MainLayout').then((module) => ({ default: module.MainLayout })),
@@ -62,12 +63,23 @@ const route = createBrowserRouter([
   },
 
   {
-    path: '/login',
-    element: <Login />,
+    element: <IsAuthenticate />,
+    children: [
+      {
+        path: '/login',
+        element: <Login />,
+      },
+    ],
   },
+
   {
-    path: '/signup',
-    element: <SignUp />,
+    element: <IsAuthenticate />,
+    children: [
+      {
+        path: '/signup',
+        element: <SignUp />,
+      },
+    ],
   },
 ]);
 
