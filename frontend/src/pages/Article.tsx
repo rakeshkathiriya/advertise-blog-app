@@ -1,5 +1,12 @@
 import React from 'react';
+import InteractiveFlipBook from '../components/FlipBookArticals/InteractiveFlipBook';
 
-export const Article: React.FC = () => {
-  return <div>Article</div>;
+const ArticlePage: React.FC = () => {
+  return (
+    <div className="article-page flex w-screen items-center justify-center overflow-hidden!">
+      <InteractiveFlipBook />
+    </div>
+  );
 };
+
+export default ArticlePage;
