@@ -11,22 +11,21 @@ export interface RequestWithUser extends Request {
   user?: AuthPayload;
 }
 
-export const authMiddleware = (req: RequestWithUser, res: Response, next: NextFunction): Response | void => {
-  const token = req.headers['authorization']?.split(' ')[1];
+export const authMiddleware = (req: Request, res: Response, next: NextFunction): Response | void => {
+  // 1️⃣ Try first from Authorization header (Normal Login)
+  let token = req.headers['authorization']?.split(' ')[1] || null;
+
   try {
-    // No token → unauthorized
     if (!token) return next(createHttpError.Unauthorized());
 
-    // Secret key required
     const secret = process.env.ACCESS_TOKEN_SECRET;
-    if (!secret) return next(createHttpError.InternalServerError());
+    if (!secret) return next(createHttpError.InternalServerError('JWT secret missing'));
 
-    const user = jwt.verify(token, secret) as AuthPayload;
+    const decoded = jwt.verify(token, secret) as AuthPayload;
 
-    // Attach user to req
-    req.user = user;
+    req.user = decoded;
     next();
-  } catch (error: unknown) {
-    next(error);
+  } catch (err) {
+    next(err);
   }
 };

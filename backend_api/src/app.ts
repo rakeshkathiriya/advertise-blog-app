@@ -5,7 +5,7 @@ import express, { NextFunction, Request, Response } from 'express';
 import helmet from 'helmet';
 import createHttpError, { HttpError } from 'http-errors';
 import morgan from 'morgan';
-import { authMiddleware, RequestWithUser } from './middlewares/auth.middleware';
+import { authMiddleware } from './middlewares/auth.middleware';
 import { isAdmin } from './middlewares/isAdmin.middleware';
 import router from './routes';
 
@@ -40,7 +40,7 @@ app.use(
   })
 );
 
-app.get('/user', authMiddleware, isAdmin, (req: RequestWithUser, res: Response) => {
+app.get('/user', authMiddleware, isAdmin, (req: Request, res: Response) => {
   if (!req.user) {
     return res.status(401).json({ message: 'User not found in request.' });
   }
@@ -50,7 +50,8 @@ app.get('/user', authMiddleware, isAdmin, (req: RequestWithUser, res: Response) 
     admin: req.user, // shows admin user details
   });
 });
-app.get('/guest', authMiddleware, (req: RequestWithUser, res: Response) => {
+
+app.get('/guest', authMiddleware, (req: Request, res: Response) => {
   res.json({
     message: 'This route is for Guest users',
     user: req.user,

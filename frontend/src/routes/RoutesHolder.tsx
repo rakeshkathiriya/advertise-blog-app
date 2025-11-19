@@ -1,25 +1,27 @@
 import React, { lazy } from 'react';
 import { createBrowserRouter, RouterProvider } from 'react-router-dom';
+import { FacebookAuthSuccess } from '../components/common/FacebookAuthSuccess';
 import { AdminRoute } from './AdminRoute';
 import { IsAuthenticate } from './IsAuthenticate';
 import { ProtectedRoute } from './ProtectedRoute';
-const MainLayout = lazy(() =>
-  import('../layout/userLayout/MainLayout').then((module) => ({ default: module.MainLayout })),
-);
 
-const Article = lazy(() => import('../pages/Article').then((module) => ({ default: module.Article })));
+const MainLayout = lazy(() => import('../layout/userLayout/MainLayout').then((m) => ({ default: m.MainLayout })));
 
-const Blog = lazy(() => import('../pages/Blog').then((module) => ({ default: module.Blog })));
-const AdminLayout = lazy(() =>
-  import('../layout/adminLayout/AdminLayout').then((module) => ({ default: module.AdminLayout })),
-);
+const Article = lazy(() => import('../pages/Article').then((m) => ({ default: m.Article })));
 
-const Login = lazy(() => import('../components/common/Login').then((module) => ({ default: module.Login })));
+const Blog = lazy(() => import('../pages/Blog').then((m) => ({ default: m.Blog })));
 
-const User = lazy(() => import('../pages/User').then((module) => ({ default: module.User })));
+const AdminLayout = lazy(() => import('../layout/adminLayout/AdminLayout').then((m) => ({ default: m.AdminLayout })));
 
-const Post = lazy(() => import('../pages/Post').then((module) => ({ default: module.Post })));
-const SignUp = lazy(() => import('../components/common/SignUp').then((module) => ({ default: module.SignUp })));
+const Login = lazy(() => import('../components/common/Login').then((m) => ({ default: m.Login })));
+
+const User = lazy(() => import('../pages/User').then((m) => ({ default: m.User })));
+
+const Post = lazy(() => import('../pages/Post').then((m) => ({ default: m.Post })));
+
+const SignUp = lazy(() => import('../components/common/SignUp').then((m) => ({ default: m.SignUp })));
+
+// ⭐ ADD THIS
 
 const route = createBrowserRouter([
   {
@@ -29,14 +31,8 @@ const route = createBrowserRouter([
         path: '/',
         element: <MainLayout />,
         children: [
-          {
-            index: true,
-            element: <Article />,
-          },
-          {
-            path: 'blog',
-            element: <Blog />,
-          },
+          { index: true, element: <Article /> },
+          { path: 'blog', element: <Blog /> },
         ],
       },
     ],
@@ -49,14 +45,8 @@ const route = createBrowserRouter([
         path: '/aba-admin',
         element: <AdminLayout />,
         children: [
-          {
-            index: true,
-            element: <Post />,
-          },
-          {
-            path: 'user',
-            element: <User />,
-          },
+          { index: true, element: <Post /> },
+          { path: 'user', element: <User /> },
         ],
       },
     ],
@@ -64,22 +54,18 @@ const route = createBrowserRouter([
 
   {
     element: <IsAuthenticate />,
-    children: [
-      {
-        path: '/login',
-        element: <Login />,
-      },
-    ],
+    children: [{ path: '/login', element: <Login /> }],
   },
 
   {
     element: <IsAuthenticate />,
-    children: [
-      {
-        path: '/signup',
-        element: <SignUp />,
-      },
-    ],
+    children: [{ path: '/signup', element: <SignUp /> }],
+  },
+
+  // ⭐ ADD THIS PUBLIC ROUTE — IMPORTANT!
+  {
+    path: '/facebook-auth-success',
+    element: <FacebookAuthSuccess />,
   },
 ]);
 
