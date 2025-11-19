@@ -96,17 +96,17 @@ export const facebookAdminCallback = (req: Request, res: Response, next: NextFun
     const data = req.user as PassportFacebookResult;
 
     if (!data) {
-      // console.error('No user data from passport');
+      console.error('No user data from passport');
       return res.redirect(`${process.env.FRONTEND_URL}/login?error=admin-auth-failed`);
     }
 
     // Verify it's the admin
     if (data.user.email !== process.env.ADMIN_EMAIL) {
-      // console.log('Unauthorized user tried admin login:', data.user.email);
+      console.log('Unauthorized user tried admin login:', data.user.email);
       return res.redirect(`${process.env.FRONTEND_URL}/login`);
     }
 
-    // console.log('Admin login successful:', data.user);
+    console.log('Admin login successful:', data.user);
 
     return res.redirect(
       `${process.env.FRONTEND_URL}/facebook-auth-success?token=${data.token}&user=${encodeURIComponent(
