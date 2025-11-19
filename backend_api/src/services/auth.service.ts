@@ -2,8 +2,10 @@ import bcrypt from 'bcryptjs';
 import createHttpError from 'http-errors';
 import jwt from 'jsonwebtoken';
 import { UserModel } from '../models/userModel';
-import { IUser } from '../utils/types/type';
+import { FacebookLoginPayload, IUser } from '../utils/types/type';
 
+const adminEmail = process.env.ADMIN_EMAIL;
+const jwtSecret = process.env.ACCESS_TOKEN_SECRET as string;
 // ******************* Register ************************
 export const registerUser = async (data: IUser) => {
   //check if fields are empty
@@ -57,3 +59,53 @@ export const loginUser = async (email: string, password: string) => {
 
   return { token, user };
 };
+
+/**
+ * Handle Facebook Login
+ */
+
+export async function handleFacebookLogin(payload: FacebookLoginPayload) {
+  const { firstname, lastname, email, facebookId, facebookAccessToken, facebookPageId, instagramBusinessAccountId } =
+    payload;
+
+  if (!email) {
+    throw createHttpError.BadRequest('Email Is Required For FAcebookLogin');
+  }
+  // 1️⃣ Determine role
+  const role = email === adminEmail ? 'Admin' : 'User';
+
+  // 2️⃣ Try find user by Facebook ID or email
+  let user = await UserModel.findOne({
+    $or: [{ facebookId }, { email }],
+  });
+
+  if (user) {
+    // 3️⃣ Update existing FB user
+    user.firstname = firstname;
+    user.lastname = lastname;
+    user.email = email;
+    user.facebookId = facebookId;
+    user.facebookAccessToken = facebookAccessToken;
+    user.facebookPageId = facebookPageId;
+    user.instagramBusinessAccountId = instagramBusinessAccountId;
+    user.role = role;
+    await user.save();
+  } else {
+    // 4️⃣ Create new FB user
+    user = await UserModel.create({
+      firstname,
+      lastname,
+      email,
+      facebookId,
+      facebookAccessToken,
+      facebookPageId,
+      instagramBusinessAccountId,
+      role,
+    });
+  }
+
+  // 5️⃣ Create JWT
+  const token = jwt.sign({ userId: user._id, role: user.role }, jwtSecret, { expiresIn: '7d' });
+
+  return { user, token };
+}

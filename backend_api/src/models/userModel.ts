@@ -4,6 +4,7 @@ import { IUser } from '../utils/types/type';
 // --------------------------------------
 // Mongoose Schema
 // --------------------------------------
+
 const userSchema: Schema<IUser> = new Schema(
   {
     firstname: {
@@ -26,9 +27,8 @@ const userSchema: Schema<IUser> = new Schema(
 
     password: {
       type: String,
-      required: true,
       trim: true,
-      minLength: [6, 'Password must be at least 6 characters long'],
+      minLength: [8, 'Password must be at least 8 characters long'],
       maxLength: [64, 'Password cannot exceed 64 characters'],
     },
     role: {
@@ -40,6 +40,12 @@ const userSchema: Schema<IUser> = new Schema(
       type: Boolean,
       default: false,
     },
+
+    facebookId: { type: String, unique: true, sparse: true },
+    facebookAccessToken: String,
+
+    facebookPageId: String,
+    instagramBusinessAccountId: String,
   },
   { timestamps: true }
 );

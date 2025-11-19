@@ -1,5 +1,6 @@
 import { NextFunction, Request, Response } from 'express';
 import { loginUser, registerUser } from '../services/auth.service';
+import { PassportFacebookResult } from '../utils/types/type';
 
 // ******************* Register ************************
 export const register = async (req: Request, res: Response, next: NextFunction) => {
@@ -61,5 +62,59 @@ export const logout = (req: Request, res: Response, next: NextFunction) => {
     });
   } catch (error) {
     next(error);
+  }
+};
+
+// ******************* Facebook Login ************************
+
+export const facebookCallback = (req: Request, res: Response, next: NextFunction) => {
+  const data = req.user as PassportFacebookResult;
+
+  if (!data) return res.redirect(`${process.env.FRONTEND_URL}/login?error=facebook`);
+
+  const email = data.user.email;
+
+  // Normal User
+  if (email !== process.env.ADMIN_EMAIL) {
+    return res.redirect(
+      `${process.env.FRONTEND_URL}/facebook-auth-success?token=${data.token}&user=${encodeURIComponent(
+        JSON.stringify(data.user)
+      )}`
+    );
+  }
+
+  // Admin - IMPORTANT: Use exact same redirect_uri as in Meta settings
+  const adminPermUrl = `https://www.facebook.com/v18.0/dialog/oauth?client_id=${process.env.ADMIN_APP_ID}&redirect_uri=${encodeURIComponent(
+    process.env.ADMIN_FB_CALLBACK_URL!
+  )}&auth_type=rerequest&scope=email,pages_show_list,pages_manage_posts,instagram_basic,instagram_content_publish&response_type=code`;
+
+  return res.redirect(adminPermUrl);
+};
+
+export const facebookAdminCallback = (req: Request, res: Response, next: NextFunction) => {
+  try {
+    const data = req.user as PassportFacebookResult;
+
+    if (!data) {
+      // console.error('No user data from passport');
+      return res.redirect(`${process.env.FRONTEND_URL}/login?error=admin-auth-failed`);
+    }
+
+    // Verify it's the admin
+    if (data.user.email !== process.env.ADMIN_EMAIL) {
+      // console.log('Unauthorized user tried admin login:', data.user.email);
+      return res.redirect(`${process.env.FRONTEND_URL}/login`);
+    }
+
+    // console.log('Admin login successful:', data.user);
+
+    return res.redirect(
+      `${process.env.FRONTEND_URL}/facebook-auth-success?token=${data.token}&user=${encodeURIComponent(
+        JSON.stringify(data.user)
+      )}`
+    );
+  } catch (err) {
+    console.error('Admin callback error:', err);
+    return res.redirect(`${process.env.FRONTEND_URL}/login`);
   }
 };

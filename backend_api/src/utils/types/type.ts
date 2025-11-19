@@ -9,9 +9,23 @@ export interface IUser {
   email: string;
   password: string;
   role?: 'Admin' | 'User';
+  facebookId?: string | null;
+  facebookAccessToken?: string | null;
+  facebookPageId?: string | null;
+  instagramBusinessAccountId?: string | null;
   isActive?: boolean;
   createdAt: Date;
   updatedAt: Date;
+}
+
+export interface FacebookLoginPayload {
+  firstname: string;
+  lastname: string;
+  email?: string;
+  facebookId: string;
+  facebookAccessToken: string | null;
+  facebookPageId: string | null;
+  instagramBusinessAccountId: string | null;
 }
 
 export interface AppError {
@@ -23,4 +37,9 @@ export interface RequestWithUser extends Request {
     id: string;
     role: string;
   };
+}
+
+export interface PassportFacebookResult {
+  user: IUser;
+  token: string;
 }

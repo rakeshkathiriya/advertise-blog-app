@@ -1,5 +1,6 @@
 import React, { lazy } from 'react';
 import { createBrowserRouter, RouterProvider } from 'react-router-dom';
+import { FacebookAuthSuccess } from '../components/common/FacebookAuthSuccess';
 import { AdminRoute } from './AdminRoute';
 import { ProtectedRoute } from './ProtectedRoute';
 
@@ -41,14 +42,8 @@ const route = createBrowserRouter([
         path: '/aba-admin',
         element: <AdminLayout />,
         children: [
-          {
-            index: true,
-            element: <Post />,
-          },
-          {
-            path: 'user',
-            element: <User />,
-          },
+          { index: true, element: <Post /> },
+          { path: 'user', element: <User /> },
         ],
       },
     ],
@@ -58,9 +53,15 @@ const route = createBrowserRouter([
     path: '/login',
     element: <LoginPage />,
   },
+
   {
     path: '/signup',
     element: <SignUpPage />,
+  },
+  // ⭐ ADD THIS PUBLIC ROUTE — IMPORTANT!
+  {
+    path: '/facebook-auth-success',
+    element: <FacebookAuthSuccess />,
   },
 ]);
 
