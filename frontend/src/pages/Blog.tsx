@@ -1,7 +1,7 @@
-import React from 'react'
+import React from 'react';
 
-export const Blog:React.FC = () => {
-  return (
-    <div>Blog</div>
-  )
-}
+const BlogPage: React.FC = () => {
+  return <div>BlogPage</div>;
+};
+
+export default BlogPage;

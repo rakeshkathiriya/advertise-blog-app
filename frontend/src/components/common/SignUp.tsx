@@ -8,7 +8,7 @@ import type { RegisterUserPayload } from '../../utils/types/auth';
 import { registerSchema } from '../../utils/validationSchema/registerSchema';
 import { FacebookLoginButton } from './FacebookLoginButton';
 
-export const SignUp = () => {
+const SignUpPage = () => {
   const navigate = useNavigate();
   const [initialValue] = useState<RegisterUserPayload>({
     firstname: '',
@@ -165,3 +165,5 @@ export const SignUp = () => {
     </div>
   );
 };
+
+export default SignUpPage;
