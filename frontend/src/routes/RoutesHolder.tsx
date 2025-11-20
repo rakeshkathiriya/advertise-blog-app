@@ -14,6 +14,9 @@ const User = lazy(() => import('../pages/User'));
 const Post = lazy(() => import('../pages/Post'));
 const SignUpPage = lazy(() => import('../components/common/SignUp'));
 
+// Admin Pages
+const AdminDashboardPage = lazy(() => import('../pages/AdminPages/Dashboard'));
+
 const route = createBrowserRouter([
   {
     element: <ProtectedRoute />,
@@ -73,6 +76,8 @@ const route = createBrowserRouter([
     path: '/facebook-auth-success',
     element: <FacebookAuthSuccess />,
   },
+
+  { path: '/dashboard', element: <AdminDashboardPage /> },
 ]);
 
 export const RoutesHolder: React.FC = () => {
