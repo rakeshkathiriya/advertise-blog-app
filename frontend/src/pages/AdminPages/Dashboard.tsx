@@ -65,6 +65,8 @@ function ContentArea({ activeMenu }: { activeMenu: string }) {
     <div className="flex-1 p-6">
       {activeMenu === 'Articles' && <div>Articles Content</div>}
       {activeMenu === 'My Clients' && <MyClients />}
+      {activeMenu === 'Users' && <div>Users Content</div>}
+      {activeMenu === 'Logout' && <div>Logout Content</div>}
     </div>
   );
 }
@@ -74,6 +76,10 @@ const MyClients = () => {
   const [currentPage, setCurrentPage] = useState<number>(1);
   const [editingClient, setEditingClient] = useState<ClientWithIndex | null>(null);
   const [showAddModal, setShowAddModal] = useState<boolean>(false);
+  const [searchCompany, setSearchCompany] = useState<string>('');
+  const [statusFilter, setStatusFilter] = useState<string>('all');
+  const [appliedSearchCompany, setAppliedSearchCompany] = useState<string>('');
+  const [appliedStatusFilter, setAppliedStatusFilter] = useState<string>('all');
   const itemsPerPage = 10;
 
   const parseDate = (dateStr: string): Date => {
@@ -130,10 +136,27 @@ const MyClients = () => {
     setShowAddModal(false);
   };
 
+  // Filter clients based on search and status
+  const filteredClients = clients.filter((client) => {
+    const matchesCompany = client.name.toLowerCase().includes(appliedSearchCompany.toLowerCase());
+    const status = getStatus(client.expiredDate);
+    const matchesStatus =
+      appliedStatusFilter === 'all' ||
+      (appliedStatusFilter === 'active' && status === 'Active') ||
+      (appliedStatusFilter === 'inactive' && status === 'Inactive');
+    return matchesCompany && matchesStatus;
+  });
+
+  const handleSearch = () => {
+    setAppliedSearchCompany(searchCompany);
+    setAppliedStatusFilter(statusFilter);
+    setCurrentPage(1);
+  };
+
   const totalPages = Math.ceil(clients.length / itemsPerPage);
   const startIdx = (currentPage - 1) * itemsPerPage;
   const endIdx = startIdx + itemsPerPage;
-  const currentClients = clients.slice(startIdx, endIdx);
+  const currentClients = filteredClients.slice(startIdx, endIdx);
 
   return (
     <div className="h-full w-full">
@@ -147,14 +170,49 @@ const MyClients = () => {
         </p>
       </div>
 
-      <div className="mb-4 flex justify-end">
-        <button
-          onClick={() => setShowAddModal(true)}
-          className="text-14 flex items-center gap-2 rounded-full bg-[#aec2d1] px-4 py-2 font-semibold tracking-wide text-[#3a4b66] transition-all duration-500 ease-in-out hover:scale-105 hover:transform"
-        >
-          Add Client
-        </button>
+      {/* Search and Filter Section */}
+      <div className="mb-4 flex flex-wrap items-center justify-between gap-4">
+        <div className="flex items-center gap-2">
+          <input
+            type="text"
+            placeholder="Search by companyName..."
+            value={searchCompany}
+            onChange={(e) => setSearchCompany(e.target.value)}
+            className="flex-1 rounded-lg border border-gray-300 px-4 py-2 text-sm font-semibold text-gray-600 focus:ring-2 focus:ring-[#3a4b66] focus:outline-none"
+          />
+          <div className="flex items-center gap-2">
+            <label className="text-sm font-semibold text-[#3a4b66]">Status:</label>
+            <select
+              value={statusFilter}
+              onChange={(e) => {
+                setStatusFilter(e.target.value);
+                setCurrentPage(1);
+              }}
+              className="rounded-lg border border-gray-300 px-1 py-2 text-sm font-semibold text-gray-600 focus:ring-2 focus:ring-[#3a4b66] focus:outline-none"
+            >
+              <option value="all">All</option>
+              <option value="active">Active</option>
+              <option value="inactive">Inactive</option>
+            </select>
+          </div>
+          <button
+            onClick={handleSearch}
+            className="text-14 flex items-center gap-2 rounded-full bg-[#aec2d1] px-6 py-2 font-semibold tracking-wide text-[#3a4b66] transition-all duration-500 ease-in-out hover:scale-105 hover:transform"
+          >
+            Search
+          </button>
+        </div>
+
+        <div className="flex justify-end">
+          <button
+            onClick={() => setShowAddModal(true)}
+            className="text-14 flex items-center gap-2 rounded-full bg-[#aec2d1] px-4 py-2 font-semibold tracking-wide text-[#3a4b66] transition-all duration-500 ease-in-out hover:scale-105 hover:transform"
+          >
+            Add Client
+          </button>
+        </div>
       </div>
+
       <div className="overflow-x-auto rounded-lg border border-gray-200 shadow-2xl">
         <table className="min-w-full divide-y-2 divide-gray-200">
           <thead className="rounded-lg bg-[#aec2d1] text-left">
@@ -219,7 +277,7 @@ const MyClients = () => {
                       className="text-red-600 transition-colors hover:text-red-800"
                       title="Delete client"
                     >
-                      Delete
+                      🗑️
                     </button>
                   </td>
                 </tr>
@@ -232,7 +290,8 @@ const MyClients = () => {
       {/* Pagination */}
       <div className="mt-4 flex items-center justify-between">
         <p className="text-sm font-semibold tracking-wide text-[#3a4b66]">
-          Showing {startIdx + 1} to {Math.min(endIdx, clients.length)} of {clients.length} clients
+          Showing {filteredClients.length > 0 ? startIdx + 1 : 0} to {Math.min(endIdx, filteredClients.length)} of
+          &nbsp; {filteredClients.length} clients
         </p>
         <div className="inline-flex gap-1">
           <button
@@ -432,6 +491,8 @@ interface SidebarMenuItem {
 const sidebarMenu: SidebarMenuItem[] = [
   { name: 'Articles', icon: '📄' },
   { name: 'My Clients', icon: '👥' },
+  { name: 'Users', icon: '🧑' },
+  { name: 'Logout', icon: '🔒 ' },
 ];
 
 const initialClients: Client[] = [
