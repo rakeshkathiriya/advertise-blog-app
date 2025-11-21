@@ -45,7 +45,7 @@ function Sidebar({
   }, [activeMenu]);
 
   return (
-    <nav className="flex h-screen w-64 flex-col justify-between bg-[#d8e1e8] p-6">
+    <nav className="flex h-auto w-64 flex-col justify-between bg-[#d8e1e8] p-6">
       {/* Logo */}
       <div>
         <div className="mb-8 flex items-center justify-center gap-2">

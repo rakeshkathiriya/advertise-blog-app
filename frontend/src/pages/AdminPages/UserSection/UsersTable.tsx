@@ -1,39 +1,39 @@
 import { memo, useEffect, useMemo, useState } from 'react';
 import { InfiniteScrollTable, type TableColumn } from '../../../components/AdminPanel/InfiniteTable';
 import Pagination from '../../../components/AdminPanel/Pagination';
-import { initialClients } from '../../../utils/staticData/staticData';
+import { initialUsers } from '../../../utils/staticData/staticData';
 
-export interface Client {
-  name: string;
-  poc: string;
+export interface User {
+  firstName: string;
+  lastName: string;
   email: string;
-  postLimit: string;
   expiredDate: string;
+  foreEverSubscribe: boolean;
 }
 
-export interface ClientWithIndex extends Client {
+export interface UserWithIndex extends User {
   index: number;
 }
 
-const ClientsTable = ({
+const UsersTable = ({
   setEditingClient,
   currentPage,
   setCurrentPage,
 }: {
-  setEditingClient: React.Dispatch<React.SetStateAction<ClientWithIndex | null>>;
+  setEditingClient: React.Dispatch<React.SetStateAction<UserWithIndex | null>>;
   currentPage: number;
   setCurrentPage: React.Dispatch<React.SetStateAction<number>>;
 }) => {
   // States
-  const [selectedRow, setSelectedRow] = useState<{ data: Client; index: number } | null>(null);
+  const [selectedRow, setSelectedRow] = useState<{ data: User; index: number } | null>(null);
 
   // API hooks
   //   const tableQuery = useGetTerritoryTableDetails();
 
   // Handlers
   const tableData = useMemo(() => {
-    return initialClients;
-  }, [initialClients]);
+    return initialUsers;
+  }, [initialUsers]);
 
   const parseDate = (dateStr: string): Date => {
     const [day, month, year] = dateStr.split('/');
@@ -68,30 +68,22 @@ const ClientsTable = ({
     }
   }, [tableData, selectedRow]);
 
-  const handleDelete = (idx: number) => {
-    if (window.confirm('Are you sure you want to delete this client?')) {
-      tableData.splice(idx, 1);
-      alert('Client deleted successfully.');
-    }
-  };
-
-  const columns: TableColumn<Client>[] = [
+  const columns: TableColumn<User>[] = [
     {
-      label: 'Company Name',
-      accessor: 'name',
-    },
-    {
-      label: 'POC',
-      accessor: 'poc',
+      label: 'User Name',
+      render: (data) => `${data.firstName} ${data.lastName}`,
     },
     {
       label: 'Email',
       accessor: 'email',
     },
     {
-      label: 'Post Limit',
-      accessor: 'postLimit',
-      className: 'w-12!',
+      label: 'Email',
+      accessor: 'email',
+    },
+    {
+      label: 'Forever Subscribe',
+      render: (data) => (data.foreEverSubscribe ? 'Yes' : 'No'),
     },
     {
       label: 'S.Expired Date',
@@ -111,29 +103,14 @@ const ClientsTable = ({
       label: 'Remaining Days',
       render: (data) => getRemainingDays(data.expiredDate) ?? 'N/A',
     },
-    {
-      label: 'Actions',
-      render: (_data, index) => (
-        <button
-          onClick={(e) => {
-            e.stopPropagation();
-            handleDelete(index);
-          }}
-          className="flex w-full cursor-pointer text-red-600 transition-colors hover:text-red-800"
-          title="Delete client"
-        >
-          🗑️
-        </button>
-      ),
-    },
   ];
 
   return (
     <>
-      <InfiniteScrollTable<Client>
+      <InfiniteScrollTable<User>
         columns={columns}
         data={tableData}
-        tableCaption="Client Subscriptions Table"
+        tableCaption="User Subscriptions Table"
         containerClassName="w-full overflow-x-auto rounded-lg border border-gray-200 shadow-2xl"
         selectedRowIndex={selectedRow?.index ?? -1}
         onRowClick={(data, index) => {
@@ -142,6 +119,7 @@ const ClientsTable = ({
         onRowDoubleClick={(data, index) => {
           setEditingClient({ ...data, index });
         }}
+        isLoading={false}
       />
       <Pagination
         currentPage={currentPage}
@@ -149,10 +127,10 @@ const ClientsTable = ({
         totalItems={tableData.length}
         itemsPerPage={10}
         onPageChange={setCurrentPage}
-        itemLabel="clients"
+        itemLabel="users"
       />
     </>
   );
 };
 
-export default memo(ClientsTable);
+export default memo(UsersTable);

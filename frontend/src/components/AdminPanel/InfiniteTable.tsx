@@ -135,6 +135,9 @@ export function InfiniteScrollTable<T>({
       )}
 
       <table ref={tableRef} className={`min-w-full divide-y divide-black/20 ${tableClassName}`}>
+        <caption className="bg-[#aec2d1] px-3 py-2 text-base font-semibold tracking-wide text-nowrap whitespace-nowrap text-[#3a4b66]">
+          {tableCaption}
+        </caption>
         <thead className={`rounded-lg bg-[#aec2d1] text-left`}>
           <tr className="divide-x divide-black/20">
             {currentColumns.map((col, idx) => {

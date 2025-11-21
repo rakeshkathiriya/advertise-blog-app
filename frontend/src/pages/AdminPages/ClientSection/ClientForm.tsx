@@ -27,9 +27,10 @@ const ClientForm = ({ client, onSubmit, onCancel, submitLabel }: ClientFormProps
         <label className="mb-1 block text-sm font-semibold text-[#3a4b66]">Company Name</label>
         <input
           type="text"
+          disabled
           value={formData.name}
           onChange={(e) => setFormData({ ...formData, name: e.target.value })}
-          className="w-full rounded-lg border border-gray-300 px-3 py-2 text-sm font-semibold text-gray-600 focus:ring-2 focus:ring-[#3a4b66] focus:outline-none"
+          className="w-full cursor-not-allowed rounded-lg border border-gray-300 bg-gray-300 px-3 py-2 text-sm font-semibold text-gray-600 focus:ring-2 focus:ring-[#3a4b66] focus:outline-none"
         />
       </div>
       <div>
