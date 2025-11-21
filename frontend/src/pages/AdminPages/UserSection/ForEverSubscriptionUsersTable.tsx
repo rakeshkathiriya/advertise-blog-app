@@ -16,14 +16,6 @@ export interface UserWithIndex extends User {
   index: number;
 }
 
-const RenderArrow = (index: number, arrowIndex: number) => {
-  if (arrowIndex === index) {
-    // return <FaPlay size={16} color="#000" />;
-    return <span className="text-black">&#9654;</span>;
-  }
-  return <span className="text-black">&#9654; else</span>;
-};
-
 const ForEverSubscriptionUsersTable = ({
   setEditingClient,
   currentPage,
