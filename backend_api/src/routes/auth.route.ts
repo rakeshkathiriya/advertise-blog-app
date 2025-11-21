@@ -16,10 +16,18 @@ router.get(
   '/facebook',
   passportUser.authenticate('facebook-user', {
     scope: ['email'],
+    failureRedirect: process.env.FRONTEND_URL,
   })
 );
 
-router.get('/facebook/callback', passportUser.authenticate('facebook-user', { session: false }), facebookCallback);
+router.get(
+  '/facebook/callback',
+  passportUser.authenticate('facebook-user', {
+    session: false,
+    failureRedirect: process.env.FRONTEND_URL,
+  }),
+  facebookCallback
+);
 
 // Admin login (Business App)
 router.get(
@@ -27,12 +35,17 @@ router.get(
   passportAdmin.authenticate('facebook-admin', {
     scope: ['email', 'pages_show_list', 'pages_manage_posts', 'instagram_basic', 'instagram_content_publish'],
     auth_type: 'rerequest',
+    failureRedirect: process.env.FRONTEND_URL,
   } as any)
 );
 
 router.get(
   '/facebook/admin/callback',
-  passportAdmin.authenticate('facebook-admin', { session: false }),
+  passportAdmin.authenticate('facebook-admin', {
+    session: false,
+    failureRedirect: process.env.FRONTEND_URL,
+  }),
   facebookAdminCallback
 );
+
 export default router;

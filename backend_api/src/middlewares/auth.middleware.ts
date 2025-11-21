@@ -7,17 +7,13 @@ export interface AuthPayload extends JwtPayload {
   role: string;
 }
 
-export interface RequestWithUser extends Request {
-  user?: AuthPayload;
-}
-
 export const authMiddleware = (req: Request, res: Response, next: NextFunction): Response | void => {
-  // 1️⃣ Try first from Authorization header (Normal Login)
+  // Try first from Authorization header (Normal Login)
   let token = req.headers['authorization']?.split(' ')[1] || null;
-
+  console.log(req.headers['authorization']);
   try {
-    if (!token) return next(createHttpError.Unauthorized());
-
+    if (!token) return next(createHttpError.Unauthorized('token is Missing'));
+    console.log('token in authmiddleware', token);
     const secret = process.env.ACCESS_TOKEN_SECRET;
     if (!secret) return next(createHttpError.InternalServerError('JWT secret missing'));
 

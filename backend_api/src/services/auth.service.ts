@@ -73,6 +73,8 @@ export async function handleFacebookLogin(payload: FacebookLoginPayload) {
   }
   // 1️⃣ Determine role
   const role = email === adminEmail ? 'Admin' : 'User';
+  // console.log('FaceBook Page Id In S Auth Service ', facebookPageId);
+  // console.log('FaceBook Page Id In S Auth Service ', instagramBusinessAccountId);
 
   // 2️⃣ Try find user by Facebook ID or email
   let user = await UserModel.findOne({
@@ -107,5 +109,5 @@ export async function handleFacebookLogin(payload: FacebookLoginPayload) {
   // 5️⃣ Create JWT
   const token = jwt.sign({ userId: user._id, role: user.role }, jwtSecret, { expiresIn: '7d' });
 
-  return { user, token };
+  return { user, facebookAccessToken, token };
 }
