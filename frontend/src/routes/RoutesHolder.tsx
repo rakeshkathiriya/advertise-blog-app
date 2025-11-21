@@ -10,8 +10,6 @@ const AdminLayout = lazy(() => import('../layout/adminLayout/AdminLayout'));
 const ArticlePage = lazy(() => import('../pages/Article'));
 const BlogPage = lazy(() => import('../pages/Blog'));
 const LoginPage = lazy(() => import('../components/common/Login'));
-const User = lazy(() => import('../pages/User'));
-const Post = lazy(() => import('../pages/Post'));
 const SignUpPage = lazy(() => import('../components/common/SignUp'));
 
 // Admin Pages
@@ -44,10 +42,7 @@ const route = createBrowserRouter([
       {
         path: '/aba-admin',
         element: <AdminLayout />,
-        children: [
-          { index: true, element: <Post /> },
-          { path: 'user', element: <User /> },
-        ],
+        children: [{ index: true, element: <AdminDashboardPage /> }],
       },
     ],
   },
@@ -76,8 +71,6 @@ const route = createBrowserRouter([
     path: '/facebook-auth-success',
     element: <FacebookAuthSuccess />,
   },
-
-  { path: '/dashboard', element: <AdminDashboardPage /> },
 ]);
 
 export const RoutesHolder: React.FC = () => {

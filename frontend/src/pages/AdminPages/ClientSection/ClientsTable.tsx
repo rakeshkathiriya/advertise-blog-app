@@ -1,7 +1,8 @@
 import { memo, useEffect, useMemo, useState } from 'react';
 import { FaPlay } from 'react-icons/fa';
 import { InfiniteScrollTable, type TableColumn } from '../../../components/AdminPanel/InfiniteTable';
-import { initialClients } from '../Dashboard';
+import Pagination from '../../../components/AdminPanel/Pagination';
+import { initialClients } from '../../../utils/staticData/staticData';
 
 export interface Client {
   name: string;
@@ -11,7 +12,7 @@ export interface Client {
   expiredDate: string;
 }
 
-interface ClientWithIndex extends Client {
+export interface ClientWithIndex extends Client {
   index: number;
 }
 
@@ -24,8 +25,12 @@ const RenderArrow = (index: number, arrowIndex: number) => {
 
 const ClientsTable = ({
   setEditingClient,
+  currentPage,
+  setCurrentPage,
 }: {
   setEditingClient: React.Dispatch<React.SetStateAction<ClientWithIndex | null>>;
+  currentPage: number;
+  setCurrentPage: React.Dispatch<React.SetStateAction<number>>;
 }) => {
   // States
   const [selectedRow, setSelectedRow] = useState<{ data: Client; index: number } | null>(null);
@@ -139,19 +144,29 @@ const ClientsTable = ({
   ];
 
   return (
-    <InfiniteScrollTable<Client>
-      columns={columns(selectedRow?.index ?? null)}
-      data={tableData}
-      tableCaption="Territories"
-      containerClassName="w-full overflow-x-auto rounded-lg border border-gray-200 shadow-2xl"
-      selectedRowIndex={selectedRow?.index ?? -1}
-      onRowClick={(data, index) => {
-        setSelectedRow({ data, index });
-      }}
-      onRowDoubleClick={(data, index) => {
-        setEditingClient({ ...data, index });
-      }}
-    />
+    <>
+      <InfiniteScrollTable<Client>
+        columns={columns(selectedRow?.index ?? null)}
+        data={tableData}
+        tableCaption="Territories"
+        containerClassName="w-full overflow-x-auto rounded-lg border border-gray-200 shadow-2xl"
+        selectedRowIndex={selectedRow?.index ?? -1}
+        onRowClick={(data, index) => {
+          setSelectedRow({ data, index });
+        }}
+        onRowDoubleClick={(data, index) => {
+          setEditingClient({ ...data, index });
+        }}
+      />
+      <Pagination
+        currentPage={currentPage}
+        totalPages={Math.ceil(tableData.length / 10)}
+        totalItems={tableData.length}
+        itemsPerPage={10}
+        onPageChange={setCurrentPage}
+        itemLabel="clients"
+      />
+    </>
   );
 };
 
