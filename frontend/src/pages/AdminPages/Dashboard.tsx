@@ -1,19 +1,11 @@
 import { useState } from 'react';
 
-interface Client {
-  name: string;
-  poc: string;
-  email: string;
-  postLimit: string;
-  expiredDate: string;
-}
-
 interface ClientWithIndex extends Client {
   index: number;
 }
 
 const Dashboard = () => {
-  const [activeMenu, setActiveMenu] = useState<string>('Articles');
+  const [activeMenu, setActiveMenu] = useState<string>('My Clients');
 
   return (
     <div className="flex h-full w-full bg-white">
@@ -213,79 +205,7 @@ const MyClients = () => {
         </div>
       </div>
 
-      <div className="overflow-x-auto rounded-lg border border-gray-200 shadow-2xl">
-        <table className="min-w-full divide-y-2 divide-gray-200">
-          <thead className="rounded-lg bg-[#aec2d1] text-left">
-            <tr>
-              {tableHead.map((head) => (
-                <th
-                  key={head}
-                  className="px-3 py-2 text-base font-semibold tracking-wide whitespace-nowrap text-[#3a4b66]"
-                >
-                  {head}
-                </th>
-              ))}
-            </tr>
-          </thead>
-
-          <tbody className="divide-y divide-gray-200">
-            {currentClients.map((client, idx) => {
-              const actualIdx = startIdx + idx;
-              const status = getStatus(client.expiredDate);
-              const remainingDays = getRemainingDays(client.expiredDate);
-
-              return (
-                <tr
-                  key={actualIdx}
-                  className="cursor-pointer text-gray-900 transition-colors hover:bg-gray-50"
-                  onDoubleClick={() => handleRowDoubleClick(client, actualIdx)}
-                >
-                  <td className="px-3 py-2 text-[14px] font-semibold tracking-wide whitespace-nowrap text-[#3a4b66]">
-                    {client.name}
-                  </td>
-                  <td className="px-3 py-2 text-[14px] font-semibold tracking-wide whitespace-nowrap text-[#3a4b66]">
-                    {client.poc}
-                  </td>
-                  <td className="px-3 py-2 text-[14px] font-semibold tracking-wide whitespace-nowrap text-[#3a4b66]">
-                    {client.email}
-                  </td>
-                  <td className="px-3 py-2 text-[14px] font-semibold tracking-wide whitespace-nowrap text-[#3a4b66]">
-                    {client.postLimit}
-                  </td>
-                  <td className="px-3 py-2 text-[14px] font-semibold tracking-wide whitespace-nowrap text-[#3a4b66]">
-                    {client.expiredDate}
-                  </td>
-                  <td className="px-3 py-2 text-[14px] font-semibold tracking-wide whitespace-nowrap">
-                    <span
-                      className={`rounded-full px-2 py-1 text-xs ${
-                        status === 'Active' ? 'bg-green-100 text-green-700' : 'bg-red-100 text-red-700'
-                      }`}
-                    >
-                      {status}
-                    </span>
-                  </td>
-                  <td className="px-3 py-2 text-[14px] font-semibold tracking-wide whitespace-nowrap text-[#3a4b66]">
-                    {remainingDays}
-                  </td>
-                  <td className="px-3 py-2 text-[14px] font-semibold tracking-wide whitespace-nowrap">
-                    <button
-                      onClick={(e) => {
-                        e.stopPropagation();
-                        handleDelete(actualIdx);
-                        setCurrentPage(1);
-                      }}
-                      className="text-red-600 transition-colors hover:text-red-800"
-                      title="Delete client"
-                    >
-                      🗑️
-                    </button>
-                  </td>
-                </tr>
-              );
-            })}
-          </tbody>
-        </table>
-      </div>
+      <ClientsTable setEditingClient={setEditingClient} />
 
       {/* Pagination */}
       <div className="mt-4 flex items-center justify-between">
@@ -482,6 +402,7 @@ const ClientForm = ({ client, onChange, onSubmit, onCancel, submitLabel }: Clien
 };
 
 import React from 'react';
+import ClientsTable, { type Client } from './ClientSection/ClientsTable';
 
 interface SidebarMenuItem {
   name: string;
@@ -495,7 +416,7 @@ const sidebarMenu: SidebarMenuItem[] = [
   { name: 'Logout', icon: '🔒 ' },
 ];
 
-const initialClients: Client[] = [
+export const initialClients: Client[] = [
   {
     name: 'Nandor the Relentless',
     poc: 'User 1',
