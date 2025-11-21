@@ -7,10 +7,10 @@ interface SidebarMenuItem {
 }
 
 export const sidebarMenu: SidebarMenuItem[] = [
-  { name: 'Articles', icon: '📄' },
+  { name: 'Advertisement', icon: '📄' },
   { name: 'My Clients', icon: '👥' },
   { name: 'Users', icon: '🧑' },
-  { name: 'Logout', icon: '🔒 ' },
+  { name: 'Logout', icon: '🔒' },
 ];
 
 export const initialClients: Client[] = [
