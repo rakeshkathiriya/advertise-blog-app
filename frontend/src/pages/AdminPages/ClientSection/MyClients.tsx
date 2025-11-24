@@ -36,11 +36,11 @@ const MyClients = () => {
 
   return (
     <div className="h-full w-full">
-      <div className="mb-6">
-        <h2 className="mb-2 text-2xl font-bold text-[#3a4b66] italic underline underline-offset-8">
+      <div className="mx-auto mb-6">
+        <h2 className="mb-2 text-center text-2xl font-bold text-[#3a4b66]/90 italic underline underline-offset-8">
           Client Management
         </h2>
-        <p className="text-sm text-[#3a4b66]">
+        <p className="mx-auto max-w-3xl text-center text-sm font-semibold text-[#3a4b66]/70">
           Manage your client subscriptions and track expiration dates. Monitor active subscriptions, view remaining
           days, and maintain up-to-date client information. Double-click on any row to edit client details.
         </p>
