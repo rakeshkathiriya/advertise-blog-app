@@ -55,10 +55,6 @@ const ForEverSubscriptionUsersTable = ({
       accessor: 'email',
     },
     {
-      label: 'Email',
-      accessor: 'email',
-    },
-    {
       label: 'Forever Subscribe',
       render: (data) => (data.foreEverSubscribe ? 'Yes' : 'No'),
     },

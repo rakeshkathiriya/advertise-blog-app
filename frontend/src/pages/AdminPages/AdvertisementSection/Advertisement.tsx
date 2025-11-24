@@ -65,7 +65,7 @@ function Advertisement() {
             }}
             onSubmit={handleAddClient}
             onCancel={() => setShowAddModal(false)}
-            submitLabel="Add Client"
+            submitLabel="Save"
           />
         </Modal>
       )}
