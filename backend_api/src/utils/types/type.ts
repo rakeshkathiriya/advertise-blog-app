@@ -1,5 +1,3 @@
-import { Request } from 'express';
-
 // --------------------------------------
 // User Interface (TypeScript typings)
 // --------------------------------------
@@ -18,6 +16,14 @@ export interface IUser {
   updatedAt: Date;
 }
 
+export interface Post {
+  image: string;
+  description: string;
+  uploadOnFacebook: boolean;
+  uploadOnInstagram: boolean;
+  fbPostId: string;
+  igPostId: string;
+}
 export interface FacebookLoginPayload {
   firstname: string;
   lastname: string;
@@ -42,4 +48,5 @@ export interface RequestWithUser extends Request {
 export interface PassportFacebookResult {
   user: IUser;
   token: string;
+  facebookAccessToken: string;
 }

@@ -4,7 +4,7 @@ import type { AxiosError, AxiosInstance, AxiosResponse } from 'axios';
 
 const api: AxiosInstance = axios.create({
   baseURL: 'http://localhost:8000/aba/',
-  timeout: 3000,
+  timeout: 15000,
   headers: { 'Content-Type': 'application/json' },
 });
 

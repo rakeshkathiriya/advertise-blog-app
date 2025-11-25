@@ -16,7 +16,7 @@ const SignUpPage = () => {
     email: '',
     password: '',
     role: 'User',
-    isActive: true,
+    isActive: false,
   });
 
   const { isPending: resRegisterPending, mutate: resRegisterMutate } = useUserRegistration();

@@ -17,10 +17,7 @@ export const LogoutButton = () => {
 
         // Clear Redux
         dispatch(logoutUser());
-
-        // Clear redux-persist
-        globalThis.localStorage?.removeItem('persist:auth');
-        localStorage.removeItem('accessToken');
+        localStorage.clear();
         // Redirect
         navigate('/login');
       },

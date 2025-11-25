@@ -10,8 +10,6 @@ const AdminLayout = lazy(() => import('../layout/adminLayout/AdminLayout'));
 const ArticlePage = lazy(() => import('../pages/Article'));
 const BlogPage = lazy(() => import('../pages/Blog'));
 const LoginPage = lazy(() => import('../components/common/Login'));
-const User = lazy(() => import('../pages/User'));
-const Post = lazy(() => import('../pages/Post'));
 const SignUpPage = lazy(() => import('../components/common/SignUp'));
 
 const route = createBrowserRouter([
@@ -41,10 +39,7 @@ const route = createBrowserRouter([
       {
         path: '/aba-admin',
         element: <AdminLayout />,
-        children: [
-          { index: true, element: <Post /> },
-          { path: 'user', element: <User /> },
-        ],
+        children: [],
       },
     ],
   },
