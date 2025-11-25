@@ -12,6 +12,9 @@ const BlogPage = lazy(() => import('../pages/Blog'));
 const LoginPage = lazy(() => import('../components/common/Login'));
 const SignUpPage = lazy(() => import('../components/common/SignUp'));
 
+// Admin Pages
+const AdminDashboardPage = lazy(() => import('../pages/AdminPages/Dashboard'));
+
 const route = createBrowserRouter([
   {
     element: <ProtectedRoute />,
@@ -39,7 +42,7 @@ const route = createBrowserRouter([
       {
         path: '/aba-admin',
         element: <AdminLayout />,
-        children: [],
+        children: [{ index: true, element: <AdminDashboardPage /> }],
       },
     ],
   },

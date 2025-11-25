@@ -34,3 +34,18 @@ body {
   background: var(--primary);
   border-radius: 10px;
 }
+
+.selectedRow {
+  user-select: none;
+  background-color: rgb(96 165 250 / var(--tw-bg-opacity, 1)) !important;
+}
+
+.selectedRow td {
+  color: white !important;
+}
+
+.selectedRow:hover {
+  user-select: none;
+  background-color: rgb(96 165 250 / var(--tw-bg-opacity, 1)) !important;
+  color: white !important;
+}
