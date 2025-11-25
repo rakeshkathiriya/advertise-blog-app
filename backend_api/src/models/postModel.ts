@@ -25,6 +25,10 @@ const postSchema: Schema<Post> = new Schema(
     igPostId: {
       type: String,
     },
+    client: {
+      type: mongoose.Schema.Types.ObjectId,
+      ref: 'Client',
+    },
   },
   { timestamps: true }
 );

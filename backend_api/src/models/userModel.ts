@@ -36,16 +36,24 @@ const userSchema: Schema<IUser> = new Schema(
       enum: ['Admin', 'User'],
       default: 'User',
     },
-    isActive: {
+    isSubscribed: {
       type: Boolean,
       default: false,
     },
-
-    facebookId: { type: String, unique: true, sparse: true },
-    facebookAccessToken: String,
-
-    facebookPageId: String,
-    instagramBusinessAccountId: String,
+    facebookId: {
+      type: String,
+      unique: true,
+      sparse: true,
+    },
+    facebookAccessToken: {
+      type: String,
+    },
+    facebookPageId: {
+      type: String,
+    },
+    instagramBusinessAccountId: {
+      type: String,
+    },
   },
   { timestamps: true }
 );

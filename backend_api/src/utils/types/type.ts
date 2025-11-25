@@ -1,5 +1,8 @@
 // --------------------------------------
 // User Interface (TypeScript typings)
+
+import mongoose from 'mongoose';
+
 // --------------------------------------
 export interface IUser {
   firstname: string;
@@ -11,19 +14,40 @@ export interface IUser {
   facebookAccessToken?: string | null;
   facebookPageId?: string | null;
   instagramBusinessAccountId?: string | null;
-  isActive?: boolean;
+  isSubscribed?: boolean;
   createdAt: Date;
   updatedAt: Date;
 }
 
 export interface Post {
-  image: string;
+  fileBuffer: Buffer;
+  image?: string;
   description: string;
   uploadOnFacebook: boolean;
   uploadOnInstagram: boolean;
   fbPostId: string;
   igPostId: string;
+  client: mongoose.Schema.Types.ObjectId;
 }
+
+export interface Client {
+  name: string;
+  poc: string;
+  contact: string;
+  email: string;
+  expiredDate?: Date | null;
+  postLimit: number;
+  posts?: mongoose.Types.ObjectId[];
+}
+
+export interface ClientUpdate {
+  poc: string;
+  contact: string;
+  email: string;
+  expiredDate: Date;
+  postLimit: number;
+}
+
 export interface FacebookLoginPayload {
   firstname: string;
   lastname: string;
