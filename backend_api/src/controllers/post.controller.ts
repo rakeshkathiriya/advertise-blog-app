@@ -1,49 +1,61 @@
 import { NextFunction, Request, Response } from 'express';
-import { handlePostCreation } from '../services/post.service';
+import { deleteAdvertiseService, getAllAdvertiseService, handlePostCreation } from '../services/post.service';
 import { Post } from '../utils/types/type';
 
-export const createPost = async (req: Request, res: Response, next: NextFunction) => {
+export const createAdvertise = async (req: Request, res: Response, next: NextFunction) => {
   try {
-    const {
-      image,
-      description,
-      uploadOnFacebook = false,
-      uploadOnInstagram = false,
-      fbPostId = null,
-      igPostId = null,
-    } = req.body;
-
-    if (!image) {
+    if (!req.file) {
       return res.status(400).json({ status: false, message: 'Image is required' });
     }
+    const { description, fbPostId = null, igPostId = null } = req.body;
 
     const data: Post = {
-      image,
+      fileBuffer: req.file.buffer,
       description,
-      uploadOnFacebook,
-      uploadOnInstagram,
+      uploadOnFacebook: req.body.uploadOnFacebook === 'true',
+      uploadOnInstagram: req.body.uploadOnInstagram === 'true',
       fbPostId,
       igPostId,
+      client: req.body.client,
     };
 
     // console.log('Data In A Post Controller', data);
     const result = await handlePostCreation(data);
 
-    // Handle response based on whether we have errors
-    // if (result.errors && result.errors.length > 0) {
-    //   return res.status(207).json({
-    //     status: 'partial',
-    //     message: 'Post created with some errors',
-    //     post: result.post,
-    //     errors: result.errors,
-    //     success: result.success,
-    //   });
-    // }
-
     res.status(201).json({
       status: true,
       message: 'Post created successfully',
       data: result,
+    });
+  } catch (error) {
+    next(error);
+  }
+};
+
+export const getAllAdvertise = async (req: Request, res: Response, next: NextFunction) => {
+  try {
+    const posts = await getAllAdvertiseService();
+
+    res.status(200).json({
+      status: true,
+      message: 'Posts fetched successfully',
+      data: posts,
+    });
+  } catch (error) {
+    next(error);
+  }
+};
+
+export const deleteAdvertise = async (req: Request, res: Response, next: NextFunction) => {
+  try {
+    const { id } = req.params;
+
+    const deleteAdd = await deleteAdvertiseService(id);
+
+    res.status(200).json({
+      status: true,
+      message: 'Advertise deleted successfully',
+      data: deleteAdd,
     });
   } catch (error) {
     next(error);
