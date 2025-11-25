@@ -85,7 +85,7 @@ const InteractiveFlipBook: React.FC = () => {
           maxShadowOpacity: 0.5,
           drawShadow: true,
           showCover: isShowCover,
-          flippingTime: 1500,
+          flippingTime: 1000,
           mobileScrollSupport: true,
           onInit: handleFlipBookInit,
           onFlip: handlePageFlip,

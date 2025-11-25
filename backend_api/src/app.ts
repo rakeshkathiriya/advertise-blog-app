@@ -40,6 +40,12 @@ app.use(
   })
 );
 
+// app.use((req, res, next) => {
+//   console.log('📌 Incoming Request:', req.method, req.url);
+//   console.log('📌 Headers:', req.headers);
+//   next();
+// });
+
 app.get('/user', authMiddleware, isAdmin, (req: Request, res: Response) => {
   if (!req.user) {
     return res.status(401).json({ message: 'User not found in request.' });

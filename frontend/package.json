@@ -22,6 +22,7 @@
     "formik": "^2.4.9",
     "framer-motion": "^12.23.24",
     "jwt-decode": "^4.0.0",
+    "lucide-react": "^0.554.0",
     "prettier": "^3.6.2",
     "prettier-plugin-tailwindcss": "^0.7.1",
     "react": "^19.2.0",

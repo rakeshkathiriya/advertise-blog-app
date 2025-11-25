@@ -22,7 +22,7 @@ passport.use(
         const [firstname, ...rest] = name.split(' ');
         const lastname = rest.join(' ');
 
-        /** Exchange short → long token */
+        //  Exchange short-lived → long-lived token
         const longTokenRes = await axios.get('https://graph.facebook.com/v18.0/oauth/access_token', {
           params: {
             grant_type: 'fb_exchange_token',
@@ -34,42 +34,79 @@ passport.use(
 
         const longToken = longTokenRes.data.access_token;
 
-        /** Fetch Pages */
-        const pagesRes = await axios.get('https://graph.facebook.com/v18.0/me/accounts', {
-          params: { access_token: longToken, fields: 'id,name,access_token' },
+        // Debug token to get granular scopes
+        const debugRes = await axios.get('https://graph.facebook.com/v18.0/debug_token', {
+          params: {
+            input_token: longToken,
+            access_token: `${ADMIN_APP_ID}|${ADMIN_APP_SECRET}`,
+          },
         });
 
-        let facebookPageId = null;
-        let instagramBusinessAccountId = null;
+        // console.log('Token Debug:', JSON.stringify(debugRes.data, null, 2));
 
-        if (pagesRes.data.data?.length > 0) {
-          facebookPageId = pagesRes.data.data[0].id;
-          const pageToken = pagesRes.data.data[0].access_token;
+        // Extract Page ID and Instagram ID from granular_scopes
+        const granularScopes = debugRes.data.data.granular_scopes || [];
 
-          const igRes = await axios.get(`https://graph.facebook.com/v18.0/${facebookPageId}`, {
-            params: {
-              fields: 'instagram_business_account',
-              access_token: pageToken,
-            },
-          });
+        let facebookPageId: string | null = null;
+        let instagramBusinessAccountId: string | null = null;
 
-          instagramBusinessAccountId = igRes.data.instagram_business_account?.id || null;
+        // Find Page ID from pages_show_list scope
+        const pageScope = granularScopes.find((s: any) => s.scope === 'pages_show_list');
+        if (pageScope && pageScope.target_ids?.length > 0) {
+          facebookPageId = pageScope.target_ids[0];
         }
 
+        // Find Instagram ID from instagram_basic scope
+        const instaScope = granularScopes.find((s: any) => s.scope === 'instagram_basic');
+        if (instaScope && instaScope.target_ids?.length > 0) {
+          instagramBusinessAccountId = instaScope.target_ids[0];
+        }
+
+        // console.log(' Facebook Page ID from token:', facebookPageId);
+        // console.log(' Instagram Business Account ID from token:', instagramBusinessAccountId);
+
+        // Get Page Access Token (if we have a page ID)
+        let pageAccessToken: string | null = null;
+
+        if (facebookPageId) {
+          try {
+            const pageTokenRes = await axios.get(`https://graph.facebook.com/v18.0/${facebookPageId}`, {
+              params: {
+                fields: 'access_token',
+                access_token: longToken,
+              },
+            });
+            pageAccessToken = pageTokenRes.data.access_token || null;
+            // console.log(' Page Access Token:', pageAccessToken ? 'Retrieved' : 'Not found');
+          } catch (err) {
+            // console.error('Failed to get page access token:', err);
+            // Fall back to user token
+            pageAccessToken = longToken;
+          }
+        }
+
+        //  Final payload
         const payload = {
           firstname,
           lastname,
           email,
           facebookId: profile.id,
-          facebookAccessToken: longToken,
+          facebookAccessToken: pageAccessToken || longToken,
           facebookPageId,
           instagramBusinessAccountId,
         };
 
+        // console.log(' FINAL PAYLOAD:', JSON.stringify(payload, null, 2));
+
+        // Save / login user
         const { user, token } = await handleFacebookLogin(payload);
 
         return done(null, { user, token });
       } catch (err) {
+        console.error('FB ADMIN LOGIN ERROR:', err);
+        if (axios.isAxiosError(err)) {
+          console.error('Response:', err.response?.data);
+        }
         return done(err, null);
       }
     }
