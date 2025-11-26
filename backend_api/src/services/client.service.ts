@@ -3,24 +3,20 @@ import { clientModel } from '../models/clientModel';
 import { Client, ClientUpdate } from '../utils/types/type';
 
 export const handleClientCreation = async (data: Client) => {
-  try {
-    if (!data.name || !data.poc || !data.contact || !data.email || !data.postLimit) {
-      throw createHttpError.BadRequest('All field are Required');
-    }
-
-    const client = await clientModel.create({
-      name: data.name,
-      poc: data.poc,
-      email: data.email,
-      contact: data.contact,
-      postLimit: data.postLimit,
-      expiredDate: data.expiredDate,
-    });
-
-    return client;
-  } catch (error) {
-    throw createHttpError.InternalServerError('Failed to Create A Client');
+  if (!data.name || !data.poc || !data.contact || !data.email || !data.postLimit) {
+    throw createHttpError.BadRequest('All field are Required');
   }
+
+  const client = await clientModel.create({
+    name: data.name,
+    poc: data.poc,
+    email: data.email,
+    contact: data.contact,
+    postLimit: data.postLimit,
+    expiredDate: data.expiredDate,
+  });
+
+  return client;
 };
 
 export const getAllClientService = async (filters: {

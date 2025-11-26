@@ -1,36 +1,14 @@
 import { useState } from 'react';
 import Modal from '../../../components/AdminPanel/Modal';
-import { initialClients } from '../../../utils/staticData/staticData';
 import ClientForm from './ClientForm';
-import ClientsTable, { type Client, type ClientWithIndex } from './ClientsTable';
+import ClientsTable, { type ClientWithIndex } from './ClientsTable';
 
 const MyClients = () => {
-  const [clients, setClients] = useState<Client[]>(initialClients);
   const [currentPage, setCurrentPage] = useState<number>(1);
   const [editingClient, setEditingClient] = useState<ClientWithIndex | null>(null);
   const [showAddModal, setShowAddModal] = useState<boolean>(false);
   const [searchCompany, setSearchCompany] = useState<string>('');
   const [statusFilter, setStatusFilter] = useState<string>('all');
-
-  const handleSaveEdit = () => {
-    if (!editingClient) return;
-
-    const updatedClients = [...clients];
-    updatedClients[editingClient.index] = {
-      name: editingClient.name,
-      poc: editingClient.poc,
-      email: editingClient.email,
-      postLimit: editingClient.postLimit,
-      expiredDate: editingClient.expiredDate,
-    };
-    setClients(updatedClients);
-    setEditingClient(null);
-  };
-
-  const handleAddClient = (newClient: Client) => {
-    setClients([...clients, newClient]);
-    setShowAddModal(false);
-  };
 
   const handleSearch = () => {};
 
@@ -89,7 +67,7 @@ const MyClients = () => {
         </div>
       </div>
 
-      <ClientsTable setEditingClient={setEditingClient} currentPage={currentPage} setCurrentPage={setCurrentPage} />
+      <ClientsTable />
 
       {/* Edit Modal */}
       {editingClient && (
@@ -97,12 +75,7 @@ const MyClients = () => {
           <h3 className="mb-4 text-center text-lg font-bold tracking-wide text-[#3a4b66] underline underline-offset-8">
             Edit Client
           </h3>
-          <ClientForm
-            client={editingClient}
-            onSubmit={handleSaveEdit}
-            onCancel={() => setEditingClient(null)}
-            submitLabel="Save Changes"
-          />
+          <ClientForm client={editingClient} onCancel={() => setEditingClient(null)} submitLabel="Save Changes" />
         </Modal>
       )}
 
@@ -119,8 +92,8 @@ const MyClients = () => {
               email: '',
               postLimit: '',
               expiredDate: '',
+              contact: '',
             }}
-            onSubmit={handleAddClient}
             onCancel={() => setShowAddModal(false)}
             submitLabel="Add Client"
           />

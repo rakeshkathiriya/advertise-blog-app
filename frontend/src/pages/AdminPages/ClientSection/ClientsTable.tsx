@@ -1,7 +1,9 @@
+import { format } from 'date-fns';
 import { memo, useEffect, useMemo, useState } from 'react';
 import { InfiniteScrollTable, type TableColumn } from '../../../components/AdminPanel/InfiniteTable';
-import Pagination from '../../../components/AdminPanel/Pagination';
-import { initialClients } from '../../../utils/staticData/staticData';
+import { useGetClientsList } from '../../../queries/adminPanel/clients.query';
+import { getRemainingDays, getStatus } from '../../../utils/dateUtils';
+import type { ClientDetails } from '../../../utils/types/clients';
 
 export interface Client {
   name: string;
@@ -9,55 +11,24 @@ export interface Client {
   email: string;
   postLimit: string;
   expiredDate: string;
+  contact: string;
 }
 
 export interface ClientWithIndex extends Client {
   index: number;
 }
 
-const ClientsTable = ({
-  setEditingClient,
-  currentPage,
-  setCurrentPage,
-}: {
-  setEditingClient: React.Dispatch<React.SetStateAction<ClientWithIndex | null>>;
-  currentPage: number;
-  setCurrentPage: React.Dispatch<React.SetStateAction<number>>;
-}) => {
+const ClientsTable = () => {
   // States
-  const [selectedRow, setSelectedRow] = useState<{ data: Client; index: number } | null>(null);
+  const [selectedRow, setSelectedRow] = useState<{ data: ClientDetails; index: number } | null>(null);
 
   // API hooks
-  //   const tableQuery = useGetTerritoryTableDetails();
+  const tableQuery = useGetClientsList();
 
   // Handlers
   const tableData = useMemo(() => {
-    return initialClients;
-  }, [initialClients]);
-
-  const parseDate = (dateStr: string): Date => {
-    const [day, month, year] = dateStr.split('/');
-    return new Date(Number(year), Number(month) - 1, Number(day));
-  };
-
-  const getRemainingDays = (expiredDate: string): string => {
-    const today = new Date();
-    today.setHours(0, 0, 0, 0);
-    const expired = parseDate(expiredDate);
-    if (expired > today) {
-      const diffTime = expired.getTime() - today.getTime();
-      const diffDays = Math.ceil(diffTime / (1000 * 60 * 60 * 24));
-      return `${diffDays} days`;
-    }
-    return '0 days';
-  };
-
-  const getStatus = (expiredDate: string): 'Active' | 'InActive' => {
-    const today = new Date();
-    today.setHours(0, 0, 0, 0);
-    const expired = parseDate(expiredDate);
-    return expired > today ? 'Active' : 'InActive';
-  };
+    return tableQuery.data?.data ?? [];
+  }, [tableQuery.data]);
 
   // Effects
   useEffect(() => {
@@ -75,7 +46,7 @@ const ClientsTable = ({
     }
   };
 
-  const columns: TableColumn<Client>[] = [
+  const columns: TableColumn<ClientDetails>[] = [
     {
       label: 'Company Name',
       accessor: 'name',
@@ -94,8 +65,22 @@ const ClientsTable = ({
       className: 'w-12!',
     },
     {
+      label: 'Ads Posted',
+      render: (data) => data.posts.length,
+      className: 'w-12!',
+    },
+    {
       label: 'S.Expired Date',
-      accessor: 'expiredDate',
+      // accessor: 'expiredDate',
+      render: (data) => {
+        const utcDate = new Date(data.expiredDate);
+
+        // convert UTC → IST
+        const istDate = new Date(utcDate.getTime() - 5.5 * 60 * 60 * 1000);
+
+        const formatted = format(istDate, 'yyyy-MM-dd | hh:mm:ss a');
+        return formatted;
+      },
     },
     {
       label: 'Status',
@@ -130,7 +115,7 @@ const ClientsTable = ({
 
   return (
     <>
-      <InfiniteScrollTable<Client>
+      <InfiniteScrollTable<ClientDetails>
         columns={columns}
         data={tableData}
         tableCaption="Client Subscriptions Table"
@@ -140,17 +125,18 @@ const ClientsTable = ({
           setSelectedRow({ data, index });
         }}
         onRowDoubleClick={(data, index) => {
-          setEditingClient({ ...data, index });
+          // setEditingClient({ ...data, index });
         }}
+        isLoading={tableQuery.isLoading}
       />
-      <Pagination
-        currentPage={currentPage}
+      {/* <Pagination
+        currentPage={0}
         totalPages={Math.ceil(tableData.length / 10)}
         totalItems={tableData.length}
         itemsPerPage={10}
         onPageChange={setCurrentPage}
         itemLabel="clients"
-      />
+      /> */}
     </>
   );
 };

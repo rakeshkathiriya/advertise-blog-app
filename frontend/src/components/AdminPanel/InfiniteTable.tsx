@@ -126,14 +126,6 @@ export function InfiniteScrollTable<T>({
       ref={containerRef}
       className={`custom-scroll custom-caption relative flex flex-col overflow-y-auto ${containerClassName}`}
     >
-      {isLoading && (
-        <div className="bg-opacity-50 absolute inset-0 z-500! flex h-full items-center justify-center bg-white">
-          {customLoader ?? (
-            <div className="h-6 w-6 animate-spin rounded-full border-4 border-blue-500 border-t-transparent"></div>
-          )}
-        </div>
-      )}
-
       <table ref={tableRef} className={`min-w-full divide-y divide-black/20 ${tableClassName}`}>
         <caption className="bg-[#aec2d1] px-3 py-2 text-base font-semibold tracking-wide text-nowrap whitespace-nowrap text-[#3a4b66]">
           {tableCaption}
@@ -226,7 +218,13 @@ export function InfiniteScrollTable<T>({
           })}
           {isLoading && (
             <tr>
-              <td colSpan={currentColumns.length} className="h-full border-none py-2 text-center"></td>
+              <td colSpan={currentColumns.length} className="h-full border-none py-2 text-center">
+                <div className="bg-opacity-50 absolute inset-0 z-500! flex h-full items-center justify-center bg-white">
+                  {customLoader ?? (
+                    <div className="h-6 w-6 animate-spin rounded-full border-4 border-blue-500 border-t-transparent"></div>
+                  )}
+                </div>
+              </td>
             </tr>
           )}
           {!isLoading && data.length === 0 && (

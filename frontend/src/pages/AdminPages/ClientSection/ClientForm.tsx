@@ -1,44 +1,92 @@
-import { useState } from 'react';
-import type { Client, ClientWithIndex } from './ClientsTable';
+import { useFormik } from 'formik';
+import { useCallback, useState } from 'react';
+import { toast } from 'react-toastify';
+import { useCreateClient } from '../../../queries/adminPanel/clients.query';
+import type { Client } from '../../../utils/types/clients';
 
 interface ClientFormProps {
-  client: Client | ClientWithIndex;
-  onSubmit: (client: Client) => void;
+  client: Client;
   onCancel: () => void;
   submitLabel: string;
 }
 
-const ClientForm = ({ client, onSubmit, onCancel, submitLabel }: ClientFormProps) => {
-  const [formData, setFormData] = useState<Client>({
+const ClientForm = ({ client, onCancel, submitLabel }: ClientFormProps) => {
+  const [initialValues] = useState<Client>({
     name: client.name,
     poc: client.poc,
     email: client.email,
     postLimit: client.postLimit,
     expiredDate: client.expiredDate,
+    contact: client.contact,
   });
 
-  const handleSubmit = () => {
-    onSubmit(formData);
-  };
+  const { mutate, isPending } = useCreateClient();
+
+  const formik = useFormik({
+    enableReinitialize: true,
+    initialValues: { ...initialValues },
+    // validationSchema: loginSchema,
+    validateOnBlur: true,
+    validateOnChange: true,
+    onSubmit: (val) => {
+      console.log('Submitting client form with values:', val);
+      handleClientSubmit(val);
+    },
+  });
+
+  const { values, handleSubmit, setFieldValue, resetForm } = formik;
+
+  const handleClientSubmit = useCallback(async (payload: Client) => {
+    const modifyPayload = {
+      ...payload,
+      postLimit: Number(payload.postLimit),
+      expiredDate: new Date(payload.expiredDate),
+    };
+    mutate(modifyPayload, {
+      onSuccess: (data) => {
+        if (data?.status) {
+          toast.success(data?.message ?? 'Client created successfully');
+          resetForm();
+          onCancel();
+        }
+      },
+      onError: (error) => {
+        console.error('Error:', error);
+        toast.error(error.message ?? 'Failed to create a client');
+      },
+    });
+  }, []);
 
   return (
-    <div className="space-y-3">
-      <div>
+    <form onSubmit={handleSubmit} className="space-y-3">
+      <div className="space-y-1">
         <label className="mb-1 block text-sm font-semibold text-[#3a4b66]">Company Name</label>
         <input
           type="text"
-          disabled
-          value={formData.name}
-          onChange={(e) => setFormData({ ...formData, name: e.target.value })}
-          className="w-full cursor-not-allowed rounded-lg border border-gray-300 bg-gray-300 px-3 py-2 text-sm font-semibold text-gray-600 focus:ring-2 focus:ring-[#3a4b66] focus:outline-none"
+          name="name"
+          disabled={submitLabel.includes('Add') ? false : true}
+          value={values.name}
+          onChange={(e) => setFieldValue('name', e.target.value)}
+          className={`${submitLabel.includes('Add') ? 'cursor-auto bg-white' : 'cursor-not-allowed bg-gray-300'} w-full rounded-lg border border-gray-300 px-3 py-2 text-sm font-semibold text-gray-600 focus:ring-2 focus:ring-[#3a4b66] focus:outline-none`}
         />
       </div>
       <div>
         <label className="mb-1 block text-sm font-semibold text-[#3a4b66]">POC</label>
         <input
           type="text"
-          value={formData.poc}
-          onChange={(e) => setFormData({ ...formData, poc: e.target.value })}
+          name="name"
+          value={values.poc}
+          onChange={(e) => setFieldValue('poc', e.target.value)}
+          className="w-full rounded-lg border border-gray-300 px-3 py-2 text-sm font-semibold text-gray-600 focus:ring-2 focus:ring-[#3a4b66] focus:outline-none"
+        />
+      </div>
+      <div>
+        <label className="mb-1 block text-sm font-semibold text-[#3a4b66]">Mobile No.</label>
+        <input
+          type="tel"
+          name="contact"
+          value={values.contact}
+          onChange={(e) => setFieldValue('contact', e.target.value)}
           className="w-full rounded-lg border border-gray-300 px-3 py-2 text-sm font-semibold text-gray-600 focus:ring-2 focus:ring-[#3a4b66] focus:outline-none"
         />
       </div>
@@ -46,17 +94,19 @@ const ClientForm = ({ client, onSubmit, onCancel, submitLabel }: ClientFormProps
         <label className="mb-1 block text-sm font-semibold text-[#3a4b66]">Email</label>
         <input
           type="email"
-          value={formData.email}
-          onChange={(e) => setFormData({ ...formData, email: e.target.value })}
+          name="email"
+          value={values.email}
+          onChange={(e) => setFieldValue('email', e.target.value)}
           className="w-full rounded-lg border border-gray-300 px-3 py-2 text-sm font-semibold text-gray-600 focus:ring-2 focus:ring-[#3a4b66] focus:outline-none"
         />
       </div>
       <div>
         <label className="mb-1 block text-sm font-semibold text-[#3a4b66]">Post Limit</label>
         <input
-          type="text"
-          value={formData.postLimit}
-          onChange={(e) => setFormData({ ...formData, postLimit: e.target.value })}
+          type="number"
+          name="postLimit"
+          value={values.postLimit}
+          onChange={(e) => setFieldValue('postLimit', e.target.value)}
           className="w-full rounded-lg border border-gray-300 px-3 py-2 text-sm font-semibold text-gray-600 focus:ring-2 focus:ring-[#3a4b66] focus:outline-none"
         />
       </div>
@@ -64,27 +114,22 @@ const ClientForm = ({ client, onSubmit, onCancel, submitLabel }: ClientFormProps
         <label className="mb-1 block text-sm font-semibold text-[#3a4b66]">Expiration Date (DD/MM/YYYY)</label>
         <input
           type="date"
-          value={formData.expiredDate.split('/').reverse().join('-')}
-          onChange={(e) => setFormData({ ...formData, expiredDate: e.target.value.split('-').reverse().join('/') })}
+          name="expiredDate"
+          value={values.expiredDate}
+          onChange={(e) => setFieldValue('expiredDate', e.target.value)}
           placeholder="31/12/2025"
           className="w-full rounded-lg border border-gray-300 px-3 py-2 text-sm font-semibold text-gray-600 focus:ring-2 focus:ring-[#3a4b66] focus:outline-none"
         />
       </div>
       <div className="flex gap-3 pt-4">
         <button
-          onClick={handleSubmit}
+          type="submit"
           className="text-14 flex flex-1 items-center justify-center gap-2 rounded-full bg-[#aec2d1] px-4 py-2 font-semibold tracking-wide text-[#3a4b66] transition-all duration-500 ease-in-out hover:scale-105 hover:transform"
         >
-          {submitLabel}
-        </button>
-        <button
-          onClick={onCancel}
-          className="text-14 flex flex-1 items-center justify-center gap-2 rounded-full bg-[#aec2d1] px-4 py-2 font-semibold tracking-wide text-[#3a4b66] transition-all duration-500 ease-in-out hover:scale-105 hover:transform"
-        >
-          Cancel
+          {isPending ? 'Loading...' : submitLabel}
         </button>
       </div>
-    </div>
+    </form>
   );
 };
 
