@@ -3,7 +3,7 @@ import { useCallback, useState } from 'react';
 import { toast } from 'react-toastify';
 import Modal from '../../../components/AdminPanel/Modal';
 import DeletePopup from '../../../components/common/DeletePopup';
-import { useDeleteAdvertise, useGetAllAdvertise } from '../../../queries/adminPanel/clients.query';
+import { useDeleteAdvertise, useGetAllAdvertise } from '../../../queries/adminPanel/advertise.query';
 import AdvertisementForm from './AdvertisementForm';
 // <--- ADD THIS IMPORT
 

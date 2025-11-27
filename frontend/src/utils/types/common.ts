@@ -8,6 +8,12 @@ export interface CommonResponse {
   status: boolean;
   message: string;
   accessToken?: string;
+  pagination?: {
+    page: number;
+    limit: number;
+    totalRecords: number;
+    totalPages: number;
+  };
 }
 
 export type CommonApiError<T = unknown> = AxiosError<{

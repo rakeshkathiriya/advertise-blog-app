@@ -23,85 +23,131 @@ export const getAllClientService = async (filters: {
   name?: string;
   status?: string; // active | expired
   postStatus?: string; // available | full
+  page?: number | string;
 }) => {
+  const limit = 10;
+  const page = filters.page ? Number(filters.page) : 1;
+  const skip = (page - 1) * limit;
+
   const now = new Date();
+  const todayStart = new Date(now.getFullYear(), now.getMonth(), now.getDate()); // 00:00:00 today
 
-  const query: any = {};
+  // ------------ MATCH STAGE CONDITIONS ------------
+  const match: any = {};
 
-  // 1. Filter by name (case-insensitive)
+  // Name filter
   if (filters.name) {
-    query.name = { $regex: filters.name, $options: 'i' };
+    match.name = { $regex: filters.name, $options: 'i' };
   }
 
-  // 2. Filter by expired / active
+  // Status filter
   if (filters.status === 'active') {
-    query.expiredDate = { $gt: now };
+    match.expiredDate = { $gt: todayStart };
   }
   if (filters.status === 'expired') {
-    query.expiredDate = { $lte: now };
+    match.expiredDate = { $lte: todayStart };
   }
 
-  // 3. Start building Mongoose query
-  let mongoQuery = clientModel.find(query).populate('posts');
+  // ------------ AGGREGATION PIPELINE ------------
+  const basePipeline: any[] = [
+    { $match: match },
 
-  // 4. Filter by posts usage vs limit
+    // Load posts array (same as populate)
+    {
+      $lookup: {
+        from: 'posts',
+        localField: 'posts',
+        foreignField: '_id',
+        as: 'posts',
+      },
+    },
+
+    // Add postCount field
+    {
+      $addFields: {
+        postCount: { $size: '$posts' },
+      },
+    },
+  ];
+
+  // postStatus filter using postCount
   if (filters.postStatus === 'available') {
-    mongoQuery = mongoQuery.where({
-      $expr: { $lt: [{ $size: '$posts' }, '$postLimit'] },
+    basePipeline.push({
+      $match: {
+        $expr: { $lt: ['$postCount', '$postLimit'] },
+      },
     });
   }
 
   if (filters.postStatus === 'full') {
-    mongoQuery = mongoQuery.where({
-      $expr: { $gte: [{ $size: '$posts' }, '$postLimit'] },
+    basePipeline.push({
+      $match: {
+        $expr: { $gte: ['$postCount', '$postLimit'] },
+      },
     });
   }
 
-  return await mongoQuery.exec();
+  // Count stage
+  const countPipeline = [...basePipeline, { $count: 'totalRecords' }];
+  const countResult = await clientModel.aggregate(countPipeline);
+
+  const totalRecords = countResult.length > 0 ? countResult[0].totalRecords : 0;
+  const totalPages = Math.ceil(totalRecords / limit);
+
+  // Pagination stage
+  const dataPipeline = [...basePipeline, { $sort: { createdAt: -1 } }, { $skip: skip }, { $limit: limit }];
+
+  const data = await clientModel.aggregate(dataPipeline);
+
+  return {
+    page,
+    limit,
+    totalRecords,
+    totalPages,
+    data,
+  };
 };
 
 export const getFilteredClientService = async () => {
-  const now = new Date();
+  try {
+    const now = new Date();
 
-  const clients = await clientModel
-    .find({
-      expiredDate: { $gt: now },
-      $expr: {
-        $lt: [{ $size: '$posts' }, '$postLimit'],
-      },
-    })
-    .select('name _id');
+    const clients = await clientModel
+      .find({
+        expiredDate: { $gt: now },
+        $expr: {
+          $lt: [{ $size: '$posts' }, '$postLimit'],
+        },
+      })
+      .select('name _id');
 
-  return clients;
+    return clients;
+  } catch (error) {
+    throw createHttpError.InternalServerError('Failed to get filtered Clients');
+  }
 };
 
 export const updatedClientService = async (id: string, data: ClientUpdate) => {
-  const client = await clientModel.findById(id);
+  try {
+    const updatedClient = await clientModel.findByIdAndUpdate(id, {
+      poc: data.poc,
+      email: data.email,
+      contact: data.contact,
+      postLimit: data.postLimit,
+      expiredDate: data.expiredDate,
+    });
 
-  if (!client) {
-    throw createHttpError.NotFound('Client Not Found');
+    return updatedClient;
+  } catch (error) {
+    throw createHttpError.InternalServerError('Failed To Update the Client');
   }
-  const updatedClient = await clientModel.findByIdAndUpdate(id, {
-    poc: data.poc,
-    email: data.email,
-    contact: data.contact,
-    postLimit: data.postLimit,
-    expiredDate: data.expiredDate,
-  });
-
-  return updatedClient;
 };
 
 export const deleteClientService = async (id: string) => {
-  const client = await clientModel.findById(id);
-  if (!client) {
-    throw createHttpError.NotFound('Client Not Found');
-  }
-  if (client?.posts?.length === 0) {
+  try {
     const deletedClient = await clientModel.findByIdAndDelete(id);
     return deletedClient;
-  } else {
-    console.log('Deleted Client', client);
-    throw createHttpError.BadRequest('Unable to Delete This Client Because Client Has A Multiple Advertise ');
+  } catch (error) {
+    throw createHttpError.InternalServerError('Failed To Delete the Client');
   }
 };

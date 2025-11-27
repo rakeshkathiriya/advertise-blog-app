@@ -1,7 +1,13 @@
-import { memo, useEffect, useMemo, useState } from 'react';
+import { format } from 'date-fns';
+import { Trash2 } from 'lucide-react';
+import { memo, useCallback, useEffect, useMemo, useState } from 'react';
+import { toast } from 'react-toastify';
 import { InfiniteScrollTable, type TableColumn } from '../../../components/AdminPanel/InfiniteTable';
 import Pagination from '../../../components/AdminPanel/Pagination';
-import { initialClients } from '../../../utils/staticData/staticData';
+import DeletePopup from '../../../components/common/DeletePopup';
+import { useDeleteClient, useGetClientsList } from '../../../queries/adminPanel/clients.query';
+import { getRemainingDays, getStatus } from '../../../utils/dateUtils';
+import type { ClientDetails } from '../../../utils/types/clients';
 
 export interface Client {
   name: string;
@@ -9,6 +15,7 @@ export interface Client {
   email: string;
   postLimit: string;
   expiredDate: string;
+  contact: string;
 }
 
 export interface ClientWithIndex extends Client {
@@ -16,48 +23,41 @@ export interface ClientWithIndex extends Client {
 }
 
 const ClientsTable = ({
+  canRefresh,
+  setCanRefresh,
   setEditingClient,
-  currentPage,
-  setCurrentPage,
+  searchFilter,
 }: {
-  setEditingClient: React.Dispatch<React.SetStateAction<ClientWithIndex | null>>;
-  currentPage: number;
-  setCurrentPage: React.Dispatch<React.SetStateAction<number>>;
+  canRefresh: boolean;
+  setCanRefresh: React.Dispatch<React.SetStateAction<boolean>>;
+  setEditingClient: React.Dispatch<React.SetStateAction<ClientDetails | null>>;
+  searchFilter: {
+    name: string;
+    status: string;
+  } | null;
 }) => {
   // States
-  const [selectedRow, setSelectedRow] = useState<{ data: Client; index: number } | null>(null);
+  const [selectedRow, setSelectedRow] = useState<{ data: ClientDetails; index: number } | null>(null);
+  const [showDeletePopup, setShowDeletePopup] = useState(false);
+  const [selectedPostId, setSelectedPostId] = useState<string | null>(null);
+  const [pageNumber, setPageNumber] = useState<number>(1);
 
   // API hooks
-  //   const tableQuery = useGetTerritoryTableDetails();
+  const tableQuery = useGetClientsList({
+    name: searchFilter?.name ?? '',
+    status: searchFilter?.status ?? 'all',
+    page: pageNumber,
+  });
+  const { mutate: deleteMutate } = useDeleteClient();
 
   // Handlers
   const tableData = useMemo(() => {
-    return initialClients;
-  }, [initialClients]);
+    return tableQuery.data?.data ?? [];
+  }, [tableQuery.data]);
 
-  const parseDate = (dateStr: string): Date => {
-    const [day, month, year] = dateStr.split('/');
-    return new Date(Number(year), Number(month) - 1, Number(day));
-  };
-
-  const getRemainingDays = (expiredDate: string): string => {
-    const today = new Date();
-    today.setHours(0, 0, 0, 0);
-    const expired = parseDate(expiredDate);
-    if (expired > today) {
-      const diffTime = expired.getTime() - today.getTime();
-      const diffDays = Math.ceil(diffTime / (1000 * 60 * 60 * 24));
-      return `${diffDays} days`;
-    }
-    return '0 days';
-  };
-
-  const getStatus = (expiredDate: string): 'Active' | 'InActive' => {
-    const today = new Date();
-    today.setHours(0, 0, 0, 0);
-    const expired = parseDate(expiredDate);
-    return expired > today ? 'Active' : 'InActive';
-  };
+  const pagination = useMemo(() => {
+    return tableQuery.data?.pagination;
+  }, [tableQuery.data]);
 
   // Effects
   useEffect(() => {
@@ -68,16 +68,41 @@ const ClientsTable = ({
     }
   }, [tableData, selectedRow]);
 
-  const handleDelete = (idx: number) => {
-    if (window.confirm('Are you sure you want to delete this client?')) {
-      tableData.splice(idx, 1);
-      alert('Client deleted successfully.');
+  useEffect(() => {
+    if (canRefresh) {
+      tableQuery.refetch();
+      setCanRefresh(false);
+      setSelectedRow(null);
+      setPageNumber(1);
     }
-  };
+  }, [canRefresh, setCanRefresh, tableQuery]);
 
-  const columns: TableColumn<Client>[] = [
+  const handleDelete = useCallback(async () => {
+    if (!selectedPostId) return;
+    deleteMutate(
+      { id: selectedPostId },
+      {
+        onSuccess: (data) => {
+          if (data?.status) {
+            toast.success(data?.message ?? 'Client deleted successfully');
+            tableQuery.refetch();
+            setShowDeletePopup(false);
+            setSelectedPostId(null);
+            setSelectedRow(null);
+            setPageNumber(1);
+          }
+        },
+        onError: (error) => {
+          console.error('Error:', error);
+          toast.error(error.message ?? 'Failed to delete a client');
+        },
+      },
+    );
+  }, [deleteMutate, tableQuery, selectedPostId]);
+
+  const columns: TableColumn<ClientDetails>[] = [
     {
-      label: 'Company Name',
+      label: 'C. Name',
       accessor: 'name',
     },
     {
@@ -89,13 +114,26 @@ const ClientsTable = ({
       accessor: 'email',
     },
     {
-      label: 'Post Limit',
+      label: 'P. Limit',
       accessor: 'postLimit',
       className: 'w-12!',
     },
     {
-      label: 'S.Expired Date',
-      accessor: 'expiredDate',
+      label: 'P. Count',
+      render: (data) => data?.posts?.length,
+      className: 'w-12!',
+    },
+    {
+      label: 'S.E. Date',
+      render: (data) => {
+        const utcDate = new Date(data.expiredDate);
+
+        // convert UTC → IST
+        const istDate = new Date(utcDate.getTime() - 5.5 * 60 * 60 * 1000);
+
+        const formatted = format(istDate, 'yyyy-MM-dd | hh:mm:ss a');
+        return formatted;
+      },
     },
     {
       label: 'Status',
@@ -108,29 +146,31 @@ const ClientsTable = ({
       },
     },
     {
-      label: 'Remaining Days',
+      label: 'R. Days',
       render: (data) => getRemainingDays(data.expiredDate) ?? 'N/A',
     },
     {
       label: 'Actions',
-      render: (_data, index) => (
-        <button
+      render: (data, index) => (
+        <span
           onClick={(e) => {
             e.stopPropagation();
-            handleDelete(index);
+            setSelectedRow({ data, index });
+            setSelectedPostId(data._id);
+            setShowDeletePopup(true);
           }}
-          className="flex w-full cursor-pointer text-red-600 transition-colors hover:text-red-800"
+          className="flex w-full cursor-pointer items-center justify-center text-red-600 hover:text-red-800"
           title="Delete client"
         >
-          🗑️
-        </button>
+          <Trash2 size={20} />
+        </span>
       ),
     },
   ];
 
   return (
     <>
-      <InfiniteScrollTable<Client>
+      <InfiniteScrollTable<ClientDetails>
         columns={columns}
         data={tableData}
         tableCaption="Client Subscriptions Table"
@@ -139,18 +179,29 @@ const ClientsTable = ({
         onRowClick={(data, index) => {
           setSelectedRow({ data, index });
         }}
-        onRowDoubleClick={(data, index) => {
-          setEditingClient({ ...data, index });
+        onRowDoubleClick={(data) => {
+          setEditingClient({ ...data });
         }}
+        isLoading={tableQuery.isLoading}
       />
       <Pagination
-        currentPage={currentPage}
-        totalPages={Math.ceil(tableData.length / 10)}
-        totalItems={tableData.length}
-        itemsPerPage={10}
-        onPageChange={setCurrentPage}
+        currentPage={pageNumber}
+        totalPages={pagination?.totalPages ?? 1}
+        totalItems={pagination?.totalRecords ?? 0}
+        itemsPerPage={pagination?.limit ?? 10}
+        onPageChange={setPageNumber}
         itemLabel="clients"
       />
+      {showDeletePopup && (
+        <DeletePopup
+          title="Delete Client ?"
+          onConfirm={handleDelete}
+          onCancel={() => {
+            setShowDeletePopup(false);
+            setSelectedPostId(null);
+          }}
+        />
+      )}
     </>
   );
 };

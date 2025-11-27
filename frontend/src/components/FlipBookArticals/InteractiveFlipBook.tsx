@@ -1,6 +1,6 @@
 import { useCallback, useEffect, useRef, useState } from 'react';
 import HTMLFlipBook from 'react-pageflip';
-import { useGetAllAdvertise } from '../../queries/adminPanel/clients.query';
+import { useGetAllAdvertise } from '../../queries/adminPanel/advertise.query';
 import FlipBookPage from './FlipBookPage';
 
 const InteractiveFlipBook: React.FC = () => {
