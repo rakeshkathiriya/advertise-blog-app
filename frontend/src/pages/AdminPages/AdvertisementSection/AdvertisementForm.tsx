@@ -65,6 +65,7 @@ const AdvertisementForm = ({
             resetForm();
             onCancel();
             refetchData();
+            clientReFetch();
           } else {
             toast.error(data.message ?? '');
           }
@@ -78,7 +79,7 @@ const AdvertisementForm = ({
     [resAdvertiseMutate, resetForm, onCancel],
   );
 
-  const { data: clientsResponse } = useClientsDDOptions();
+  const { data: clientsResponse, refetch: clientReFetch } = useClientsDDOptions();
   console.log(clientsResponse);
   return (
     <form

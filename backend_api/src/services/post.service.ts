@@ -93,12 +93,18 @@ export const handlePostCreation = async (data: Post) => {
 };
 
 export const getAllAdvertiseService = async () => {
-  const posts = await postModel.find().sort({ _id: -1 }).populate('client');
+  const posts = await postModel.find().sort({ _id: -1 }).limit(40).populate('client');
 
   return posts;
 };
 
 export const deleteAdvertiseService = async (id: string) => {
+  const Advertise = await postModel.findById(id);
+
+  if (!Advertise) {
+    throw createHttpError.NotFound('Advertise Not Found');
+  }
   const deleteAdd = await postModel.findByIdAndDelete(id);
+
   return deleteAdd;
 };

@@ -11,6 +11,7 @@ export const advertiseCreation = () => {
     mutationFn: async (formData: FormData) => {
       try {
         const response = await api.post<CommonNullResponse>('admin/advertisements', formData, {
+          timeout: 40000,
           headers: {
             'Content-Type': 'multipart/form-data',
           },

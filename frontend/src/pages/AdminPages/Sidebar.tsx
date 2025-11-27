@@ -41,6 +41,8 @@ function Sidebar({
   useEffect(() => {
     if (activeMenu === 'Logout') {
       handleLogout();
+    } else if (activeMenu === 'Go to Advertise') {
+      navigate('/');
     }
   }, [activeMenu]);
 

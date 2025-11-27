@@ -11,6 +11,7 @@ export const sidebarMenu: SidebarMenuItem[] = [
   { name: 'My Clients', icon: '👥' },
   { name: 'Users', icon: '🧑' },
   { name: 'Logout', icon: '🔒' },
+  { name: 'Go to Advertise', icon: '🏠' },
 ];
 
 export const initialClients: Client[] = [
