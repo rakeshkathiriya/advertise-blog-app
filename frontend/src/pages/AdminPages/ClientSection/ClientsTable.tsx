@@ -3,6 +3,7 @@ import { Trash2 } from 'lucide-react';
 import { memo, useCallback, useEffect, useMemo, useState } from 'react';
 import { toast } from 'react-toastify';
 import { InfiniteScrollTable, type TableColumn } from '../../../components/AdminPanel/InfiniteTable';
+import Pagination from '../../../components/AdminPanel/Pagination';
 import DeletePopup from '../../../components/common/DeletePopup';
 import { useDeleteClient, useGetClientsList } from '../../../queries/adminPanel/clients.query';
 import { getRemainingDays, getStatus } from '../../../utils/dateUtils';
@@ -39,14 +40,23 @@ const ClientsTable = ({
   const [selectedRow, setSelectedRow] = useState<{ data: ClientDetails; index: number } | null>(null);
   const [showDeletePopup, setShowDeletePopup] = useState(false);
   const [selectedPostId, setSelectedPostId] = useState<string | null>(null);
+  const [pageNumber, setPageNumber] = useState<number>(1);
 
   // API hooks
-  const tableQuery = useGetClientsList(searchFilter ?? { name: '', status: 'all' });
+  const tableQuery = useGetClientsList({
+    name: searchFilter?.name ?? '',
+    status: searchFilter?.status ?? 'all',
+    page: pageNumber,
+  });
   const { mutate: deleteMutate } = useDeleteClient();
 
   // Handlers
   const tableData = useMemo(() => {
     return tableQuery.data?.data ?? [];
+  }, [tableQuery.data]);
+
+  const pagination = useMemo(() => {
+    return tableQuery.data?.pagination;
   }, [tableQuery.data]);
 
   // Effects
@@ -63,6 +73,7 @@ const ClientsTable = ({
       tableQuery.refetch();
       setCanRefresh(false);
       setSelectedRow(null);
+      setPageNumber(1);
     }
   }, [canRefresh, setCanRefresh, tableQuery]);
 
@@ -78,6 +89,7 @@ const ClientsTable = ({
             setShowDeletePopup(false);
             setSelectedPostId(null);
             setSelectedRow(null);
+            setPageNumber(1);
           }
         },
         onError: (error) => {
@@ -89,11 +101,6 @@ const ClientsTable = ({
   }, [deleteMutate, tableQuery, selectedPostId]);
 
   const columns: TableColumn<ClientDetails>[] = [
-    {
-      label: '',
-      render: (_data, index) => index + 1,
-      className: 'w-8!',
-    },
     {
       label: 'C. Name',
       accessor: 'name',
@@ -177,14 +184,14 @@ const ClientsTable = ({
         }}
         isLoading={tableQuery.isLoading}
       />
-      {/* <Pagination
-        currentPage={0}
-        totalPages={Math.ceil(tableData.length / 10)}
-        totalItems={tableData.length}
-        itemsPerPage={10}
-        onPageChange={setCurrentPage}
+      <Pagination
+        currentPage={pageNumber}
+        totalPages={pagination?.totalPages ?? 1}
+        totalItems={pagination?.totalRecords ?? 0}
+        itemsPerPage={pagination?.limit ?? 10}
+        onPageChange={setPageNumber}
         itemLabel="clients"
-      /> */}
+      />
       {showDeletePopup && (
         <DeletePopup
           title="Delete Client ?"

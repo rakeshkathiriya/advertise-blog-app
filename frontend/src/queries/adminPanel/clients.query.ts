@@ -52,14 +52,15 @@ export const useDeleteClient = () => {
   });
 };
 
-export const useGetClientsList = ({ name, status }: { name: string; status: string }) => {
+export const useGetClientsList = ({ name, status, page }: { name: string; status: string; page: number }) => {
   return useQuery<ClientsDataResponse, CommonApiError>({
-    queryKey: ['useGetClientsList', name, status],
+    queryKey: ['useGetClientsList', name, status, page],
     queryFn: async () => {
       try {
         const params = {
           ...(name ? { name } : {}),
           ...(status && status !== 'all' ? { status } : {}),
+          page,
         };
         const response = await api.get('/clients', { params });
         return handleResponse(response);

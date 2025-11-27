@@ -1,5 +1,5 @@
 import { AnimatePresence, motion } from 'framer-motion';
-import { Trash2 } from 'lucide-react';
+import { X } from 'lucide-react';
 import React from 'react';
 
 interface ModalProps {
@@ -27,7 +27,7 @@ const Modal = ({ children, onClose }: ModalProps) => (
           className="absolute top-4 right-4 size-4 cursor-pointer font-bold text-[#3a4b66]"
           title="Close Modal"
         >
-          <Trash2 size={20} />
+          <X size={20} />
         </button>
         {children}
       </motion.div>

@@ -34,18 +34,25 @@ export const createClient = async (req: Request, res: Response, next: NextFuncti
 
 export const getAllClient = async (req: Request, res: Response, next: NextFunction) => {
   try {
-    const { name, status, postStatus } = req.query;
+    const { name, status, postStatus, page } = req.query;
 
     const client = await getAllClientService({
       name: name as string,
       status: status as string,
       postStatus: postStatus as string,
+      page: page as string,
     });
 
     res.status(200).json({
       status: true,
       message: 'Client Fetched Successfully',
-      data: client,
+      data: client.data,
+      pagination: {
+        page: client.page,
+        limit: client.limit,
+        totalRecords: client.totalRecords,
+        totalPages: client.totalPages,
+      },
     });
   } catch (error) {
     next(error);
