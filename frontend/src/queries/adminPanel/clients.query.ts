@@ -4,6 +4,25 @@ import { api } from '../../utils/axiosFactory';
 import { cleanPayload, handleErrorResponse, handleResponse } from '../../utils/helper';
 import type { ClientsDataResponse, CreateClientPayload } from '../../utils/types/clients';
 import type { CommonApiError, CommonNullResponse } from '../../utils/types/common';
+import type { ClientDDResponse } from '../../utils/types/post';
+
+export const useClientsDDOptions = () => {
+  return useQuery<ClientDDResponse, CommonApiError>({
+    queryKey: ['useClientsDDOptions'],
+    queryFn: async () => {
+      try {
+        const response = await api.get('clients/dropdown');
+        return handleResponse(response);
+      } catch (error) {
+        if (axios.isAxiosError(error)) throw handleErrorResponse(error);
+        throw error;
+      }
+    },
+    refetchOnWindowFocus: false,
+    refetchOnReconnect: false,
+    refetchOnMount: false,
+  });
+};
 
 export const useCreateClient = () => {
   return useMutation<CommonNullResponse, CommonApiError, CreateClientPayload>({
