@@ -2,7 +2,8 @@ import type { QueryObserverResult, RefetchOptions } from '@tanstack/react-query'
 import { useFormik } from 'formik';
 import { useCallback, useState } from 'react';
 import { toast } from 'react-toastify';
-import { advertiseCreation, useClientsDDOptions } from '../../../queries/adminPanel/clients.query';
+import { advertiseCreation } from '../../../queries/adminPanel/advertise.query';
+import { useClientsDDOptions } from '../../../queries/adminPanel/clients.query';
 import type { CommonApiError } from '../../../utils/types/common';
 import type { AdvertisePayload, AdvertiseResponse } from '../../../utils/types/post';
 import { advertiseSchema } from '../../../utils/validationSchema/advertiseSchema';
