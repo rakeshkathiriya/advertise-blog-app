@@ -21,6 +21,7 @@ export const useClientsDDOptions = () => {
     refetchOnWindowFocus: false,
     refetchOnReconnect: false,
     refetchOnMount: false,
+    staleTime: 0,
   });
 };
 

@@ -51,11 +51,21 @@ const InteractiveFlipBook: React.FC = () => {
           ref: flipBookRef,
         } as any)}
       >
+        {/* <div>
+          <div className="flex h-full w-full items-center justify-center overflow-hidden bg-white p-5">
+            <FlipBookPage imageUrl={'/first.png'} altText={'image'} />
+          </div>
+        </div> */}
         {(adResponse?.data ?? []).map((book) => (
           <div key={book._id} className="flex h-full w-full items-center justify-center overflow-hidden bg-white p-5">
             <FlipBookPage imageUrl={book.image} altText={'image'} />
           </div>
         ))}
+        {/* <div>
+          <div className="flex h-full w-full items-center justify-center overflow-hidden bg-white p-5">
+            <FlipBookPage imageUrl={'/first.png'} altText={'image'} />
+          </div>
+        </div> */}
       </HTMLFlipBook>
     </div>
   );

@@ -109,45 +109,45 @@ export const getAllClientService = async (filters: {
 };
 
 export const getFilteredClientService = async () => {
-  try {
-    const now = new Date();
+  const now = new Date();
 
-    const clients = await clientModel
-      .find({
-        expiredDate: { $gt: now },
-        $expr: {
-          $lt: [{ $size: '$posts' }, '$postLimit'],
-        },
-      })
-      .select('name _id');
+  const clients = await clientModel
+    .find({
+      expiredDate: { $gt: now },
+      $expr: {
+        $lt: [{ $size: '$posts' }, '$postLimit'],
+      },
+    })
+    .select('name _id');
 
-    return clients;
-  } catch (error) {
-    throw createHttpError.InternalServerError('Failed to get filtered Clients');
-  }
+  return clients;
 };
-
 export const updatedClientService = async (id: string, data: ClientUpdate) => {
-  try {
-    const updatedClient = await clientModel.findByIdAndUpdate(id, {
-      poc: data.poc,
-      email: data.email,
-      contact: data.contact,
-      postLimit: data.postLimit,
-      expiredDate: data.expiredDate,
-    });
+  const client = await clientModel.findById(id);
 
-    return updatedClient;
-  } catch (error) {
-    throw createHttpError.InternalServerError('Failed To Update the Client');
+  if (!client) {
+    throw createHttpError.NotFound('Client Not Found');
   }
-};
+  const updatedClient = await clientModel.findByIdAndUpdate(id, {
+    poc: data.poc,
+    email: data.email,
+    contact: data.contact,
+    postLimit: data.postLimit,
+    expiredDate: data.expiredDate,
+  });
 
+  return updatedClient;
+};
 export const deleteClientService = async (id: string) => {
-  try {
+  const client = await clientModel.findById(id);
+  if (!client) {
+    throw createHttpError.NotFound('Client Not Found');
+  }
+  if (client?.posts?.length === 0) {
     const deletedClient = await clientModel.findByIdAndDelete(id);
     return deletedClient;
-  } catch (error) {
-    throw createHttpError.InternalServerError('Failed To Delete the Client');
+  } else {
+    console.log('Deleted Client', client);
+    throw createHttpError.BadRequest('Unable to Delete This Client Because Client Has A Multiple Advertise ');
   }
 };
