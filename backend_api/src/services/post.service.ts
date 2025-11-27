@@ -7,7 +7,7 @@ import { UserModel } from '../models/userModel';
 import { Post } from '../utils/types/type';
 const adminEmail = process.env.ADMIN_EMAIL;
 export const handlePostCreation = async (data: Post) => {
-  if (!data.fileBuffer || !data.description) {
+  if (!data.fileBuffer || !data.description || !data.client) {
     throw createHttpError.BadRequest('All fields are required');
   }
 
@@ -20,10 +20,9 @@ export const handlePostCreation = async (data: Post) => {
   if (!adminUser.facebookAccessToken) {
     throw createHttpError.Unauthorized('Admin Facebook access token not found');
   }
-  // console.log('🌐🌐🌐🌐🌐🌐🌐🌐facebook AccessToken in postservice', adminUser.facebookAccessToken);
 
   const client = await clientModel.findById(data.client);
-
+  console.log('Client:-', client);
   if (!client) {
     throw createHttpError.NotFound('Client not found');
   }
@@ -43,43 +42,32 @@ export const handlePostCreation = async (data: Post) => {
 
   let fbPostId: string | null = data.fbPostId;
   let igPostId: string | null = data.igPostId;
-  const errors: string[] = [];
 
   // Upload to Facebook if requested
   if (data.uploadOnFacebook) {
     if (!adminUser.facebookPageId) {
-      errors.push('Facebook Page ID not configured');
+      throw createHttpError.BadRequest('Facebook Page ID not configured');
     } else {
-      try {
-        fbPostId = await postToFacebook({
-          pageId: adminUser.facebookPageId,
-          accessToken: adminUser.facebookAccessToken,
-          imageUrl,
-          message: data.description,
-        });
-        // console.log('Posted to Facebook:', fbPostId);
-      } catch (error) {
-        return error;
-      }
+      fbPostId = await postToFacebook({
+        pageId: adminUser.facebookPageId,
+        accessToken: adminUser.facebookAccessToken,
+        imageUrl,
+        message: data.description,
+      });
     }
   }
 
   // Upload to Instagram if requested
   if (data.uploadOnInstagram) {
     if (!adminUser.instagramBusinessAccountId) {
-      errors.push('Instagram Business Account ID not configured');
+      throw createHttpError.BadRequest('Instagram Business Account ID not configured');
     } else {
-      try {
-        igPostId = await postToInstagram({
-          instagramAccountId: adminUser.instagramBusinessAccountId,
-          accessToken: adminUser.facebookAccessToken,
-          imageUrl,
-          caption: data.description,
-        });
-        // console.log('Posted to Instagram:', igPostId);
-      } catch (error) {
-        return error;
-      }
+      igPostId = await postToInstagram({
+        instagramAccountId: adminUser.instagramBusinessAccountId,
+        accessToken: adminUser.facebookAccessToken,
+        imageUrl,
+        caption: data.description,
+      });
     }
   }
 
@@ -94,6 +82,8 @@ export const handlePostCreation = async (data: Post) => {
     client: data.client,
   });
 
+  console.log('Post', post);
+
   await clientModel.findByIdAndUpdate(data.client, { $push: { posts: post._id } }, { new: true });
 
   // Return post
@@ -103,20 +93,12 @@ export const handlePostCreation = async (data: Post) => {
 };
 
 export const getAllAdvertiseService = async () => {
-  try {
-    const posts = await postModel.find().sort({ _id: -1 }).populate('client');
+  const posts = await postModel.find().sort({ _id: -1 }).populate('client');
 
-    return posts;
-  } catch (error) {
-    throw createHttpError.InternalServerError('Failed to fetch posts');
-  }
+  return posts;
 };
 
 export const deleteAdvertiseService = async (id: string) => {
-  try {
-    const deleteAdd = await postModel.findByIdAndDelete(id);
-    return deleteAdd;
-  } catch (error) {
-    throw createHttpError.InternalServerError('Failed to Delete Post');
-  }
+  const deleteAdd = await postModel.findByIdAndDelete(id);
+  return deleteAdd;
 };

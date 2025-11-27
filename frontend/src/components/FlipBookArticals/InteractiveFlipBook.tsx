@@ -1,8 +1,10 @@
 import { useCallback, useEffect, useRef, useState } from 'react';
 import HTMLFlipBook from 'react-pageflip';
+import { useGetAllAdvertise } from '../../queries/adminPanel/clients.query';
 import FlipBookPage from './FlipBookPage';
 
 const InteractiveFlipBook: React.FC = () => {
+  const { data: adResponse, isLoading, isError, refetch } = useGetAllAdvertise();
   // Refs
   const flipBookRef = useRef<any>(null);
 
@@ -92,9 +94,9 @@ const InteractiveFlipBook: React.FC = () => {
           ref: flipBookRef,
         } as any)}
       >
-        {photoGalleryPages.map((book) => (
+        {(adResponse?.data ?? []).map((book) => (
           <div className="flex h-full w-full items-center justify-center bg-white bg-cover p-5 text-center">
-            <FlipBookPage key={book.id} imageUrl={book.imageUrl} altText={book.altText} />
+            <FlipBookPage key={book._id} imageUrl={book.image} altText={'image'} />
           </div>
         ))}
       </HTMLFlipBook>
@@ -108,7 +110,7 @@ const InteractiveFlipBook: React.FC = () => {
           >
             Previous page
           </button>
-          [<span>{currentPageNumber}</span> of <span>{totalPageCount}</span>]
+          [<span>{currentPageNumber}</span> of <span>{adResponse?.data.length}</span>]
           <button
             onClick={handleNextPageClick}
             className="cursor-pointer bg-white p-5 text-center text-black"
@@ -121,44 +123,5 @@ const InteractiveFlipBook: React.FC = () => {
     </div>
   );
 };
-
-const photoGalleryPages = [
-  {
-    id: 1,
-    imageUrl:
-      'https://plus.unsplash.com/premium_photo-1713820011044-94a0d803b0f6?q=80&w=687&auto=format&fit=crop&ixlib=rb-4.1.0&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D',
-    altText: '',
-  },
-  {
-    id: 2,
-    imageUrl:
-      'https://images.unsplash.com/photo-1553096442-8fe2118fb927?q=80&w=687&auto=format&fit=crop&ixlib=rb-4.1.0&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D',
-    altText: '',
-  },
-  {
-    id: 3,
-    imageUrl:
-      'https://images.unsplash.com/photo-1580130857334-2f9b6d01d99d?q=80&w=732&auto=format&fit=crop&ixlib=rb-4.1.0&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D',
-    altText: '',
-  },
-  {
-    id: 4,
-    imageUrl:
-      'https://images.unsplash.com/photo-1579677917230-8a938ffc0279?q=80&w=736&auto=format&fit=crop&ixlib=rb-4.1.0&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D',
-    altText: '',
-  },
-  {
-    id: 5,
-    imageUrl:
-      'https://images.unsplash.com/photo-1601539198710-3ae01f7b9fe1?q=80&w=687&auto=format&fit=crop&ixlib=rb-4.1.0&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D',
-    altText: '',
-  },
-  {
-    id: 6,
-    imageUrl:
-      'https://images.unsplash.com/photo-1582148818753-2b63c7785867?q=80&w=1935&auto=format&fit=crop&ixlib=rb-4.1.0&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D',
-    altText: '',
-  },
-];
 
 export default InteractiveFlipBook;
