@@ -109,16 +109,7 @@ export const getAllClientService = async (filters: {
 };
 
 export const getFilteredClientService = async () => {
-  const now = new Date();
-
-  const clients = await clientModel
-    .find({
-      expiredDate: { $gt: now },
-      $expr: {
-        $lt: [{ $size: '$posts' }, '$postLimit'],
-      },
-    })
-    .select('name _id');
+  const clients = await clientModel.find();
 
   return clients;
 };

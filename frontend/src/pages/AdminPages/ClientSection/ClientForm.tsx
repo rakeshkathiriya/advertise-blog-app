@@ -3,6 +3,7 @@ import { useFormik } from 'formik';
 import { useCallback, useState } from 'react';
 import { toast } from 'react-toastify';
 import { useCreateClient, useUpdateClient } from '../../../queries/adminPanel/clients.query';
+import { dateUtils } from '../../../utils/dateUtils';
 import type { ClientDetails } from '../../../utils/types/clients';
 
 interface ClientFormProps {
@@ -155,7 +156,7 @@ const ClientForm = ({ client, onCancel, submitLabel, setCanRefresh }: ClientForm
         <label className="mb-1 block text-sm font-semibold text-[#3a4b66]">Expiration Date (DD/MM/YYYY)</label>
         <input
           type="date"
-          min={new Date().toISOString().split('T')[0]}
+          min={dateUtils.yesterday()}
           name="expiredDate"
           value={values.expiredDate ? format(values.expiredDate, 'yyyy-MM-dd') : ''}
           onChange={(e) => setFieldValue('expiredDate', e.target.value)}

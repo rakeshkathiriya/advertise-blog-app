@@ -24,6 +24,7 @@ const AdvertisementForm = ({
   });
 
   const { isPending: resAdvertisePending, mutate: resAdvertiseMutate } = advertiseCreation();
+  const { data: clientsResponse, refetch: clientReFetch } = useClientsDDOptions();
 
   const formik = useFormik({
     enableReinitialize: true,
@@ -80,8 +81,10 @@ const AdvertisementForm = ({
     [resAdvertiseMutate, resetForm, onCancel],
   );
 
-  const { data: clientsResponse, refetch: clientReFetch } = useClientsDDOptions();
-  console.log(clientsResponse);
+  // useEffect(() => {
+  //   clientReFetch();
+  // }, []);
+
   return (
     <form
       onSubmit={handleSubmit}

@@ -20,7 +20,7 @@ export const useClientsDDOptions = () => {
     },
     refetchOnWindowFocus: false,
     refetchOnReconnect: false,
-    refetchOnMount: false,
+    refetchOnMount: true,
     staleTime: 0,
   });
 };
