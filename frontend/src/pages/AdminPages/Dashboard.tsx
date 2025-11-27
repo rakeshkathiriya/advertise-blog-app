@@ -3,7 +3,7 @@ import ContentArea from './ContentArea';
 import Sidebar from './Sidebar';
 
 const Dashboard = () => {
-  const [activeMenu, setActiveMenu] = useState<string>('Advertisement');
+  const [activeMenu, setActiveMenu] = useState<string>('My Clients');
 
   return (
     <div className="flex h-full w-full bg-white">

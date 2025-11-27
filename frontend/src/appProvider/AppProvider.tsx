@@ -15,7 +15,17 @@ export const AppProvider = () => {
   return (
     <QueryClientProvider client={queryClient}>
       <RoutesHolder />
-      <ToastContainer />
+      <ToastContainer
+        position="top-right"
+        autoClose={2000}
+        hideProgressBar={false}
+        newestOnTop={true}
+        closeOnClick={false}
+        pauseOnFocusLoss
+        draggable
+        pauseOnHover={false}
+        theme="light"
+      />
       <ReactQueryDevtools initialIsOpen={false} />
     </QueryClientProvider>
   );

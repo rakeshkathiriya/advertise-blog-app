@@ -1,26 +1,31 @@
+import { format } from 'date-fns';
 import { useFormik } from 'formik';
 import { useCallback, useState } from 'react';
 import { toast } from 'react-toastify';
-import { useCreateClient } from '../../../queries/adminPanel/clients.query';
-import type { Client } from '../../../utils/types/clients';
+import { useCreateClient, useUpdateClient } from '../../../queries/adminPanel/clients.query';
+import type { ClientDetails } from '../../../utils/types/clients';
 
 interface ClientFormProps {
-  client: Client;
+  client: ClientDetails;
   onCancel: () => void;
   submitLabel: string;
+  setCanRefresh: React.Dispatch<React.SetStateAction<boolean>>;
 }
 
-const ClientForm = ({ client, onCancel, submitLabel }: ClientFormProps) => {
-  const [initialValues] = useState<Client>({
-    name: client.name,
-    poc: client.poc,
-    email: client.email,
-    postLimit: client.postLimit,
-    expiredDate: client.expiredDate,
-    contact: client.contact,
+const ClientForm = ({ client, onCancel, submitLabel, setCanRefresh }: ClientFormProps) => {
+  const [initialValues] = useState<ClientDetails>({
+    _id: client._id ?? '',
+    name: client.name ?? '',
+    poc: client.poc ?? '',
+    email: client.email ?? '',
+    postLimit: client.postLimit ?? 0,
+    expiredDate: client.expiredDate ?? '',
+    contact: client.contact ?? '',
+    posts: client.posts || [],
   });
 
-  const { mutate, isPending } = useCreateClient();
+  const { mutate: createMutate, isPending: createIsPending } = useCreateClient();
+  const { mutate: updateMutate, isPending: updateIsPending } = useUpdateClient();
 
   const formik = useFormik({
     enableReinitialize: true,
@@ -30,32 +35,68 @@ const ClientForm = ({ client, onCancel, submitLabel }: ClientFormProps) => {
     validateOnChange: true,
     onSubmit: (val) => {
       console.log('Submitting client form with values:', val);
-      handleClientSubmit(val);
+      if (submitLabel === 'Save') {
+        handleClientSubmit(val);
+      } else if (submitLabel === 'Update') {
+        handleEditClient(val);
+      }
     },
   });
 
   const { values, handleSubmit, setFieldValue, resetForm } = formik;
 
-  const handleClientSubmit = useCallback(async (payload: Client) => {
-    const modifyPayload = {
-      ...payload,
-      postLimit: Number(payload.postLimit),
-      expiredDate: new Date(payload.expiredDate),
-    };
-    mutate(modifyPayload, {
-      onSuccess: (data) => {
-        if (data?.status) {
-          toast.success(data?.message ?? 'Client created successfully');
-          resetForm();
-          onCancel();
-        }
-      },
-      onError: (error) => {
-        console.error('Error:', error);
-        toast.error(error.message ?? 'Failed to create a client');
-      },
-    });
-  }, []);
+  const handleClientSubmit = useCallback(
+    async (payload: ClientDetails) => {
+      const modifyPayload = {
+        ...payload,
+        postLimit: Number(payload.postLimit),
+        expiredDate: new Date(payload.expiredDate),
+      };
+      createMutate(modifyPayload, {
+        onSuccess: (data) => {
+          if (data?.status) {
+            toast.success(data?.message ?? 'Client created successfully');
+            resetForm();
+            onCancel();
+            setCanRefresh(true);
+          }
+        },
+        onError: (error) => {
+          console.error('Error:', error);
+          toast.error(error.message ?? 'Failed to create a client');
+          setCanRefresh(false);
+        },
+      });
+    },
+    [createMutate, onCancel, resetForm, setCanRefresh],
+  );
+
+  const handleEditClient = useCallback(
+    async (payload: ClientDetails) => {
+      const modifyPayload = {
+        ...payload,
+        id: payload._id,
+        postLimit: Number(payload.postLimit),
+        expiredDate: new Date(payload.expiredDate),
+      };
+      updateMutate(modifyPayload, {
+        onSuccess: (data) => {
+          if (data?.status) {
+            toast.success(data?.message ?? 'Client update successfully');
+            resetForm();
+            onCancel();
+            setCanRefresh(true);
+          }
+        },
+        onError: (error) => {
+          console.error('Error:', error);
+          toast.error(error.message ?? 'Failed to update a client');
+          setCanRefresh(false);
+        },
+      });
+    },
+    [updateMutate, onCancel, resetForm, setCanRefresh],
+  );
 
   return (
     <form onSubmit={handleSubmit} className="space-y-3">
@@ -64,10 +105,10 @@ const ClientForm = ({ client, onCancel, submitLabel }: ClientFormProps) => {
         <input
           type="text"
           name="name"
-          disabled={submitLabel.includes('Add') ? false : true}
+          disabled={submitLabel.includes('Save') ? false : true}
           value={values.name}
           onChange={(e) => setFieldValue('name', e.target.value)}
-          className={`${submitLabel.includes('Add') ? 'cursor-auto bg-white' : 'cursor-not-allowed bg-gray-300'} w-full rounded-lg border border-gray-300 px-3 py-2 text-sm font-semibold text-gray-600 focus:ring-2 focus:ring-[#3a4b66] focus:outline-none`}
+          className={`${submitLabel.includes('Save') ? 'cursor-auto bg-white' : 'cursor-not-allowed bg-gray-300'} w-full rounded-lg border border-gray-300 px-3 py-2 text-sm font-semibold text-gray-600 focus:ring-2 focus:ring-[#3a4b66] focus:outline-none`}
         />
       </div>
       <div>
@@ -115,7 +156,7 @@ const ClientForm = ({ client, onCancel, submitLabel }: ClientFormProps) => {
         <input
           type="date"
           name="expiredDate"
-          value={values.expiredDate}
+          value={values.expiredDate ? format(values.expiredDate, 'yyyy-MM-dd') : ''}
           onChange={(e) => setFieldValue('expiredDate', e.target.value)}
           placeholder="31/12/2025"
           className="w-full rounded-lg border border-gray-300 px-3 py-2 text-sm font-semibold text-gray-600 focus:ring-2 focus:ring-[#3a4b66] focus:outline-none"
@@ -124,9 +165,10 @@ const ClientForm = ({ client, onCancel, submitLabel }: ClientFormProps) => {
       <div className="flex gap-3 pt-4">
         <button
           type="submit"
+          disabled={createIsPending || updateIsPending}
           className="text-14 flex flex-1 items-center justify-center gap-2 rounded-full bg-[#aec2d1] px-4 py-2 font-semibold tracking-wide text-[#3a4b66] transition-all duration-500 ease-in-out hover:scale-105 hover:transform"
         >
-          {isPending ? 'Loading...' : submitLabel}
+          {createIsPending || updateIsPending ? 'Loading...' : submitLabel}
         </button>
       </div>
     </form>

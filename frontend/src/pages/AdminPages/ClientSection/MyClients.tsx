@@ -1,16 +1,20 @@
-import { useState } from 'react';
+import { useCallback, useState } from 'react';
 import Modal from '../../../components/AdminPanel/Modal';
+import type { ClientDetails } from '../../../utils/types/clients';
 import ClientForm from './ClientForm';
-import ClientsTable, { type ClientWithIndex } from './ClientsTable';
+import ClientsTable from './ClientsTable';
 
 const MyClients = () => {
-  const [currentPage, setCurrentPage] = useState<number>(1);
-  const [editingClient, setEditingClient] = useState<ClientWithIndex | null>(null);
+  const [editingClient, setEditingClient] = useState<ClientDetails | null>(null);
   const [showAddModal, setShowAddModal] = useState<boolean>(false);
+  const [canRefresh, setCanRefresh] = useState<boolean>(false);
   const [searchCompany, setSearchCompany] = useState<string>('');
   const [statusFilter, setStatusFilter] = useState<string>('all');
+  const [searchFilter, setSearchFilter] = useState<{ name: string; status: string } | null>(null);
 
-  const handleSearch = () => {};
+  const handleSearch = useCallback(() => {
+    setSearchFilter({ name: searchCompany, status: statusFilter });
+  }, [searchCompany, statusFilter]);
 
   return (
     <div className="h-full w-full">
@@ -40,13 +44,12 @@ const MyClients = () => {
               value={statusFilter}
               onChange={(e) => {
                 setStatusFilter(e.target.value);
-                setCurrentPage(1);
               }}
               className="rounded-lg border border-gray-300 px-1 py-2 text-sm font-semibold text-gray-600 focus:ring-2 focus:ring-[#3a4b66] focus:outline-none"
             >
               <option value="all">All</option>
               <option value="active">Active</option>
-              <option value="inactive">Inactive</option>
+              <option value="expired">Inactive</option>
             </select>
           </div>
           <button
@@ -67,7 +70,12 @@ const MyClients = () => {
         </div>
       </div>
 
-      <ClientsTable />
+      <ClientsTable
+        canRefresh={canRefresh}
+        setCanRefresh={setCanRefresh}
+        setEditingClient={setEditingClient}
+        searchFilter={searchFilter}
+      />
 
       {/* Edit Modal */}
       {editingClient && (
@@ -75,7 +83,12 @@ const MyClients = () => {
           <h3 className="mb-4 text-center text-lg font-bold tracking-wide text-[#3a4b66] underline underline-offset-8">
             Edit Client
           </h3>
-          <ClientForm client={editingClient} onCancel={() => setEditingClient(null)} submitLabel="Save Changes" />
+          <ClientForm
+            client={editingClient}
+            onCancel={() => setEditingClient(null)}
+            submitLabel="Update"
+            setCanRefresh={setCanRefresh}
+          />
         </Modal>
       )}
 
@@ -87,15 +100,18 @@ const MyClients = () => {
           </h3>
           <ClientForm
             client={{
+              _id: '',
               name: '',
               poc: '',
               email: '',
-              postLimit: '',
+              postLimit: 0,
               expiredDate: '',
               contact: '',
+              posts: [],
             }}
             onCancel={() => setShowAddModal(false)}
-            submitLabel="Add Client"
+            setCanRefresh={setCanRefresh}
+            submitLabel="Save"
           />
         </Modal>
       )}

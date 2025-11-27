@@ -21,12 +21,47 @@ export const useCreateClient = () => {
   });
 };
 
-export const useGetClientsList = () => {
+export const useUpdateClient = () => {
+  return useMutation<CommonNullResponse, CommonApiError, CreateClientPayload>({
+    mutationKey: ['useUpdateClient'],
+    mutationFn: async (payload: CreateClientPayload) => {
+      try {
+        const cleanedPayload = cleanPayload(payload);
+        const response = await api.patch<CommonNullResponse>(`/clients/${payload.id}`, cleanedPayload);
+        return handleResponse(response);
+      } catch (error) {
+        if (axios.isAxiosError(error)) throw handleErrorResponse(error);
+        throw error;
+      }
+    },
+  });
+};
+
+export const useDeleteClient = () => {
+  return useMutation<CommonNullResponse, CommonApiError, { id: string }>({
+    mutationKey: ['useDeleteClient'],
+    mutationFn: async (payload: { id: string }) => {
+      try {
+        const response = await api.delete<CommonNullResponse>(`/clients/${payload.id}`);
+        return handleResponse(response);
+      } catch (error) {
+        if (axios.isAxiosError(error)) throw handleErrorResponse(error);
+        throw error;
+      }
+    },
+  });
+};
+
+export const useGetClientsList = ({ name, status }: { name: string; status: string }) => {
   return useQuery<ClientsDataResponse, CommonApiError>({
-    queryKey: ['useGetClientsList'],
+    queryKey: ['useGetClientsList', name, status],
     queryFn: async () => {
       try {
-        const response = await api.get('/clients');
+        const params = {
+          ...(name ? { name } : {}),
+          ...(status && status !== 'all' ? { status } : {}),
+        };
+        const response = await api.get('/clients', { params });
         return handleResponse(response);
       } catch (error) {
         if (axios.isAxiosError(error)) throw handleErrorResponse(error);

@@ -25,8 +25,6 @@ export const getAllClientService = async (filters: {
   postStatus?: string; // available | full
 }) => {
   try {
-    const now = new Date();
-
     const query: any = {};
 
     // 1. Filter by name (case-insensitive)
@@ -34,12 +32,15 @@ export const getAllClientService = async (filters: {
       query.name = { $regex: filters.name, $options: 'i' };
     }
 
+    const now = new Date();
+    const todayStart = new Date(now.getFullYear(), now.getMonth(), now.getDate()); // 00:00:00 today
+
     // 2. Filter by expired / active
     if (filters.status === 'active') {
-      query.expiredDate = { $gt: now };
+      query.expiredDate = { $gt: todayStart };
     }
     if (filters.status === 'expired') {
-      query.expiredDate = { $lte: now };
+      query.expiredDate = { $lte: todayStart };
     }
 
     // 3. Start building Mongoose query

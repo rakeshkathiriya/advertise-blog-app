@@ -1,3 +1,5 @@
+import { AnimatePresence, motion } from 'framer-motion';
+import { Trash2 } from 'lucide-react';
 import React from 'react';
 
 interface ModalProps {
@@ -6,17 +8,31 @@ interface ModalProps {
 }
 
 const Modal = ({ children, onClose }: ModalProps) => (
-  <div className="fixed inset-0 z-50 flex items-center justify-center bg-black/70">
-    <div className="relative mx-4 w-full max-w-md rounded-lg bg-white p-6">
-      <button
-        onClick={onClose}
-        className="absolute top-4 right-4 cursor-pointer font-bold text-[#3a4b66] hover:text-gray-700"
+  <AnimatePresence>
+    <motion.div
+      initial={{ opacity: 0 }}
+      animate={{ opacity: 1 }}
+      exit={{ opacity: 0 }}
+      className="fixed inset-0 z-50 flex items-center justify-center bg-black/40 backdrop-blur-sm"
+    >
+      <motion.div
+        initial={{ opacity: 0, scale: 0.85 }}
+        animate={{ opacity: 1, scale: 1 }}
+        exit={{ opacity: 0, scale: 0.85 }}
+        transition={{ type: 'spring', stiffness: 200, damping: 20 }}
+        className="relative mx-4 w-full max-w-md rounded-lg bg-white p-6"
       >
-        X
-      </button>
-      {children}
-    </div>
-  </div>
+        <button
+          onClick={onClose}
+          className="absolute top-4 right-4 size-4 cursor-pointer font-bold text-[#3a4b66]"
+          title="Close Modal"
+        >
+          <Trash2 size={20} />
+        </button>
+        {children}
+      </motion.div>
+    </motion.div>
+  </AnimatePresence>
 );
 
 export default Modal;

@@ -1,7 +1,10 @@
 import { format } from 'date-fns';
-import { memo, useEffect, useMemo, useState } from 'react';
+import { Trash2 } from 'lucide-react';
+import { memo, useCallback, useEffect, useMemo, useState } from 'react';
+import { toast } from 'react-toastify';
 import { InfiniteScrollTable, type TableColumn } from '../../../components/AdminPanel/InfiniteTable';
-import { useGetClientsList } from '../../../queries/adminPanel/clients.query';
+import DeletePopup from '../../../components/common/DeletePopup';
+import { useDeleteClient, useGetClientsList } from '../../../queries/adminPanel/clients.query';
 import { getRemainingDays, getStatus } from '../../../utils/dateUtils';
 import type { ClientDetails } from '../../../utils/types/clients';
 
@@ -18,12 +21,28 @@ export interface ClientWithIndex extends Client {
   index: number;
 }
 
-const ClientsTable = () => {
+const ClientsTable = ({
+  canRefresh,
+  setCanRefresh,
+  setEditingClient,
+  searchFilter,
+}: {
+  canRefresh: boolean;
+  setCanRefresh: React.Dispatch<React.SetStateAction<boolean>>;
+  setEditingClient: React.Dispatch<React.SetStateAction<ClientDetails | null>>;
+  searchFilter: {
+    name: string;
+    status: string;
+  } | null;
+}) => {
   // States
   const [selectedRow, setSelectedRow] = useState<{ data: ClientDetails; index: number } | null>(null);
+  const [showDeletePopup, setShowDeletePopup] = useState(false);
+  const [selectedPostId, setSelectedPostId] = useState<string | null>(null);
 
   // API hooks
-  const tableQuery = useGetClientsList();
+  const tableQuery = useGetClientsList(searchFilter ?? { name: '', status: 'all' });
+  const { mutate: deleteMutate } = useDeleteClient();
 
   // Handlers
   const tableData = useMemo(() => {
@@ -39,16 +58,44 @@ const ClientsTable = () => {
     }
   }, [tableData, selectedRow]);
 
-  const handleDelete = (idx: number) => {
-    if (window.confirm('Are you sure you want to delete this client?')) {
-      tableData.splice(idx, 1);
-      alert('Client deleted successfully.');
+  useEffect(() => {
+    if (canRefresh) {
+      tableQuery.refetch();
+      setCanRefresh(false);
+      setSelectedRow(null);
     }
-  };
+  }, [canRefresh, setCanRefresh, tableQuery]);
+
+  const handleDelete = useCallback(async () => {
+    if (!selectedPostId) return;
+    deleteMutate(
+      { id: selectedPostId },
+      {
+        onSuccess: (data) => {
+          if (data?.status) {
+            toast.success(data?.message ?? 'Client deleted successfully');
+            tableQuery.refetch();
+            setShowDeletePopup(false);
+            setSelectedPostId(null);
+            setSelectedRow(null);
+          }
+        },
+        onError: (error) => {
+          console.error('Error:', error);
+          toast.error(error.message ?? 'Failed to delete a client');
+        },
+      },
+    );
+  }, [deleteMutate, tableQuery, selectedPostId]);
 
   const columns: TableColumn<ClientDetails>[] = [
     {
-      label: 'Company Name',
+      label: '',
+      render: (_data, index) => index + 1,
+      className: 'w-8!',
+    },
+    {
+      label: 'C. Name',
       accessor: 'name',
     },
     {
@@ -60,18 +107,17 @@ const ClientsTable = () => {
       accessor: 'email',
     },
     {
-      label: 'Post Limit',
+      label: 'P. Limit',
       accessor: 'postLimit',
       className: 'w-12!',
     },
     {
-      label: 'Ads Posted',
-      render: (data) => data.posts.length,
+      label: 'P. Count',
+      render: (data) => data?.posts?.length,
       className: 'w-12!',
     },
     {
-      label: 'S.Expired Date',
-      // accessor: 'expiredDate',
+      label: 'S.E. Date',
       render: (data) => {
         const utcDate = new Date(data.expiredDate);
 
@@ -93,22 +139,24 @@ const ClientsTable = () => {
       },
     },
     {
-      label: 'Remaining Days',
+      label: 'R. Days',
       render: (data) => getRemainingDays(data.expiredDate) ?? 'N/A',
     },
     {
       label: 'Actions',
-      render: (_data, index) => (
-        <button
+      render: (data, index) => (
+        <span
           onClick={(e) => {
             e.stopPropagation();
-            handleDelete(index);
+            setSelectedRow({ data, index });
+            setSelectedPostId(data._id);
+            setShowDeletePopup(true);
           }}
-          className="flex w-full cursor-pointer text-red-600 transition-colors hover:text-red-800"
+          className="flex w-full cursor-pointer items-center justify-center text-red-600 hover:text-red-800"
           title="Delete client"
         >
-          🗑️
-        </button>
+          <Trash2 size={20} />
+        </span>
       ),
     },
   ];
@@ -124,8 +172,8 @@ const ClientsTable = () => {
         onRowClick={(data, index) => {
           setSelectedRow({ data, index });
         }}
-        onRowDoubleClick={(data, index) => {
-          // setEditingClient({ ...data, index });
+        onRowDoubleClick={(data) => {
+          setEditingClient({ ...data });
         }}
         isLoading={tableQuery.isLoading}
       />
@@ -137,6 +185,16 @@ const ClientsTable = () => {
         onPageChange={setCurrentPage}
         itemLabel="clients"
       /> */}
+      {showDeletePopup && (
+        <DeletePopup
+          title="Delete Client ?"
+          onConfirm={handleDelete}
+          onCancel={() => {
+            setShowDeletePopup(false);
+            setSelectedPostId(null);
+          }}
+        />
+      )}
     </>
   );
 };

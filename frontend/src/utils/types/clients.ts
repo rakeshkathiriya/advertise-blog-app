@@ -1,6 +1,7 @@
 import type { CommonResponse } from './common';
 
 export interface CreateClientPayload {
+  id?: string;
   name: string;
   poc: string;
   email: string;
@@ -30,8 +31,5 @@ export interface ClientDetails {
   postLimit: number;
   email: string;
   expiredDate: string; // or Date if you convert it
-  posts: any[]; // you can define a proper type if posts have structure
-  createdAt: string; // or Date
-  updatedAt: string; // or Date
-  __v: number;
+  posts: string[]; // you can define a proper type if posts have structure
 }
