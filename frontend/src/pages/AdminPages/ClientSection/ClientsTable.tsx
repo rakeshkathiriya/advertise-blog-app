@@ -102,7 +102,7 @@ const ClientsTable = ({
 
   const columns: TableColumn<ClientDetails>[] = [
     {
-      label: 'C. Name',
+      label: 'Firm',
       accessor: 'name',
     },
     {
@@ -114,17 +114,17 @@ const ClientsTable = ({
       accessor: 'email',
     },
     {
-      label: 'P. Limit',
+      label: 'Post Qty',
       accessor: 'postLimit',
       className: 'w-12!',
     },
     {
-      label: 'P. Count',
+      label: 'Post',
       render: (data) => data?.posts?.length,
       className: 'w-12!',
     },
     {
-      label: 'S.E. Date',
+      label: 'Exp. Date',
       render: (data) => {
         const utcDate = new Date(data.expiredDate);
 
@@ -136,7 +136,7 @@ const ClientsTable = ({
       },
     },
     {
-      label: 'Status',
+      label: 'State',
       render: (data) => getStatus(data.expiredDate) || 'N/A',
       tdProps: (data) => {
         const status = getStatus(data.expiredDate);
@@ -146,7 +146,7 @@ const ClientsTable = ({
       },
     },
     {
-      label: 'R. Days',
+      label: 'Days Left',
       render: (data) => getRemainingDays(data.expiredDate) ?? 'N/A',
     },
     {
@@ -173,7 +173,7 @@ const ClientsTable = ({
       <InfiniteScrollTable<ClientDetails>
         columns={columns}
         data={tableData}
-        tableCaption="Client Subscriptions Table"
+        tableCaption="Subscribed Clients"
         containerClassName="w-full overflow-x-auto rounded-lg border border-gray-200 shadow-2xl"
         selectedRowIndex={selectedRow?.index ?? -1}
         onRowClick={(data, index) => {
