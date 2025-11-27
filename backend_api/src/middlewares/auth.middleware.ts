@@ -10,10 +10,9 @@ export interface AuthPayload extends JwtPayload {
 export const authMiddleware = (req: Request, res: Response, next: NextFunction): Response | void => {
   // Try first from Authorization header (Normal Login)
   let token = req.headers['authorization']?.split(' ')[1] || null;
-  console.log(req.headers['authorization']);
   try {
     if (!token) return next(createHttpError.Unauthorized('token is Missing'));
-    console.log('token in authmiddleware', token);
+
     const secret = process.env.ACCESS_TOKEN_SECRET;
     if (!secret) return next(createHttpError.InternalServerError('JWT secret missing'));
 

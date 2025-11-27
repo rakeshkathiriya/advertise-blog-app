@@ -1,5 +1,6 @@
 import mongoose, { Schema } from 'mongoose';
 import { Post } from '../utils/types/type';
+import { clientModel } from './clientModel';
 
 const postSchema: Schema<Post> = new Schema(
   {
@@ -32,5 +33,11 @@ const postSchema: Schema<Post> = new Schema(
   },
   { timestamps: true }
 );
+
+postSchema.post('findOneAndDelete', async function (doc) {
+  if (doc) {
+    await clientModel.findByIdAndUpdate(doc.client, { $pull: { posts: doc._id } });
+  }
+});
 
 export const postModel = mongoose.model<Post>('Post', postSchema);

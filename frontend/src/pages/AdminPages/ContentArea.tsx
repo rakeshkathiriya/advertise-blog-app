@@ -10,6 +10,7 @@ function ContentArea({ activeMenu }: { activeMenu: string }) {
       {activeMenu === 'My Clients' && <MyClients />}
       {activeMenu === 'Users' && <MyUsers />}
       {activeMenu === 'Logout'}
+      {activeMenu === 'Go to Advertise'}
     </div>
   );
 }
