@@ -4,10 +4,10 @@ export const advertiseSchema = Yup.object().shape({
   image: Yup.mixed()
     .nullable()
     .required('Image Is Required')
-    .test('fileSize', 'Image size is Must be Lesser Then 1MB', (value) => {
+    .test('fileSize', 'Image size is Must be Lesser Then 1 MB', (value) => {
       if (!value) return true;
       if (!(value instanceof File)) return false;
-      return value.size <= 5 * 1024 * 1024;
+      return value.size <= 1 * 1024 * 1024;
     })
     .test('fileType', 'Only JPG, JPEG, PNG files are allowed', (value) => {
       if (!value) return true;

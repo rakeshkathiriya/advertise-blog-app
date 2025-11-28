@@ -31,7 +31,7 @@ const InteractiveFlipBook: React.FC = () => {
   }, []);
 
   return (
-    <div className="relative flex w-screen flex-col items-center justify-center bg-gray-700 py-10">
+    <div className="relative flex min-h-screen w-screen flex-col items-center justify-center bg-gray-700 py-10">
       {/* LEFT BUTTON */}
 
       <HTMLFlipBook
@@ -40,6 +40,7 @@ const InteractiveFlipBook: React.FC = () => {
           height: 750,
           size: 'fixed',
           maxWidth: '100%',
+          minHeight: '100vh',
           maxHeight: '100%',
           maxShadowOpacity: 0.5,
           drawShadow: true,
