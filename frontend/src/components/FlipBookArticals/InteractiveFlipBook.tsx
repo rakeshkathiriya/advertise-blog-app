@@ -23,19 +23,37 @@ const InteractiveFlipBook: React.FC = () => {
   }, []);
 
   useEffect(() => {
-    const timer = setTimeout(() => {
-      setIsShowCover(false);
-      flipBookRef.current?.pageFlip()?.flip(1);
-    }, 1000);
-    return () => clearTimeout(timer);
-  }, []);
+    if (!isLoading && adResponse?.data) {
+      const timer = setTimeout(() => {
+        setIsShowCover(false);
+        flipBookRef.current?.pageFlip()?.flip(1);
+      }, 1000);
+      return () => clearTimeout(timer);
+    }
+  }, [isLoading, adResponse]);
+
+  // Don't render until data is loaded
+  if (isLoading) {
+    return (
+      <div className="flex min-h-screen w-screen items-center justify-center">
+        <div className="text-textPrimary">Loading...</div>
+      </div>
+    );
+  }
+
+  if (isError) {
+    return (
+      <div className="flex min-h-screen w-screen items-center justify-center">
+        <div className="text-textPrimary">Error loading advertisements</div>
+      </div>
+    );
+  }
 
   return (
-    <div className="relative flex w-screen flex-col items-center justify-center bg-gray-700 py-10">
-      {/* LEFT BUTTON */}
-
+    <div className="relative flex min-h-screen w-screen flex-col items-center justify-center py-10">
       <HTMLFlipBook
         {...({
+          Key: 'flipBokk',
           width: 500,
           height: 750,
           size: 'fixed',
@@ -49,26 +67,46 @@ const InteractiveFlipBook: React.FC = () => {
           onInit: handlePageFlip,
           onFlip: handlePageFlip,
           ref: flipBookRef,
+          startPage: 0,
+          swipeDistance: 10,
         } as any)}
       >
-        {/* <div>
-          <div className="flex h-full w-full items-center justify-center overflow-hidden bg-white p-5">
-            <FlipBookPage imageUrl={'/first.png'} altText={'image'} />
+        <div
+          key="cover-page"
+          className="page bg-bgDefault border-borderMedium flex h-full w-full flex-col items-center justify-center overflow-hidden border px-3! py-4!"
+        >
+          <FlipBookPage imageUrl={'/first.png'} altText={'image'} />
+          <div className="pagefooter h-[50px] w-full">
+            <h4>© Smart Book 2025</h4>
           </div>
-        </div> */}
-        {(adResponse?.data ?? []).map((book) => (
-          <div key={book._id} className="flex h-full w-full items-center justify-center overflow-hidden bg-white p-5">
+        </div>
+
+        {(adResponse?.data ?? []).map((book, index) => (
+          <div
+            key={book._id}
+            className="page bg-bgDefault border-borderMedium flex h-full w-full flex-col items-center justify-center overflow-hidden border px-3! py-4!"
+          >
             <FlipBookPage imageUrl={book.image} altText={'image'} />
+            <div className="pagefooter h-[50px] w-full">
+              <div className="pgfoter-div">
+                <p>{'Page ' + (index + 1)} </p>
+              </div>
+              <h4>© Smart Book 2025</h4>
+            </div>
           </div>
         ))}
-        {/* <div>
-          <div className="flex h-full w-full items-center justify-center overflow-hidden bg-white p-5">
-            <FlipBookPage imageUrl={'/first.png'} altText={'image'} />
+
+        <div
+          key="last-page"
+          className="page bg-bgDefault border-borderMedium flex h-full w-full flex-col items-center justify-center overflow-hidden border px-3! py-4!"
+        >
+          <FlipBookPage imageUrl={'/Last.png'} altText={'image'} />
+          <div className="pagefooter h-[50px] w-full">
+            <h4>© Smart Book 2025</h4>
           </div>
-        </div> */}
+        </div>
       </HTMLFlipBook>
     </div>
   );
 };
-
 export default InteractiveFlipBook;

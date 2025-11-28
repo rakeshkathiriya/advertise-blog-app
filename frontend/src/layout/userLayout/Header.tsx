@@ -7,21 +7,35 @@ export const Header: React.FC = () => {
   const role = getUserRole();
 
   return (
-    <header className="flex w-screen items-center justify-between bg-blue-400 p-4 text-white">
-      <h1 className="text-2xl font-bold">{`${role} Dashboard`}</h1>
-
-      <div>
-        <ul>
-          <li className="mx-4 inline-block text-xl font-bold underline-offset-8 hover:underline">Blog</li>
-        </ul>
+    <div className="header_container w-full">
+      <div className="bg-bgDefault py-1.5 text-center font-medium">
+        {/* <div className="from-orange to-orangeLight bg-linear-to-r py-1.5 text-center font-medium"> */}
+        <p className="text-bgPrimaryDark text-[13px] font-semibold tracking-wide">
+          Exclusive Price Drop! Hurry, <span className="underline underline-offset-4">Offer Ends Soon!</span>
+        </p>
       </div>
+      <header className="text-textWhite from-bgPrimaryDark to-bgPrimary flex w-full items-center justify-center bg-linear-to-r transition-all">
+        <nav className="container flex w-full items-center justify-between px-4 py-1">
+          <h1 className="text-textTitleSecondary cursor-pointer text-lg font-semibold tracking-wide">Logo</h1>
 
-      <div className="flex gap-5">
-        {/* Show AdminButton only for Admin */}
-        {role === 'Admin' && <AdminButton />}
+          <ul>
+            <li className="group mx-4 inline-block cursor-pointer text-base font-semibold tracking-wide">
+              Advertisement
+              <div className={`bg-bgDefault h-0.5 w-0 transition-all duration-300 group-hover:w-full`} />
+            </li>
+            <li className="group mx-4 inline-block cursor-pointer text-base font-semibold tracking-wide">
+              Blogs
+              <div className={`bg-bgDefault h-0.5 w-0 transition-all duration-300 group-hover:w-full`} />
+            </li>
+          </ul>
 
-        <LogoutButton />
-      </div>
-    </header>
+          <div className="flex gap-5">
+            {/* Show AdminButton only for Admin */}
+            {role === 'Admin' && <AdminButton />}
+            <LogoutButton />
+          </div>
+        </nav>
+      </header>
+    </div>
   );
 };
