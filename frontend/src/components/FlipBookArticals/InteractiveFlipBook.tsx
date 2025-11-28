@@ -97,15 +97,6 @@ const InteractiveFlipBook: React.FC = () => {
             {adResponse &&
               (adResponse?.data ?? []).map((book, index) => (
                 <div className="relative flex">
-                  {/* {index % 2 == 0 && (
-                  <div className="absolute -left-10 h-full">
-                    <ChevronLeft
-                      onClick={flipLeft}
-                      size={35}
-                      className="bg-bgPrimary/30 relative top-[50%] cursor-pointer! rounded-full p-1"
-                    />
-                  </div>
-                )} */}
                   <div
                     key={book._id}
                     className="page bg-bgDefault border-borderMedium flex h-full w-full flex-col items-center justify-center overflow-hidden border px-3! py-4!"
@@ -113,15 +104,6 @@ const InteractiveFlipBook: React.FC = () => {
                     <FlipBookPage imageUrl={book.image} altText={'image'} />
                     <PageFooter index={index} />
                   </div>
-                  {/* {index % 2 != 0 && (
-                  <div className="absolute top-0 -right-10 h-full">
-                    <ChevronRight
-                      onClick={flipRight}
-                      size={35}
-                      className="bg-bgPrimary/30 relative top-[50%] cursor-pointer! rounded-full p-1"
-                    />
-                  </div>
-                )} */}
                 </div>
               ))}
 
