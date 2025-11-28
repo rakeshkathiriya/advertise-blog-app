@@ -23,17 +23,34 @@ const InteractiveFlipBook: React.FC = () => {
   }, []);
 
   useEffect(() => {
-    const timer = setTimeout(() => {
-      setIsShowCover(false);
-      flipBookRef.current?.pageFlip()?.flip(1);
-    }, 1000);
-    return () => clearTimeout(timer);
-  }, []);
+    if (!isLoading && adResponse?.data) {
+      const timer = setTimeout(() => {
+        setIsShowCover(false);
+        flipBookRef.current?.pageFlip()?.flip(1);
+      }, 1000);
+      return () => clearTimeout(timer);
+    }
+  }, [isLoading, adResponse]);
+
+  // Don't render until data is loaded
+  if (isLoading) {
+    return (
+      <div className="flex min-h-screen w-screen items-center justify-center bg-gray-700">
+        <div>Loading...</div>
+      </div>
+    );
+  }
+
+  if (isError) {
+    return (
+      <div className="flex min-h-screen w-screen items-center justify-center bg-gray-700">
+        <div>Error loading advertisements</div>
+      </div>
+    );
+  }
 
   return (
     <div className="relative flex min-h-screen w-screen flex-col items-center justify-center bg-gray-700 py-10">
-      {/* LEFT BUTTON */}
-
       <HTMLFlipBook
         {...({
           width: 500,
@@ -52,24 +69,23 @@ const InteractiveFlipBook: React.FC = () => {
           ref: flipBookRef,
         } as any)}
       >
-        {/* <div>
+        <div key="cover-page">
           <div className="flex h-full w-full items-center justify-center overflow-hidden bg-white p-5">
             <FlipBookPage imageUrl={'/first.png'} altText={'image'} />
           </div>
-        </div> */}
+        </div>
         {(adResponse?.data ?? []).map((book) => (
           <div key={book._id} className="flex h-full w-full items-center justify-center overflow-hidden bg-white p-5">
             <FlipBookPage imageUrl={book.image} altText={'image'} />
           </div>
         ))}
-        {/* <div>
+        <div key="last-page">
           <div className="flex h-full w-full items-center justify-center overflow-hidden bg-white p-5">
-            <FlipBookPage imageUrl={'/first.png'} altText={'image'} />
+            <FlipBookPage imageUrl={'/Last.png'} altText={'image'} />
           </div>
-        </div> */}
+        </div>
       </HTMLFlipBook>
     </div>
   );
 };
-
 export default InteractiveFlipBook;

@@ -82,7 +82,7 @@ export const handlePostCreation = async (data: Post) => {
     client: data.client,
   });
 
-  console.log('Post', post);
+  // console.log('Post', post);
 
   await clientModel.findByIdAndUpdate(data.client, { $push: { posts: post._id } }, { new: true });
 

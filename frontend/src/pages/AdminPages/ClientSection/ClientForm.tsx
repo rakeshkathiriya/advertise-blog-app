@@ -2,6 +2,7 @@ import { format } from 'date-fns';
 import { useFormik } from 'formik';
 import { useCallback, useState } from 'react';
 import { toast } from 'react-toastify';
+import { Spinner } from '../../../components/common/Spinner';
 import { useCreateClient, useUpdateClient } from '../../../queries/adminPanel/clients.query';
 import { dateUtils } from '../../../utils/dateUtils';
 import type { ClientDetails } from '../../../utils/types/clients';
@@ -100,7 +101,21 @@ const ClientForm = ({ client, onCancel, submitLabel, setCanRefresh }: ClientForm
   );
 
   return (
-    <form onSubmit={handleSubmit} className="space-y-3">
+    <form
+      onSubmit={handleSubmit}
+      className="mx-auto w-full max-w-2xl space-y-3 rounded-3xl border border-[#aec2d1]/40 bg-white/90 p-8 shadow-xl backdrop-blur-xl"
+    >
+      {createIsPending && (
+        <div className="absolute inset-0 z-50 flex h-full w-full items-center justify-center rounded-3xl backdrop-blur-xs">
+          <Spinner />
+        </div>
+      )}
+
+      {updateIsPending && (
+        <div className="absolute inset-0 z-50 flex h-full w-full items-center justify-center rounded-3xl backdrop-blur-xs">
+          <Spinner />
+        </div>
+      )}
       <div className="space-y-1">
         <label className="mb-1 block text-sm font-semibold text-[#3a4b66]">Company Name</label>
         <input

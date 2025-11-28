@@ -3,6 +3,7 @@ import { useCallback, useState } from 'react';
 import { toast } from 'react-toastify';
 import Modal from '../../../components/AdminPanel/Modal';
 import DeletePopup from '../../../components/common/DeletePopup';
+import { Spinner } from '../../../components/common/Spinner';
 import { useDeleteAdvertise, useGetAllAdvertise } from '../../../queries/adminPanel/advertise.query';
 import AdvertisementForm from './AdvertisementForm';
 // <--- ADD THIS IMPORT
@@ -12,36 +13,49 @@ function Advertisement() {
   const [showDeletePopup, setShowDeletePopup] = useState(false);
   const [selectedPostId, setSelectedPostId] = useState<string | null>(null);
 
-  const deleteMutation = useDeleteAdvertise();
+  const { mutate: deleteMutation, isPending: deletePending } = useDeleteAdvertise();
   const { data: adResponse, isLoading, isError, refetch } = useGetAllAdvertise();
 
-  const handleFinalDelete = () => {
+  const handleFinalDelete = useCallback(() => {
     if (!selectedPostId) return;
 
-    handleDelete(selectedPostId);
+    deleteMutation(selectedPostId, {
+      onSuccess: (data) => {
+        if (data.status) {
+          toast.success(data.message ?? 'Advertisement deleted successfully');
+          refetch(); // Refresh list
+          setShowDeletePopup(false); // Close popup AFTER success
+          setSelectedPostId(null); // Reset selection
+        } else {
+          toast.error(data.message ?? 'Delete failed');
+        }
+      },
+      onError: (error) => {
+        toast.error(error?.message ?? 'Something went wrong');
+      },
+    });
+  }, [selectedPostId, deleteMutation, refetch]);
 
-    setShowDeletePopup(false);
-    setSelectedPostId(null);
-  };
-
-  const handleDelete = useCallback(
-    (id: string) => {
-      deleteMutation.mutate(id, {
-        onSuccess: (data) => {
-          if (data.status) {
-            toast.success(data.message ?? 'Advertisement deleted successfully');
-            refetch(); // Refresh list
-          } else {
-            toast.error(data.message ?? 'Delete failed');
-          }
-        },
-        onError: (error) => {
-          toast.error(error?.message ?? 'Something went wrong');
-        },
-      });
-    },
-    [deleteMutation, refetch],
-  );
+  // const handleDelete = useCallback(
+  //   (id: string) => {
+  //     deleteMutation(id, {
+  //       onSuccess: (data) => {
+  //         if (data.status) {
+  //           toast.success(data.message ?? 'Advertisement deleted successfully');
+  //           refetch();
+  //           setShowDeletePopup(false);
+  //           setSelectedPostId(null);
+  //         } else {
+  //           toast.error(data.message ?? 'Delete failed');
+  //         }
+  //       },
+  //       onError: (error) => {
+  //         toast.error(error?.message ?? 'Something went wrong');
+  //       },
+  //     });
+  //   },
+  //   [deleteMutation, refetch],
+  // );
 
   return (
     <>
@@ -69,7 +83,11 @@ function Advertisement() {
       {/* ===== GRID OF POSTS ===== */}
       <div className="mx-auto mt-12 grid w-full max-w-7xl gap-8 px-4 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-4">
         {/* Loading */}
-        {isLoading && <div className="col-span-full text-center text-lg font-semibold text-gray-600">Loading...</div>}
+        {isLoading && (
+          <div className="col-span-full text-center text-lg font-semibold text-gray-600">
+            <Spinner className="bg-transparent! backdrop-blur-none!" />
+          </div>
+        )}
 
         {/* Error */}
         {isError && (
@@ -138,6 +156,7 @@ function Advertisement() {
             setShowDeletePopup(false);
             setSelectedPostId(null);
           }}
+          loading={deletePending}
         />
       )}
     </>
