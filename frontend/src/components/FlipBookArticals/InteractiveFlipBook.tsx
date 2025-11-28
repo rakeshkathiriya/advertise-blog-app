@@ -6,12 +6,17 @@ import { Spinner } from '../common/Spinner';
 import FlipBookPage from './FlipBookPage';
 
 const InteractiveFlipBook: React.FC = () => {
-  const { data: adResponse, isLoading, isError } = useGetAllAdvertise();
-  const flipBookRef = useRef<any>(null);
-
+  // States
   const [currentPageNumber, setCurrentPageNumber] = useState(0);
   const [isShowCover, setIsShowCover] = useState(true);
 
+  // Refs
+  const flipBookRef = useRef<any>(null);
+
+  // Api hooks
+  const { data: adResponse, isLoading } = useGetAllAdvertise();
+
+  // handlers
   const flipRight = useCallback(() => {
     flipBookRef.current?.pageFlip()?.flipNext();
   }, []);
@@ -24,6 +29,7 @@ const InteractiveFlipBook: React.FC = () => {
     setCurrentPageNumber(e.data + 1);
   }, []);
 
+  // effects
   useEffect(() => {
     if (!isLoading && adResponse?.data) {
       const timer = setTimeout(() => {
@@ -33,16 +39,6 @@ const InteractiveFlipBook: React.FC = () => {
       return () => clearTimeout(timer);
     }
   }, [isLoading, adResponse]);
-
-  if (isError) {
-    return (
-      <div className="flex min-h-screen w-screen items-center justify-center">
-        <div className="text-textPrimary">Error loading advertisements</div>
-      </div>
-    );
-  }
-
-  console.log('currentPageNumber :', adResponse && adResponse.data.length && adResponse.data.length % 2 === 0);
 
   return (
     <div className="relative flex min-h-screen w-screen flex-col items-center justify-center py-10">
@@ -141,7 +137,7 @@ const PageFooter = ({
   isShowIcon?: boolean;
 }) => {
   return (
-    <div className="flex h-[50px] w-full items-center">
+    <div className="flex h-[50px] w-full items-center justify-center">
       {isShowIcon && (
         <div className="flex cursor-pointer items-center justify-center gap-3">
           <Facebook size={20} color="#4B5563" strokeWidth={2.5} />
@@ -149,11 +145,11 @@ const PageFooter = ({
         </div>
       )}
       {isShowPage && (
-        <div className="flex w-[55%]">
+        <div className="flex w-[40%]">
           <p className="text-textSecondary ml-auto text-sm font-semibold">{'Page ' + (index + 1)} </p>
         </div>
       )}
-      <h4 className="text-textSecondary ml-auto text-sm font-semibold">© Smart Book 2025</h4>
+      <h4 className="text-textSecondary ml-auto text-sm font-semibold">© Food N Processing 2025</h4>
     </div>
   );
 };
