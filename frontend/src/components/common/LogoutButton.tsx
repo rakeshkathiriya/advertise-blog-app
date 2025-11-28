@@ -1,3 +1,4 @@
+import { LogOut } from 'lucide-react';
 import { useNavigate } from 'react-router-dom';
 import { toast } from 'react-toastify';
 import { useUserLogout } from '../../queries/auth.query';
@@ -31,9 +32,10 @@ export const LogoutButton = () => {
     <button
       onClick={handleLogout}
       disabled={logoutPending}
-      className="rounded-lg bg-red-600 px-4 py-2 font-semibold text-white shadow-md hover:bg-red-700 disabled:opacity-50"
+      title="Logout"
+      className="text-textWhite cursor-pointer rounded-lg px-4 py-2 font-semibold"
     >
-      {logoutPending ? 'Logging out...' : 'Logout'}
+      <LogOut />
     </button>
   );
 };
