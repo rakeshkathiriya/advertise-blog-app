@@ -91,6 +91,7 @@ export const useGetClientsList = ({ name, status, page }: { name: string; status
     },
     refetchOnWindowFocus: false,
     refetchOnReconnect: false,
-    refetchOnMount: false,
+    refetchOnMount: true,
+    staleTime: 0,
   });
 };
