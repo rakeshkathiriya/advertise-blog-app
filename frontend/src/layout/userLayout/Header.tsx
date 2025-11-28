@@ -10,7 +10,7 @@ export const Header: React.FC = () => {
     <div className="header_container w-full">
       <div className="bg-bgDefault py-1.5 text-center font-medium">
         {/* <div className="from-orange to-orangeLight bg-linear-to-r py-1.5 text-center font-medium"> */}
-        <p className="text-bgPrimaryDark text-[13px] font-semibold tracking-wide">
+        <p className="text-textSecondary ml-auto text-sm font-semibold tracking-wide">
           Exclusive Price Drop! Hurry, <span className="underline underline-offset-4">Offer Ends Soon!</span>
         </p>
       </div>

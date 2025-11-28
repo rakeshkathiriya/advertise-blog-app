@@ -88,33 +88,3 @@ body {
   min-width: 0;
   max-width: 100%;
 }
-
-.pagefooter {
-  display: flex;
-  align-items: center;
-}
-
-.pgfoter-div {
-  width: 55%;
-  display: flex;
-}
-
-.pgfoter-div p {
-  margin-left: auto;
-  font-family: "Poppins";
-  font-weight: 500;
-  font-size: 11.7px;
-  letter-spacing: 0;
-  line-height: 28.42px;
-  color: #5e5d5d;
-}
-
-.pagefooter h4 {
-  margin-left: auto;
-  font-family: "Poppins";
-  font-weight: 500;
-  font-size: 11.7px;
-  letter-spacing: 0;
-  line-height: 28.42px;
-  color: #5e5d5d;
-}
