@@ -3,6 +3,7 @@ import { useNavigate } from 'react-router-dom';
 import { setUser } from '../../store/authSlice';
 import { useAppDispatch } from '../../store/hooks';
 import { getUserRole } from '../../utils/helper';
+import { Spinner } from './Spinner';
 
 export const FacebookAuthSuccess = () => {
   const navigate = useNavigate();
@@ -47,5 +48,5 @@ export const FacebookAuthSuccess = () => {
     }, 50);
   }, []);
 
-  return <p>Logging you in...</p>;
+  return <Spinner />;
 };

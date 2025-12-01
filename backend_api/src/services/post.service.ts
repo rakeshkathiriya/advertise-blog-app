@@ -1,4 +1,5 @@
 import createHttpError from 'http-errors';
+import { Types } from 'mongoose';
 import { uploadToCloudinary } from '../configs/cloudinaryUpload';
 import { postToFacebook, postToInstagram } from '../helper/postOnSocial';
 import { clientModel } from '../models/clientModel';
@@ -92,8 +93,26 @@ export const handlePostCreation = async (data: Post) => {
   };
 };
 
-export const getAllAdvertiseService = async () => {
-  const posts = await postModel.find().sort({ _id: -1 }).limit(40).populate('client');
+export const getAllAdvertiseService = async (filters: { name?: string }) => {
+  let clientIds: Types.ObjectId[] = [];
+
+  // Step 1: Search clients by name
+  if (filters.name && filters.name.trim() !== '') {
+    const matchingClients = await clientModel.find({
+      name: { $regex: filters.name, $options: 'i' },
+    });
+
+    clientIds = matchingClients.map((c) => c._id as Types.ObjectId);
+  }
+
+  // Step 2: Build post query
+  const query: any = {};
+
+  if (clientIds.length > 0) {
+    query.client = { $in: clientIds };
+  }
+
+  const posts = await postModel.find(query).populate('client').sort({ _id: -1 }).limit(40);
 
   return posts;
 };

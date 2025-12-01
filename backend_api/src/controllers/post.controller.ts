@@ -34,7 +34,10 @@ export const createAdvertise = async (req: Request, res: Response, next: NextFun
 
 export const getAllAdvertise = async (req: Request, res: Response, next: NextFunction) => {
   try {
-    const posts = await getAllAdvertiseService();
+    const { name } = req.query;
+    const posts = await getAllAdvertiseService({
+      name: name as string,
+    });
 
     res.status(200).json({
       status: true,
