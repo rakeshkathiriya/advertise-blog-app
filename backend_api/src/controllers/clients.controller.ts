@@ -10,7 +10,7 @@ import { Client, ClientUpdate } from '../utils/types/type';
 
 export const createClient = async (req: Request, res: Response, next: NextFunction) => {
   try {
-    const { name, poc, contact, email, postLimit, expiredDate } = req.body;
+    const { name, poc, contact, email, postLimit = 0, expiredDate } = req.body;
     const data: Client = {
       name,
       poc,
