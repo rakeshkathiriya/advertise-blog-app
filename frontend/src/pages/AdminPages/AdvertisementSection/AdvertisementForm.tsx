@@ -3,6 +3,7 @@ import type { QueryObserverResult, RefetchOptions } from '@tanstack/react-query'
 import { useFormik } from 'formik';
 import { useCallback, useState } from 'react';
 import { toast } from 'react-toastify';
+import Modal from '../../../components/AdminPanel/Modal';
 import { Spinner } from '../../../components/common/Spinner';
 import { advertiseCreation } from '../../../queries/adminPanel/advertise.query';
 import { useClientsDDOptions } from '../../../queries/adminPanel/clients.query';
@@ -86,167 +87,171 @@ const AdvertisementForm = ({
   // useEffect(() => {
   //   clientReFetch();
   // }, []);
-
   return (
-    <form
-      onSubmit={handleSubmit}
-      className="mx-auto w-full max-w-2xl space-y-8 rounded-3xl border border-[#aec2d1]/40 bg-white/90 p-8 shadow-xl backdrop-blur-xl"
-    >
-      {resAdvertisePending && (
-        <div className="absolute inset-0 z-50 flex h-full w-full items-center justify-center rounded-3xl backdrop-blur-xs">
-          <Spinner />
-        </div>
-      )}
-
-      <div className="space-y-4">
-        {/* Image Upload */}
-        <div className="space-y-1">
-          <label htmlFor="image" className="block text-sm font-semibold text-[#3a4b66]">
-            Advertise Image
-          </label>
-          <input
-            type="file"
-            name="image"
-            onChange={handleFileChange}
-            onBlur={handleBlur}
-            accept="image/jpeg,image/jpg,image/png"
-            className={`w-full rounded-xl border border-gray-300 bg-gray-100 px-4 py-3 text-sm text-gray-700 transition-all hover:bg-gray-200 focus:ring-2 focus:ring-[#aec2d1] focus:outline-none ${
-              touched.image && errors.image ? 'border-red-500' : 'border-gray-300'
-            } `}
-          />
-          <p className="min-h-5 text-xs text-red-500">{touched.image && errors.image}</p>
-        </div>
-
-        {/* Description */}
-        <div className="space-y-1">
-          <label htmlFor="description" className="block text-sm font-semibold text-[#3a4b66]">
-            Description
-          </label>
-          <div className="relative">
-            <textarea
-              name="description"
-              rows={4}
-              value={values.description}
-              onChange={handleChange}
-              onBlur={handleBlur}
-              className={`scrollbar-thin scrollbar-thumb-[#aec2d1] scrollbar-track-gray-200 max-h-48 w-full overflow-y-auto rounded-xl border border-gray-300 bg-gray-100 px-4 py-3 text-sm text-gray-700 focus:ring-2 focus:ring-[#aec2d1] focus:outline-none ${
-                touched.description && errors.description ? 'border-red-500' : 'border-gray-300'
-              }`}
-              placeholder="Write something amazing..."
-            />
+    <Modal onClose={onCancel} isLoading={resAdvertisePending}>
+      <h3 className="mb-4 text-center text-lg font-bold tracking-wide text-[#3a4b66] underline underline-offset-8">
+        Add New Advertisement
+      </h3>
+      <form
+        onSubmit={handleSubmit}
+        className="mx-auto w-full max-w-2xl space-y-8 rounded-3xl border border-[#aec2d1]/40 bg-white/90 p-8 shadow-xl backdrop-blur-xl"
+      >
+        {resAdvertisePending && (
+          <div className="absolute inset-0 z-50 flex h-full w-full items-center justify-center rounded-3xl backdrop-blur-xs">
+            <Spinner />
           </div>
-          <p className="min-h-5 text-xs text-red-500">{touched.description && errors.description}</p>
-        </div>
+        )}
 
-        {/* Client Select */}
-        <div className="space-y-1">
-          <label className="block text-sm font-semibold text-[#3a4b66]">Choose a Client</label>
+        <div className="space-y-4">
+          {/* Image Upload */}
+          <div className="space-y-1">
+            <label htmlFor="image" className="block text-sm font-semibold text-[#3a4b66]">
+              Advertise Image
+            </label>
+            <input
+              type="file"
+              name="image"
+              onChange={handleFileChange}
+              onBlur={handleBlur}
+              accept="image/jpeg,image/jpg,image/png"
+              className={`w-full rounded-xl border border-gray-300 bg-gray-100 px-4 py-3 text-sm text-gray-700 transition-all hover:bg-gray-200 focus:ring-2 focus:ring-[#aec2d1] focus:outline-none ${
+                touched.image && errors.image ? 'border-red-500' : 'border-gray-300'
+              } `}
+            />
+            <p className="min-h-5 text-xs text-red-500">{touched.image && errors.image}</p>
+          </div>
 
-          <FormControl fullWidth>
-            <Select
-              name="client"
-              id="client"
-              value={values.client}
-              onChange={handleChange}
-              displayEmpty
-              renderValue={(selected) => {
-                if (selected === '') {
-                  return <span className="text-gray-400">-- Select a client --</span>;
-                }
-                return clientsResponse?.data?.find((c) => c._id === selected)?.name;
-              }}
-              sx={{
-                backgroundColor: '#f3f4f6',
-                borderRadius: '12px',
-                fontSize: '14px',
-                color: '#4b5563',
-                paddingY: '3px',
-                '& .MuiOutlinedInput-notchedOutline': {
-                  borderColor: touched.client && errors.client ? '#ef4444' : '#d1d5db',
-                },
-                '&:hover .MuiOutlinedInput-notchedOutline': {
-                  borderColor: '#94a3b8',
-                },
-                '&.Mui-focused .MuiOutlinedInput-notchedOutline': {
-                  borderColor: '#aec2d1',
-                },
-              }}
-              MenuProps={{
-                PaperProps: {
-                  sx: {
-                    maxHeight: 200,
-                    overflowY: 'auto',
+          {/* Description */}
+          <div className="space-y-1">
+            <label htmlFor="description" className="block text-sm font-semibold text-[#3a4b66]">
+              Description
+            </label>
+            <div className="relative">
+              <textarea
+                name="description"
+                rows={4}
+                value={values.description}
+                onChange={handleChange}
+                onBlur={handleBlur}
+                className={`scrollbar-thin scrollbar-thumb-[#aec2d1] scrollbar-track-gray-200 max-h-48 w-full overflow-y-auto rounded-xl border border-gray-300 bg-gray-100 px-4 py-3 text-sm text-gray-700 focus:ring-2 focus:ring-[#aec2d1] focus:outline-none ${
+                  touched.description && errors.description ? 'border-red-500' : 'border-gray-300'
+                }`}
+                placeholder="Write something amazing..."
+              />
+            </div>
+            <p className="min-h-5 text-xs text-red-500">{touched.description && errors.description}</p>
+          </div>
+
+          {/* Client Select */}
+          <div className="space-y-1">
+            <label className="block text-sm font-semibold text-[#3a4b66]">Choose a Client</label>
+
+            <FormControl fullWidth>
+              <Select
+                name="client"
+                id="client"
+                value={values.client}
+                onChange={handleChange}
+                displayEmpty
+                renderValue={(selected) => {
+                  if (selected === '') {
+                    return <span className="text-gray-400">-- Select a client --</span>;
+                  }
+                  return clientsResponse?.data?.find((c) => c._id === selected)?.name;
+                }}
+                sx={{
+                  backgroundColor: '#f3f4f6',
+                  borderRadius: '12px',
+                  fontSize: '14px',
+                  color: '#4b5563',
+                  paddingY: '3px',
+                  '& .MuiOutlinedInput-notchedOutline': {
+                    borderColor: touched.client && errors.client ? '#ef4444' : '#d1d5db',
                   },
-                },
-              }}
-            >
-              {/* Placeholder option (must exist!) */}
-              <MenuItem value="" disabled sx={{ display: 'none' }}>
-                -- Select a client --
-              </MenuItem>
-
-              {clientsResponse?.data?.map((client) => (
-                <MenuItem
-                  key={client._id}
-                  value={client._id}
-                  sx={{
-                    height: 40,
-                    fontSize: '14px',
-                    color: '#4b5563',
-                  }}
-                >
-                  {client.name}
+                  '&:hover .MuiOutlinedInput-notchedOutline': {
+                    borderColor: '#94a3b8',
+                  },
+                  '&.Mui-focused .MuiOutlinedInput-notchedOutline': {
+                    borderColor: '#aec2d1',
+                  },
+                }}
+                MenuProps={{
+                  PaperProps: {
+                    sx: {
+                      maxHeight: 200,
+                      overflowY: 'auto',
+                    },
+                  },
+                }}
+              >
+                {/* Placeholder option (must exist!) */}
+                <MenuItem value="" disabled sx={{ display: 'none' }}>
+                  -- Select a client --
                 </MenuItem>
-              ))}
-            </Select>
-          </FormControl>
 
-          {/* Formik error */}
-          {touched.client && errors.client && <p className="text-xs text-red-500">{errors.client}</p>}
-        </div>
-      </div>
+                {clientsResponse?.data?.map((client) => (
+                  <MenuItem
+                    key={client._id}
+                    value={client._id}
+                    sx={{
+                      height: 40,
+                      fontSize: '14px',
+                      color: '#4b5563',
+                    }}
+                  >
+                    {client.name}
+                  </MenuItem>
+                ))}
+              </Select>
+            </FormControl>
 
-      {/* Upload Toggles */}
-      <div className="grid grid-cols-1 gap-4 sm:grid-cols-2">
-        <div className="flex items-center gap-3 rounded-xl border border-gray-200 bg-[#f6f7f9] p-4 shadow-sm transition-all hover:shadow-lg">
-          <input
-            name="uploadOnFacebook"
-            checked={Boolean(values.uploadOnFacebook)}
-            onChange={(e) => {
-              setFieldValue('uploadOnFacebook', Boolean(e.target.checked));
-            }}
-            onBlur={handleBlur}
-            type="checkbox"
-            className="h-5 w-5 accent-[#3a4b66]"
-          />
-          <span className="text-sm font-semibold text-[#3a4b66]">Facebook</span>
+            {/* Formik error */}
+            {touched.client && errors.client && <p className="text-xs text-red-500">{errors.client}</p>}
+          </div>
         </div>
 
-        <div className="flex items-center gap-3 rounded-xl border border-gray-200 bg-[#f6f7f9] p-4 shadow-sm transition-all hover:shadow-lg">
-          <input
-            type="checkbox"
-            name="uploadOnInstagram"
-            checked={Boolean(values.uploadOnInstagram)}
-            onChange={(e) => {
-              setFieldValue('uploadOnInstagram', Boolean(e.target.checked));
-            }}
-            onBlur={handleBlur}
-            className="h-5 w-5 accent-[#3a4b66]"
-          />
-          <span className="text-sm font-semibold text-[#3a4b66]">Instagram</span>
+        {/* Upload Toggles */}
+        <div className="grid grid-cols-1 gap-4 sm:grid-cols-2">
+          <div className="flex items-center gap-3 rounded-xl border border-gray-200 bg-[#f6f7f9] p-4 shadow-sm transition-all hover:shadow-lg">
+            <input
+              name="uploadOnFacebook"
+              checked={Boolean(values.uploadOnFacebook)}
+              onChange={(e) => {
+                setFieldValue('uploadOnFacebook', Boolean(e.target.checked));
+              }}
+              onBlur={handleBlur}
+              type="checkbox"
+              className="h-5 w-5 accent-[#3a4b66]"
+            />
+            <span className="text-sm font-semibold text-[#3a4b66]">Facebook</span>
+          </div>
+
+          <div className="flex items-center gap-3 rounded-xl border border-gray-200 bg-[#f6f7f9] p-4 shadow-sm transition-all hover:shadow-lg">
+            <input
+              type="checkbox"
+              name="uploadOnInstagram"
+              checked={Boolean(values.uploadOnInstagram)}
+              onChange={(e) => {
+                setFieldValue('uploadOnInstagram', Boolean(e.target.checked));
+              }}
+              onBlur={handleBlur}
+              className="h-5 w-5 accent-[#3a4b66]"
+            />
+            <span className="text-sm font-semibold text-[#3a4b66]">Instagram</span>
+          </div>
         </div>
-      </div>
-      {/* Actions */}
-      <div className="flex flex-col gap-4 pt-4 sm:flex-row">
-        <button
-          type="submit"
-          disabled={resAdvertisePending}
-          className="flex-1 rounded-full bg-[#aec2d1] py-3 font-semibold text-[#3a4b66] shadow-lg transition-all hover:scale-105 hover:bg-[#bcd0db]"
-        >
-          {resAdvertisePending ? 'Creating Advertise...' : 'Create Advertise'}
-        </button>
-      </div>
-    </form>
+        {/* Actions */}
+        <div className="flex flex-col gap-4 pt-4 sm:flex-row">
+          <button
+            type="submit"
+            disabled={resAdvertisePending}
+            className="flex-1 rounded-full bg-[#aec2d1] py-3 font-semibold text-[#3a4b66] shadow-lg transition-all hover:scale-105 hover:bg-[#bcd0db]"
+          >
+            {resAdvertisePending ? 'Creating Advertise...' : 'Create Advertise'}
+          </button>
+        </div>
+      </form>
+    </Modal>
   );
 };
 

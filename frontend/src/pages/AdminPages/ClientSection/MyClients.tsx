@@ -1,5 +1,4 @@
 import { useCallback, useState } from 'react';
-import Modal from '../../../components/AdminPanel/Modal';
 import type { ClientDetails } from '../../../utils/types/clients';
 import ClientForm from './ClientForm';
 import ClientsTable from './ClientsTable';
@@ -27,7 +26,6 @@ const MyClients = () => {
           days, and maintain up-to-date client information. Double-click on any row to edit client details.
         </p>
       </div>
-
       {/* Search and Filter Section */}
       <div className="mb-4 flex flex-wrap items-center justify-between gap-4">
         <div className="flex items-center gap-2">
@@ -69,51 +67,38 @@ const MyClients = () => {
           </button>
         </div>
       </div>
-
       <ClientsTable
         canRefresh={canRefresh}
         setCanRefresh={setCanRefresh}
         setEditingClient={setEditingClient}
         searchFilter={searchFilter}
       />
-
-      {/* Edit Modal */}
+      Edit Modal
       {editingClient && (
-        <Modal onClose={() => setEditingClient(null)}>
-          <h3 className="text-textColor mb-4 text-center text-lg font-bold tracking-wide underline underline-offset-8">
-            Edit Client
-          </h3>
-          <ClientForm
-            client={editingClient}
-            onCancel={() => setEditingClient(null)}
-            submitLabel="Update"
-            setCanRefresh={setCanRefresh}
-          />
-        </Modal>
+        <ClientForm
+          client={editingClient}
+          onCancel={() => setEditingClient(null)}
+          submitLabel="Update"
+          setCanRefresh={setCanRefresh}
+        />
       )}
-
       {/* Add Modal */}
       {showAddModal && (
-        <Modal onClose={() => setShowAddModal(false)}>
-          <h3 className="text-textColor mb-4 text-center text-lg font-bold tracking-wide underline underline-offset-8">
-            Add New Client
-          </h3>
-          <ClientForm
-            client={{
-              _id: '',
-              name: '',
-              poc: '',
-              email: '',
-              postLimit: 0,
-              expiredDate: '',
-              contact: '',
-              posts: [],
-            }}
-            onCancel={() => setShowAddModal(false)}
-            setCanRefresh={setCanRefresh}
-            submitLabel="Save"
-          />
-        </Modal>
+        <ClientForm
+          client={{
+            _id: '',
+            name: '',
+            poc: '',
+            email: '',
+            postLimit: 0,
+            expiredDate: '',
+            contact: '',
+            posts: [],
+          }}
+          onCancel={() => setShowAddModal(false)}
+          setCanRefresh={setCanRefresh}
+          submitLabel="Save"
+        />
       )}
     </div>
   );

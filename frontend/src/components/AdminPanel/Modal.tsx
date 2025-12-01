@@ -5,9 +5,10 @@ import React from 'react';
 interface ModalProps {
   children: React.ReactNode;
   onClose: () => void;
+  isLoading?: boolean;
 }
 
-const Modal = ({ children, onClose }: ModalProps) => (
+const Modal = ({ children, onClose, isLoading }: ModalProps) => (
   <AnimatePresence>
     <motion.div
       initial={{ opacity: 0 }}
@@ -24,6 +25,7 @@ const Modal = ({ children, onClose }: ModalProps) => (
       >
         <button
           onClick={onClose}
+          disabled={isLoading}
           className="absolute top-4 right-4 size-4 cursor-pointer font-bold text-[#3a4b66]"
           title="Close Modal"
         >

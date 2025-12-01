@@ -26,12 +26,12 @@ export const advertiseCreation = () => {
   });
 };
 
-export const useGetAllAdvertise = () => {
+export const useGetAllAdvertise = (params?: { name?: string }) => {
   return useQuery<AdvertiseResponse, CommonApiError>({
-    queryKey: ['useGetAllAdvertise'],
+    queryKey: ['useGetAllAdvertise', params?.name ?? ''],
     queryFn: async () => {
       try {
-        const response = await api.get('admin/advertisements');
+        const response = await api.get(`/admin/advertisements?name=${params?.name ?? ''}`);
         return handleResponse(response);
       } catch (error) {
         if (axios.isAxiosError(error)) throw handleErrorResponse(error);

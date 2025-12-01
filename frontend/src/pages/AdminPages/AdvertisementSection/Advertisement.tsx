@@ -1,7 +1,6 @@
 import { Trash2 } from 'lucide-react';
 import { useCallback, useState } from 'react';
 import { toast } from 'react-toastify';
-import Modal from '../../../components/AdminPanel/Modal';
 import DeletePopup from '../../../components/common/DeletePopup';
 import { Spinner } from '../../../components/common/Spinner';
 import { useDeleteAdvertise, useGetAllAdvertise } from '../../../queries/adminPanel/advertise.query';
@@ -12,9 +11,24 @@ function Advertisement() {
   const [showAddModal, setShowAddModal] = useState<boolean>(false);
   const [showDeletePopup, setShowDeletePopup] = useState(false);
   const [selectedPostId, setSelectedPostId] = useState<string | null>(null);
+  const [searchCompany, setSearchCompany] = useState<string>('');
+  const [searchFilter, setSearchFilter] = useState<{ name: string } | null>(null);
 
   const { mutate: deleteMutation, isPending: deletePending } = useDeleteAdvertise();
-  const { data: adResponse, isLoading, isError, refetch } = useGetAllAdvertise();
+  // const { data: adResponse, isLoading, isError, refetch } = useGetAllAdvertise();
+
+  const {
+    data: adResponse,
+    isLoading,
+    isError,
+    refetch,
+  } = useGetAllAdvertise({
+    name: searchFilter?.name ?? '',
+  });
+
+  const handleSearch = useCallback(() => {
+    setSearchFilter({ name: searchCompany });
+  }, [searchCompany]);
 
   const handleFinalDelete = useCallback(() => {
     if (!selectedPostId) return;
@@ -70,14 +84,33 @@ function Advertisement() {
         </p>
       </div>
 
-      {/* ===== ADD BUTTON ===== */}
-      <div className="flex justify-end">
-        <button
-          onClick={() => setShowAddModal(true)}
-          className="flex cursor-pointer items-center rounded-full bg-[#aec2d1] px-4 py-2 text-base font-semibold tracking-wide text-[#3a4b66] transition-all duration-500 ease-in-out hover:scale-105 hover:transform"
-        >
-          Add Advertisement
-        </button>
+      {/* Search and Filter Section */}
+      <div className="mx-auto flex w-full max-w-7xl flex-wrap items-center justify-between gap-5 px-5">
+        <div className="flex items-center gap-2">
+          <input
+            type="text"
+            value={searchCompany}
+            onChange={(e) => setSearchCompany(e.target.value)}
+            placeholder="Search by companyName..."
+            className="focus:ring-textColor flex-1 rounded-lg border border-gray-300 px-4 py-2 text-sm font-semibold text-gray-600 focus:ring-2 focus:outline-none"
+          />
+          <button
+            className="text-14 text-textColor flex items-center gap-2 rounded-full bg-[#aec2d1] px-6 py-2 font-semibold tracking-wide transition-all duration-500 ease-in-out hover:scale-105 hover:transform"
+            onClick={handleSearch}
+          >
+            Search
+          </button>
+        </div>
+
+        {/* ===== ADD BUTTON ===== */}
+        <div className="flex justify-end">
+          <button
+            onClick={() => setShowAddModal(true)}
+            className="flex cursor-pointer items-center rounded-full bg-[#aec2d1] px-4 py-2 text-base font-semibold tracking-wide text-[#3a4b66] transition-all duration-500 ease-in-out hover:scale-105 hover:transform"
+          >
+            Add Advertisement
+          </button>
+        </div>
       </div>
 
       {/* ===== GRID OF POSTS ===== */}
@@ -139,14 +172,7 @@ function Advertisement() {
       </div>
 
       {/* ===== ADD ADVERTISEMENT MODAL ===== */}
-      {showAddModal && (
-        <Modal onClose={() => setShowAddModal(false)}>
-          <h3 className="mb-4 text-center text-lg font-bold tracking-wide text-[#3a4b66] underline underline-offset-8">
-            Add New Advertisement
-          </h3>
-          <AdvertisementForm onCancel={() => setShowAddModal(false)} refetchData={refetch} />
-        </Modal>
-      )}
+      {showAddModal && <AdvertisementForm onCancel={() => setShowAddModal(false)} refetchData={refetch} />}
 
       {showDeletePopup && (
         <DeletePopup

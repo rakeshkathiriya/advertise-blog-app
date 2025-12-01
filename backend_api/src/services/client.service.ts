@@ -3,7 +3,7 @@ import { clientModel } from '../models/clientModel';
 import { Client, ClientUpdate } from '../utils/types/type';
 
 export const handleClientCreation = async (data: Client) => {
-  if (!data.name || !data.poc || !data.contact || !data.email || !data.postLimit) {
+  if (!data.name || !data.poc || !data.contact || !data.email) {
     throw createHttpError.BadRequest('All field are Required');
   }
 
