@@ -4,29 +4,51 @@ import { UserModel } from '../models/userModel';
 interface Filters {
   email?: string;
   isSubscribed?: string;
+  isForeverSubscribe?: string;
+  page?: string;
 }
 
 export const getAllUsersService = async (filters: Filters) => {
-  const query: any = {};
+  const limit = 10;
+  const page = filters.page ? Number(filters.page) : 1;
+  const skip = (page - 1) * limit;
+
+  // ------------ MATCH STAGE CONDITIONS ------------
+  const match: any = {};
 
   // Apply email filter only when value exists
   if (filters.email && filters.email.trim() !== '') {
-    query.email = { $regex: filters.email, $options: 'i' };
+    match.email = { $regex: filters.email, $options: 'i' };
   }
 
-  // Apply isSubscribed filter only when provided
-  if (filters.isSubscribed === 'true') {
-    query.isSubscribed = true;
-  } else if (filters.isSubscribed === 'false') {
-    query.isSubscribed = false;
-  }
+  // isSubscribed filter
+  if (filters.isSubscribed === 'true') match.isSubscribed = true;
+  if (filters.isSubscribed === 'false') match.isSubscribed = false;
 
-  // If query object is empty ⇒ no filter ⇒ return ALL users
-  const users = Object.keys(query).length
-    ? await UserModel.find(query).sort({ _id: -1 })
-    : await UserModel.find().sort({ _id: -1 });
+  // isForeverSubscribe filter
+  if (filters.isForeverSubscribe === 'true') match.isForeverSubscribe = true;
+  if (filters.isForeverSubscribe === 'false') match.isForeverSubscribe = false;
 
-  return users;
+  // Fields to remove
+  const projection = { password: 0, __v: 0, updatedAt: 0 };
+
+  // -------- 1️⃣ TOTAL COUNT AFTER FILTERS --------
+  const totalRecords = await UserModel.countDocuments(match);
+
+  // -------- 2️⃣ PAGINATED USERS LIST --------
+  const userList = await UserModel.find(match, projection).sort({ createdAt: -1 }).skip(skip).limit(limit);
+
+  // -------- 3️⃣ TOTAL PAGES --------
+  const totalPages = Math.ceil(totalRecords / limit);
+
+  // -------- 4️⃣ RETURN STRUCTURE --------
+  return {
+    totalRecords,
+    page,
+    limit,
+    totalPages,
+    userList,
+  };
 };
 
 export const changeUserSubscriptionService = async (id: string) => {

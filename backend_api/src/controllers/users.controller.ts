@@ -3,17 +3,25 @@ import { changeUserSubscriptionService, getAllUsersService } from '../services/u
 
 export const getAllUsers = async (req: Request, res: Response, next: NextFunction) => {
   try {
-    const { email, isSubscribed } = req.query;
+    const { email, isSubscribed, isForeverSubscribe, page } = req.query;
 
-    const users = await getAllUsersService({
+    const response = await getAllUsersService({
       email: email as string,
       isSubscribed: isSubscribed as string,
+      isForeverSubscribe: isForeverSubscribe as string,
+      page: page as string,
     });
 
     res.status(200).json({
       status: true,
       message: 'Users fetched successfully',
-      data: users,
+      data: response.userList,
+      pagination: {
+        page: response.page,
+        limit: response.limit,
+        totalRecords: response.totalRecords,
+        totalPages: response.totalPages,
+      },
     });
   } catch (error) {
     next(error);

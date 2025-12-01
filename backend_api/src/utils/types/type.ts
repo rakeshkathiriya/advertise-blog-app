@@ -17,6 +17,7 @@ export interface IUser {
   isSubscribed?: boolean;
   createdAt: Date;
   updatedAt: Date;
+  isForeverSubscribe?: boolean;
 }
 
 export interface Post {

@@ -1,26 +1,30 @@
-import { useState } from 'react';
+import { useCallback, useEffect, useState } from 'react';
 import HeaderSection from '../../../components/AdminPanel/HeaderSection';
 import Modal from '../../../components/AdminPanel/Modal';
 import Tabs from '../../../components/AdminPanel/tabs';
 import { userSection } from '../../../utils/staticData/staticData';
+import type { UserDetails } from '../../../utils/types/users';
 import ForEverSubscriptionUsersTable from './ForEverSubscriptionUsersTable';
 import UserForm from './UserForm';
-import UsersTable, { type UserWithIndex } from './UsersTable';
+import UsersTable from './UsersTable';
 
 const MyUsers = () => {
   const [activeTab, setActiveTab] = useState('subscribe_users');
   const [currentPage, setCurrentPage] = useState<number>(1);
-  const [editingUser, setEditingUser] = useState<UserWithIndex | null>(null);
+  const [editingUser, setEditingUser] = useState<UserDetails | null>(null);
   const [searchUser, setSearchUser] = useState<string>('');
   const [statusFilter, setStatusFilter] = useState<string>('all');
+  const [canRefresh, setCanRefresh] = useState<boolean>(false);
+  const [searchFilter, setSearchFilter] = useState<{ email: string; isSubscribed: string } | null>(null);
 
-  const handleSaveEdit = () => {
-    if (!editingUser) return;
+  const handleSearch = useCallback(() => {
+    setSearchFilter({ email: searchUser, isSubscribed: statusFilter });
+  }, [searchUser, statusFilter]);
 
-    setEditingUser(null);
-  };
-
-  const handleSearch = () => {};
+  useEffect(() => {
+    setCanRefresh(false);
+    setSearchFilter(null);
+  }, [activeTab]);
 
   return (
     <div className="h-full w-full space-y-4">
@@ -51,8 +55,8 @@ const MyUsers = () => {
                   className="text-textSecondary border-borderMedium focus:ring-borderMedium rounded-lg border px-1 py-2 text-sm font-semibold focus:ring-2 focus:outline-none"
                 >
                   <option value="all">All</option>
-                  <option value="active">Active</option>
-                  <option value="inactive">Inactive</option>
+                  <option value="true">Subscribe</option>
+                  <option value="false">UnSubscribe</option>
                 </select>
               </div>
               <button
@@ -64,7 +68,12 @@ const MyUsers = () => {
             </div>
           </div>
 
-          <UsersTable setEditingClient={setEditingUser} currentPage={currentPage} setCurrentPage={setCurrentPage} />
+          <UsersTable
+            setEditingUser={setEditingUser}
+            canRefresh={canRefresh}
+            setCanRefresh={setCanRefresh}
+            searchFilter={searchFilter}
+          />
         </>
       )}
 
@@ -80,21 +89,6 @@ const MyUsers = () => {
                 onChange={(e) => setSearchUser(e.target.value)}
                 className="flex-1 rounded-lg border border-gray-300 px-4 py-2 text-sm font-semibold text-gray-600 focus:ring-2 focus:ring-[#3a4b66] focus:outline-none"
               />
-              <div className="flex items-center gap-2">
-                <label className="text-sm font-semibold text-[#3a4b66]">Status:</label>
-                <select
-                  value={statusFilter}
-                  onChange={(e) => {
-                    setStatusFilter(e.target.value);
-                    setCurrentPage(1);
-                  }}
-                  className="rounded-lg border border-gray-300 px-1 py-2 text-sm font-semibold text-gray-600 focus:ring-2 focus:ring-[#3a4b66] focus:outline-none"
-                >
-                  <option value="all">All</option>
-                  <option value="active">Active</option>
-                  <option value="inactive">Inactive</option>
-                </select>
-              </div>
               <button
                 onClick={handleSearch}
                 className="text-14 flex items-center gap-2 rounded-full bg-[#aec2d1] px-6 py-2 font-semibold tracking-wide text-[#3a4b66] transition-all duration-500 ease-in-out hover:scale-105 hover:transform"
@@ -104,9 +98,10 @@ const MyUsers = () => {
             </div>
           </div>
           <ForEverSubscriptionUsersTable
-            setEditingClient={setEditingUser}
-            currentPage={currentPage}
-            setCurrentPage={setCurrentPage}
+            setEditingUser={setEditingUser}
+            canRefresh={canRefresh}
+            setCanRefresh={setCanRefresh}
+            searchFilter={searchFilter}
           />
         </>
       )}
@@ -117,12 +112,7 @@ const MyUsers = () => {
           <h3 className="mb-4 text-center text-lg font-bold tracking-wide text-[#3a4b66] underline underline-offset-8">
             Edit User
           </h3>
-          <UserForm
-            user={editingUser}
-            onSubmit={handleSaveEdit}
-            onCancel={() => setEditingUser(null)}
-            submitLabel="Update"
-          />
+          <UserForm user={editingUser} onCancel={() => setEditingUser(null)} submitLabel="Update" />
         </Modal>
       )}
     </div>
