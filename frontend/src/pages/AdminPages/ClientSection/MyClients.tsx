@@ -50,6 +50,7 @@ const MyClients = () => {
               <option value="expired">Inactive</option>
             </select>
           </div>
+
           <button
             onClick={handleSearch}
             className="text-14 text-textColor flex items-center gap-2 rounded-full bg-[#aec2d1] px-6 py-2 font-semibold tracking-wide transition-all duration-500 ease-in-out hover:scale-105 hover:transform"
@@ -73,7 +74,6 @@ const MyClients = () => {
         setEditingClient={setEditingClient}
         searchFilter={searchFilter}
       />
-      Edit Modal
       {editingClient && (
         <ClientForm
           client={editingClient}

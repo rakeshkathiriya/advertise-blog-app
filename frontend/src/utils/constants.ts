@@ -1,5 +1,6 @@
 export const HTTP_OK = 200;
 export const HTTP_OK_2 = 201;
+export const freePageCount = 2;
 
 export const DATE_FORMATS = {
   ISO: 'yyyy-MM-dd',

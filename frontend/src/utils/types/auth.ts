@@ -41,5 +41,6 @@ export interface AuthState {
 export interface DecodedToken {
   id: string;
   role: string;
+  isForeverSubscribe: boolean;
   exp?: number;
 }

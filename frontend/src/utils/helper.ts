@@ -64,3 +64,17 @@ export const getUserRole = () => {
     return null;
   }
 };
+
+export const isUserForeverSubscribed = () => {
+  const token = localStorage.getItem('accessToken');
+
+  if (!token) return null;
+
+  try {
+    const decoded: DecodedToken = jwtDecode(token);
+    return decoded.isForeverSubscribe ?? false;
+  } catch (error) {
+    console.error('Invalid Token:', error);
+    return null;
+  }
+};

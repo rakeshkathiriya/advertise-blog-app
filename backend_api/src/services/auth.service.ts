@@ -55,7 +55,11 @@ export const loginUser = async (email: string, password: string) => {
   if (!isMatch) throw createHttpError.NotFound('Invalid credentials.');
 
   // Generate token
-  const token = jwt.sign({ id: user._id, role: user.role }, process.env.ACCESS_TOKEN_SECRET!, { expiresIn: '7d' });
+  const token = jwt.sign(
+    { id: user._id, role: user.role, isForeverSubscribe: user.isForeverSubscribe },
+    process.env.ACCESS_TOKEN_SECRET!,
+    { expiresIn: '1d' }
+  );
 
   return { token, user };
 };
