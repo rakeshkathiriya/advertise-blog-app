@@ -19,7 +19,7 @@ export const createAdvertise = async (req: Request, res: Response, next: NextFun
       client: req.body.client,
     };
 
-    console.log('Data In A Post Controller', data);
+    // console.log('Data In A Post Controller', data);
     const result = await handlePostCreation(data);
 
     res.status(201).json({

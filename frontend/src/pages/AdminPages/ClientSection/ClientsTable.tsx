@@ -48,7 +48,7 @@ const ClientsTable = ({
     status: searchFilter?.status ?? 'all',
     page: pageNumber,
   });
-  const { mutate: deleteMutate } = useDeleteClient();
+  const { mutate: deleteMutate, isPending: deleteClient } = useDeleteClient();
 
   // Handlers
   const tableData = useMemo(() => {
@@ -200,6 +200,7 @@ const ClientsTable = ({
             setShowDeletePopup(false);
             setSelectedPostId(null);
           }}
+          loading={deleteClient}
         />
       )}
     </>

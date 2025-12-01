@@ -1,7 +1,9 @@
+import { FormControl, MenuItem, Select } from '@mui/material';
 import type { QueryObserverResult, RefetchOptions } from '@tanstack/react-query';
 import { useFormik } from 'formik';
 import { useCallback, useState } from 'react';
 import { toast } from 'react-toastify';
+import { Spinner } from '../../../components/common/Spinner';
 import { advertiseCreation } from '../../../queries/adminPanel/advertise.query';
 import { useClientsDDOptions } from '../../../queries/adminPanel/clients.query';
 import type { CommonApiError } from '../../../utils/types/common';
@@ -90,7 +92,13 @@ const AdvertisementForm = ({
       onSubmit={handleSubmit}
       className="mx-auto w-full max-w-2xl space-y-8 rounded-3xl border border-[#aec2d1]/40 bg-white/90 p-8 shadow-xl backdrop-blur-xl"
     >
-      <div className="space-y-6">
+      {resAdvertisePending && (
+        <div className="absolute inset-0 z-50 flex h-full w-full items-center justify-center rounded-3xl backdrop-blur-xs">
+          <Spinner />
+        </div>
+      )}
+
+      <div className="space-y-4">
         {/* Image Upload */}
         <div className="space-y-1">
           <label htmlFor="image" className="block text-sm font-semibold text-[#3a4b66]">
@@ -130,60 +138,104 @@ const AdvertisementForm = ({
           <p className="min-h-5 text-xs text-red-500">{touched.description && errors.description}</p>
         </div>
 
-        {/* Upload Toggles */}
-        <div className="grid grid-cols-1 gap-4 sm:grid-cols-2">
-          <div className="flex items-center gap-3 rounded-xl border border-gray-200 bg-[#f6f7f9] p-4 shadow-sm transition-all hover:shadow-lg">
-            <input
-              name="uploadOnFacebook"
-              checked={Boolean(values.uploadOnFacebook)}
-              onChange={(e) => {
-                setFieldValue('uploadOnFacebook', Boolean(e.target.checked));
-              }}
-              onBlur={handleBlur}
-              type="checkbox"
-              className="h-5 w-5 accent-[#3a4b66]"
-            />
-            <span className="text-sm font-semibold text-[#3a4b66]">Facebook</span>
-          </div>
-
-          <div className="flex items-center gap-3 rounded-xl border border-gray-200 bg-[#f6f7f9] p-4 shadow-sm transition-all hover:shadow-lg">
-            <input
-              type="checkbox"
-              name="uploadOnInstagram"
-              checked={Boolean(values.uploadOnInstagram)}
-              onChange={(e) => {
-                setFieldValue('uploadOnInstagram', Boolean(e.target.checked));
-              }}
-              onBlur={handleBlur}
-              className="h-5 w-5 accent-[#3a4b66]"
-            />
-            <span className="text-sm font-semibold text-[#3a4b66]">Instagram</span>
-          </div>
-        </div>
-
         {/* Client Select */}
         <div className="space-y-1">
           <label className="block text-sm font-semibold text-[#3a4b66]">Choose a Client</label>
-          <select
-            name="client"
-            id="client"
-            value={values.client}
-            onChange={handleChange}
-            className={`w-full rounded-xl border border-gray-300 bg-gray-100 px-4 py-3 text-sm text-gray-700 focus:ring-2 focus:ring-[#aec2d1] focus:outline-none ${
-              touched.client && errors.client ? 'border-red-500' : 'border-gray-300'
-            }`}
-          >
-            <option value="">-- Select a client --</option>
-            {clientsResponse?.data.map((client) => (
-              <option key={client._id} value={client._id}>
-                {client.name}
-              </option>
-            ))}
-          </select>
+
+          <FormControl fullWidth>
+            <Select
+              name="client"
+              id="client"
+              value={values.client}
+              onChange={handleChange}
+              displayEmpty
+              renderValue={(selected) => {
+                if (selected === '') {
+                  return <span className="text-gray-400">-- Select a client --</span>;
+                }
+                return clientsResponse?.data?.find((c) => c._id === selected)?.name;
+              }}
+              sx={{
+                backgroundColor: '#f3f4f6',
+                borderRadius: '12px',
+                fontSize: '14px',
+                color: '#4b5563',
+                paddingY: '3px',
+                '& .MuiOutlinedInput-notchedOutline': {
+                  borderColor: touched.client && errors.client ? '#ef4444' : '#d1d5db',
+                },
+                '&:hover .MuiOutlinedInput-notchedOutline': {
+                  borderColor: '#94a3b8',
+                },
+                '&.Mui-focused .MuiOutlinedInput-notchedOutline': {
+                  borderColor: '#aec2d1',
+                },
+              }}
+              MenuProps={{
+                PaperProps: {
+                  sx: {
+                    maxHeight: 200,
+                    overflowY: 'auto',
+                  },
+                },
+              }}
+            >
+              {/* Placeholder option (must exist!) */}
+              <MenuItem value="" disabled sx={{ display: 'none' }}>
+                -- Select a client --
+              </MenuItem>
+
+              {clientsResponse?.data?.map((client) => (
+                <MenuItem
+                  key={client._id}
+                  value={client._id}
+                  sx={{
+                    height: 40,
+                    fontSize: '14px',
+                    color: '#4b5563',
+                  }}
+                >
+                  {client.name}
+                </MenuItem>
+              ))}
+            </Select>
+          </FormControl>
+
+          {/* Formik error */}
+          {touched.client && errors.client && <p className="text-xs text-red-500">{errors.client}</p>}
         </div>
-        <p className="min-h-5 text-xs text-red-500">{touched.client && errors.client}</p>
       </div>
 
+      {/* Upload Toggles */}
+      <div className="grid grid-cols-1 gap-4 sm:grid-cols-2">
+        <div className="flex items-center gap-3 rounded-xl border border-gray-200 bg-[#f6f7f9] p-4 shadow-sm transition-all hover:shadow-lg">
+          <input
+            name="uploadOnFacebook"
+            checked={Boolean(values.uploadOnFacebook)}
+            onChange={(e) => {
+              setFieldValue('uploadOnFacebook', Boolean(e.target.checked));
+            }}
+            onBlur={handleBlur}
+            type="checkbox"
+            className="h-5 w-5 accent-[#3a4b66]"
+          />
+          <span className="text-sm font-semibold text-[#3a4b66]">Facebook</span>
+        </div>
+
+        <div className="flex items-center gap-3 rounded-xl border border-gray-200 bg-[#f6f7f9] p-4 shadow-sm transition-all hover:shadow-lg">
+          <input
+            type="checkbox"
+            name="uploadOnInstagram"
+            checked={Boolean(values.uploadOnInstagram)}
+            onChange={(e) => {
+              setFieldValue('uploadOnInstagram', Boolean(e.target.checked));
+            }}
+            onBlur={handleBlur}
+            className="h-5 w-5 accent-[#3a4b66]"
+          />
+          <span className="text-sm font-semibold text-[#3a4b66]">Instagram</span>
+        </div>
+      </div>
       {/* Actions */}
       <div className="flex flex-col gap-4 pt-4 sm:flex-row">
         <button

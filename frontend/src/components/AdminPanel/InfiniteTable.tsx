@@ -1,4 +1,5 @@
 import React, { useRef, useState } from 'react';
+import { Spinner } from '../common/Spinner';
 
 type CellContent = string | React.ReactNode;
 
@@ -190,9 +191,7 @@ export function InfiniteScrollTable<T>({
             <tr>
               <td colSpan={currentColumns.length} className="h-full border-none py-2 text-center">
                 <div className="bg-opacity-50 absolute inset-0 z-500! flex h-full items-center justify-center">
-                  {customLoader ?? (
-                    <div className="h-6 w-6 animate-spin rounded-full border-4 border-blue-500 border-t-transparent"></div>
-                  )}
+                  <Spinner className="bg-transparent! backdrop-blur-none!" />
                 </div>
               </td>
             </tr>
