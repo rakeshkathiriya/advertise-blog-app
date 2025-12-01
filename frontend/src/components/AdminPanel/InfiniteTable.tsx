@@ -117,7 +117,7 @@ export function InfiniteScrollTable<T>({
             })}
           </tr>
         </thead>
-        <tbody className="divide-y! divide-black/20!">
+        <tbody className="divide-y divide-black/20 border-b border-black/20">
           {data.map((item, rowIndex) => {
             const isSelected = Array.isArray(selectedRowIndex)
               ? selectedRowIndex.includes(rowIndex)
@@ -125,7 +125,7 @@ export function InfiniteScrollTable<T>({
             return (
               <tr
                 key={`row-${rowIndex}-${(item as { id?: string })?.id ?? rowIndex}`}
-                className={`divide-x! divide-y! divide-black/20! ${trProps?.(item, rowIndex)?.className} ${isSelected ? 'selectedRow' : ''}`}
+                className={`divide-x divide-black/20 ${trProps?.(item, rowIndex)?.className} ${isSelected ? 'selectedRow' : ''}`}
                 style={{
                   willChange: isSelected ? 'background-color, color' : 'auto',
                   transition: 'background-color 0.05s ease, color 0.05s ease',
