@@ -1,5 +1,7 @@
 import { useState } from 'react';
+import HeaderSection from '../../../components/AdminPanel/HeaderSection';
 import Modal from '../../../components/AdminPanel/Modal';
+import { userSection } from '../../../utils/staticData/staticData';
 import ForEverSubscriptionUsersTable from './ForEverSubscriptionUsersTable';
 import UserForm from './UserForm';
 import UsersTable, { type UserWithIndex } from './UsersTable';
@@ -20,15 +22,7 @@ const MyUsers = () => {
 
   return (
     <div className="h-full w-full space-y-4">
-      <div className="mx-auto mb-6">
-        <h2 className="mb-2 text-center text-2xl font-bold text-[#3a4b66]/90 italic underline underline-offset-8">
-          User Management
-        </h2>
-        <p className="mx-auto max-w-3xl text-center text-sm font-semibold text-[#3a4b66]/70">
-          Manage your user subscriptions and track expiration dates. Monitor active subscriptions, view remaining days.
-          Double-click on any row to edit user details.
-        </p>
-      </div>
+      <HeaderSection title={userSection.title} subTitle={userSection.subTitle} />
 
       {/* Search and Filter Section */}
       <div className="flex flex-wrap items-center justify-between gap-4">
@@ -38,17 +32,17 @@ const MyUsers = () => {
             placeholder="Search by userName..."
             value={searchUser}
             onChange={(e) => setSearchUser(e.target.value)}
-            className="flex-1 rounded-lg border border-gray-300 px-4 py-2 text-sm font-semibold text-gray-600 focus:ring-2 focus:ring-[#3a4b66] focus:outline-none"
+            className="text-textSecondary border-borderMedium focus:ring-borderMedium flex-1 rounded-lg border px-4 py-2 text-sm font-semibold focus:ring-2 focus:outline-none"
           />
           <div className="flex items-center gap-2">
-            <label className="text-sm font-semibold text-[#3a4b66]">Status:</label>
+            <label className="text-textSecondary text-sm font-semibold">Status:</label>
             <select
               value={statusFilter}
               onChange={(e) => {
                 setStatusFilter(e.target.value);
                 setCurrentPage(1);
               }}
-              className="rounded-lg border border-gray-300 px-1 py-2 text-sm font-semibold text-gray-600 focus:ring-2 focus:ring-[#3a4b66] focus:outline-none"
+              className="text-textSecondary border-borderMedium focus:ring-borderMedium rounded-lg border px-1 py-2 text-sm font-semibold focus:ring-2 focus:outline-none"
             >
               <option value="all">All</option>
               <option value="active">Active</option>

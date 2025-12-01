@@ -179,3 +179,9 @@ export const initialForeEverUsers: User[] = [
     foreEverSubscribe: true,
   },
 ];
+
+export const userSection = {
+  title: 'User Management',
+  subTitle:
+    'Manage your user subscriptions and track expiration dates. Monitor active subscriptions, view remaining days. Double-click on any row to edit user details.',
+};

@@ -34,7 +34,6 @@ interface InfiniteScrollTableProps<T> {
   columns: TableColumn<T>[];
   data: T[];
   isLoading?: boolean;
-  customLoader?: React.ReactNode;
   hasMore?: boolean;
   onLoadMore?: () => void;
   onRowClick?: (item: T, index: number, event: React.MouseEvent) => void;
@@ -64,7 +63,6 @@ export function InfiniteScrollTable<T>({
   columns,
   data,
   isLoading,
-  customLoader,
   hasMore,
   onLoadMore,
   onRowClick,
