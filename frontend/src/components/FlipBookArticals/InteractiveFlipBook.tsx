@@ -1,6 +1,7 @@
 import { ChevronLeft, ChevronRight, Facebook, Instagram, Lock } from 'lucide-react';
 import { useCallback, useEffect, useRef, useState } from 'react';
 import HTMLFlipBook from 'react-pageflip';
+import { useNavigate } from 'react-router-dom';
 import { useGetAllAdvertise } from '../../queries/adminPanel/advertise.query';
 import { freePageCount } from '../../utils/constants';
 import { isUserForeverSubscribed } from '../../utils/helper';
@@ -8,6 +9,7 @@ import { Spinner } from '../common/Spinner';
 import FlipBookPage from './FlipBookPage';
 
 const InteractiveFlipBook: React.FC = () => {
+  const navigate = useNavigate();
   // States
   const [currentPageNumber, setCurrentPageNumber] = useState(0);
   const [isShowCover, setIsShowCover] = useState(true);
@@ -75,7 +77,12 @@ const InteractiveFlipBook: React.FC = () => {
             <Lock size={64} className="mx-auto text-gray-400" />
             <h1 className="text-3xl font-bold text-gray-800">Subscribe to Continue</h1>
             <p className="text-lg text-gray-600">Unlock full access to all pages</p>
-            <button className="bg-bgPrimary hover:bg-bgPrimaryDark mt-4 cursor-pointer rounded-lg px-8 py-3 font-semibold text-white shadow-lg transition-colors">
+            <button
+              onClick={() => {
+                navigate('/pricingPlan');
+              }}
+              className="bg-bgPrimary hover:bg-bgPrimaryDark mt-4 cursor-pointer rounded-lg px-8 py-3 font-semibold text-white shadow-lg transition-colors"
+            >
               Choose a Plan
             </button>
           </div>

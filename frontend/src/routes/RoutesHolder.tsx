@@ -4,11 +4,13 @@ import { FacebookAuthSuccess } from '../components/common/FacebookAuthSuccess';
 import { AdminRoute } from './AdminRoute';
 import { IsAuthenticate } from './IsAuthenticate';
 import { ProtectedRoute } from './ProtectedRoute';
+
 const MainLayout = lazy(() => import('../layout/userLayout/MainLayout'));
 const AdminLayout = lazy(() => import('../layout/adminLayout/AdminLayout'));
 
 const ArticlePage = lazy(() => import('../pages/Article'));
 const BlogPage = lazy(() => import('../pages/Blog'));
+const PricingPlanPage = lazy(() => import('../components/PricingCard'));
 const LoginPage = lazy(() => import('../components/common/Login'));
 const SignUpPage = lazy(() => import('../components/common/SignUp'));
 
@@ -30,6 +32,10 @@ const route = createBrowserRouter([
           {
             path: 'blog',
             element: <BlogPage />,
+          },
+          {
+            path: 'pricingPlan',
+            element: <PricingPlanPage />,
           },
         ],
       },
