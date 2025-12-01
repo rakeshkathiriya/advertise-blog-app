@@ -87,7 +87,7 @@ const UsersTable = ({
       render: (data) => (data.isSubscribed ? 'Active' : 'InActive'),
       tdProps: (data) => {
         return {
-          className: `px-3 py-2 text-[14px] font-semibold tracking-wide whitespace-nowrap ${data.isSubscribed ? 'text-green-700' : 'text-red-600'}`,
+          className: `overflow-hidden px-3 py-2 text-[14px] font-semibold tracking-wide whitespace-nowrap ${data.isSubscribed ? 'text-green-700' : 'text-red-600'}`,
         };
       },
     },

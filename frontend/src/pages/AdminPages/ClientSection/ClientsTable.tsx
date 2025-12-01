@@ -128,7 +128,7 @@ const ClientsTable = ({
       tdProps: (data) => {
         const status = getStatus(data.expiredDate);
         return {
-          className: `px-3 py-2 text-[14px] font-semibold tracking-wide whitespace-nowrap ${status === 'InActive' ? 'text-red-600' : 'text-green-700'}`,
+          className: `truncate overflow-hidden px-3 py-2 text-[14px] font-semibold tracking-wide whitespace-nowrap ${status === 'InActive' ? 'text-red-600' : 'text-green-700'}`,
         };
       },
     },
@@ -146,7 +146,7 @@ const ClientsTable = ({
             setSelectedPostId(data._id);
             setShowDeletePopup(true);
           }}
-          className="flex w-full cursor-pointer items-center justify-center text-red-600 hover:text-red-800"
+          className="flex w-full cursor-pointer items-center justify-center overflow-hidden text-red-600 hover:text-red-800"
           title="Delete client"
         >
           <Trash2 size={20} />
