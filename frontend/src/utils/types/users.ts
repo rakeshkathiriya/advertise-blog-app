@@ -5,7 +5,7 @@ export interface UsersDataResponse extends CommonResponse {
 }
 
 export interface UserDetails {
-  _id: string;
+  _id?: string;
   firstname: string;
   lastname: string;
   email: string;

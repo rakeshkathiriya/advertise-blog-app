@@ -10,7 +10,6 @@ import UsersTable from './UsersTable';
 
 const MyUsers = () => {
   const [activeTab, setActiveTab] = useState('subscribe_users');
-  const [currentPage, setCurrentPage] = useState<number>(1);
   const [editingUser, setEditingUser] = useState<UserDetails | null>(null);
   const [searchUser, setSearchUser] = useState<string>('');
   const [statusFilter, setStatusFilter] = useState<string>('all');
@@ -50,7 +49,6 @@ const MyUsers = () => {
                   value={statusFilter}
                   onChange={(e) => {
                     setStatusFilter(e.target.value);
-                    setCurrentPage(1);
                   }}
                   className="text-textSecondary border-borderMedium focus:ring-borderMedium rounded-lg border px-1 py-2 text-sm font-semibold focus:ring-2 focus:outline-none"
                 >
@@ -112,7 +110,12 @@ const MyUsers = () => {
           <h3 className="mb-4 text-center text-lg font-bold tracking-wide text-[#3a4b66] underline underline-offset-8">
             Edit User
           </h3>
-          <UserForm user={editingUser} onCancel={() => setEditingUser(null)} submitLabel="Update" />
+          <UserForm
+            user={editingUser}
+            onCancel={() => setEditingUser(null)}
+            submitLabel="Update"
+            setCanRefresh={setCanRefresh}
+          />
         </Modal>
       )}
     </div>

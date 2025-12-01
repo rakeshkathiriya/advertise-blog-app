@@ -56,7 +56,7 @@ export const changeUserSubscriptionService = async (id: string) => {
   if (!user) {
     throw createHttpError.NotFound('User not found');
   }
-  user.isSubscribed = !user.isSubscribed;
+  user.isForeverSubscribe = !user.isForeverSubscribe;
 
   await user.save();
 
