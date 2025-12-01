@@ -4,7 +4,7 @@ import { Client, ClientUpdate } from '../utils/types/type';
 
 export const handleClientCreation = async (data: Client) => {
   if (!data.name || !data.poc || !data.contact || !data.email) {
-    throw createHttpError.BadRequest('All field are Required');
+    throw createHttpError.BadRequest('Required fields missing');
   }
 
   const client = await clientModel.create({
@@ -117,7 +117,7 @@ export const updatedClientService = async (id: string, data: ClientUpdate) => {
   const client = await clientModel.findById(id);
 
   if (!client) {
-    throw createHttpError.NotFound('Client Not Found');
+    throw createHttpError.NotFound('Client missing');
   }
   const updatedClient = await clientModel.findByIdAndUpdate(id, {
     poc: data.poc,
@@ -132,13 +132,13 @@ export const updatedClientService = async (id: string, data: ClientUpdate) => {
 export const deleteClientService = async (id: string) => {
   const client = await clientModel.findById(id);
   if (!client) {
-    throw createHttpError.NotFound('Client Not Found');
+    throw createHttpError.NotFound('Client missing');
   }
   if (client?.posts?.length === 0) {
     const deletedClient = await clientModel.findByIdAndDelete(id);
     return deletedClient;
   } else {
     console.log('Deleted Client', client);
-    throw createHttpError.BadRequest('Unable to Delete This Client Because Client Has A Multiple Advertise ');
+    throw createHttpError.BadRequest('Client has active ads ');
   }
 };

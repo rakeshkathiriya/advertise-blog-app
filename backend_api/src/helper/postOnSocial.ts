@@ -1,4 +1,5 @@
 import axios from 'axios';
+import createHttpError from 'http-errors';
 
 async function postToFacebook(params: {
   pageId: string;
@@ -16,7 +17,7 @@ async function postToFacebook(params: {
   });
 
   if (!response.data.id) {
-    throw new Error('Facebook API did not return a post ID');
+    throw createHttpError.BadRequest('Facebook API did not return a post ID');
   }
 
   return response.data.id;
@@ -40,7 +41,7 @@ async function postToInstagram(params: {
   const creationId = containerResponse.data.id;
 
   if (!creationId) {
-    throw new Error('Instagram API did not return a creation ID');
+    throw createHttpError.BadRequest('Instagram API did not return a creation ID');
   }
 
   // Step 2: Wait for media to be processed
@@ -53,7 +54,7 @@ async function postToInstagram(params: {
   });
 
   if (!publishResponse.data.id) {
-    throw new Error('Instagram API did not return a post ID');
+    throw createHttpError.BadRequest('Instagram API did not return a post ID');
   }
 
   return publishResponse.data.id;
@@ -84,14 +85,14 @@ async function waitForInstagramMediaProcessing(
     }
 
     if (statusCode === 'ERROR') {
-      throw new Error('Instagram media processing failed');
+      throw createHttpError.BadRequest('Instagram media processing failed');
     }
 
     // Wait 2 seconds before checking again
     await new Promise((resolve) => setTimeout(resolve, 2000));
   }
 
-  throw new Error('Instagram media processing timeout - image may be too large or invalid');
+  throw createHttpError.BadRequest('Instagram media processing timeout - image may be too large or invalid');
 }
 
 export { postToFacebook, postToInstagram, waitForInstagramMediaProcessing };

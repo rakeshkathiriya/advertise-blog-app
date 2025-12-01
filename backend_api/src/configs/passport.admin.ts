@@ -42,8 +42,6 @@ passport.use(
           },
         });
 
-        // console.log('Token Debug:', JSON.stringify(debugRes.data, null, 2));
-
         // Extract Page ID and Instagram ID from granular_scopes
         const granularScopes = debugRes.data.data.granular_scopes || [];
 
@@ -62,9 +60,6 @@ passport.use(
           instagramBusinessAccountId = instaScope.target_ids[0];
         }
 
-        // console.log(' Facebook Page ID from token:', facebookPageId);
-        // console.log(' Instagram Business Account ID from token:', instagramBusinessAccountId);
-
         // Get Page Access Token (if we have a page ID)
         let pageAccessToken: string | null = null;
 
@@ -77,9 +72,7 @@ passport.use(
               },
             });
             pageAccessToken = pageTokenRes.data.access_token || null;
-            // console.log(' Page Access Token:', pageAccessToken ? 'Retrieved' : 'Not found');
           } catch (err) {
-            // console.error('Failed to get page access token:', err);
             // Fall back to user token
             pageAccessToken = longToken;
           }
@@ -96,17 +89,11 @@ passport.use(
           instagramBusinessAccountId,
         };
 
-        // console.log(' FINAL PAYLOAD:', JSON.stringify(payload, null, 2));
-
         // Save / login user
         const { user, token } = await handleFacebookLogin(payload);
 
         return done(null, { user, token });
       } catch (err) {
-        console.error('FB ADMIN LOGIN ERROR:', err);
-        if (axios.isAxiosError(err)) {
-          console.error('Response:', err.response?.data);
-        }
         return done(err, null);
       }
     }
