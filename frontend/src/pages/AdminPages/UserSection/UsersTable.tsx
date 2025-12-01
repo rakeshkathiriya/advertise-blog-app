@@ -1,7 +1,8 @@
 import { memo, useEffect, useMemo, useState } from 'react';
 import { InfiniteScrollTable, type TableColumn } from '../../../components/AdminPanel/InfiniteTable';
 import Pagination from '../../../components/AdminPanel/Pagination';
-import { initialUsers } from '../../../utils/staticData/staticData';
+import { useGetSubScribeUserList } from '../../../queries/adminPanel/users.query';
+import type { UserDetails } from '../../../utils/types/users';
 
 export interface User {
   firstName: string;
@@ -16,48 +17,39 @@ export interface UserWithIndex extends User {
 }
 
 const UsersTable = ({
-  setEditingClient,
-  currentPage,
-  setCurrentPage,
+  canRefresh,
+  setCanRefresh,
+  setEditingUser,
+  searchFilter,
 }: {
-  setEditingClient: React.Dispatch<React.SetStateAction<UserWithIndex | null>>;
-  currentPage: number;
-  setCurrentPage: React.Dispatch<React.SetStateAction<number>>;
+  canRefresh: boolean;
+  setCanRefresh: React.Dispatch<React.SetStateAction<boolean>>;
+  setEditingUser: React.Dispatch<React.SetStateAction<UserDetails | null>>;
+  searchFilter: {
+    email: string;
+    isSubscribed: string;
+  } | null;
 }) => {
   // States
-  const [selectedRow, setSelectedRow] = useState<{ data: User; index: number } | null>(null);
+  const [selectedRow, setSelectedRow] = useState<{ data: UserDetails; index: number } | null>(null);
+  const [pageNumber, setPageNumber] = useState<number>(1);
 
   // API hooks
-  //   const tableQuery = useGetTerritoryTableDetails();
+  const tableQuery = useGetSubScribeUserList({
+    email: searchFilter?.email ?? '',
+    isSubscribed: searchFilter?.isSubscribed ?? 'all',
+    isForeverSubscribe: 'false',
+    page: pageNumber,
+  });
 
   // Handlers
   const tableData = useMemo(() => {
-    return initialUsers;
-  }, [initialUsers]);
+    return tableQuery.data?.data ?? [];
+  }, [tableQuery.data]);
 
-  const parseDate = (dateStr: string): Date => {
-    const [day, month, year] = dateStr.split('/');
-    return new Date(Number(year), Number(month) - 1, Number(day));
-  };
-
-  const getRemainingDays = (expiredDate: string): string => {
-    const today = new Date();
-    today.setHours(0, 0, 0, 0);
-    const expired = parseDate(expiredDate);
-    if (expired > today) {
-      const diffTime = expired.getTime() - today.getTime();
-      const diffDays = Math.ceil(diffTime / (1000 * 60 * 60 * 24));
-      return `${diffDays} days`;
-    }
-    return '0 days';
-  };
-
-  const getStatus = (expiredDate: string): 'Active' | 'InActive' => {
-    const today = new Date();
-    today.setHours(0, 0, 0, 0);
-    const expired = parseDate(expiredDate);
-    return expired > today ? 'Active' : 'InActive';
-  };
+  const pagination = useMemo(() => {
+    return tableQuery.data?.pagination;
+  }, [tableQuery.data]);
 
   // Effects
   useEffect(() => {
@@ -68,10 +60,19 @@ const UsersTable = ({
     }
   }, [tableData, selectedRow]);
 
-  const columns: TableColumn<User>[] = [
+  useEffect(() => {
+    if (canRefresh) {
+      tableQuery.refetch();
+      setCanRefresh(false);
+      setSelectedRow(null);
+      setPageNumber(1);
+    }
+  }, [canRefresh, setCanRefresh, tableQuery]);
+
+  const columns: TableColumn<UserDetails>[] = [
     {
       label: 'User Name',
-      render: (data) => `${data.firstName} ${data.lastName}`,
+      render: (data) => `${data.firstname} ${data.lastname}`,
     },
     {
       label: 'Email',
@@ -79,31 +80,22 @@ const UsersTable = ({
     },
     {
       label: 'Forever Subscribe',
-      render: (data) => (data.foreEverSubscribe ? 'Yes' : 'No'),
-    },
-    {
-      label: 'S.Expired Date',
-      accessor: 'expiredDate',
+      render: (data) => (data.isForeverSubscribe ? 'Yes' : 'No'),
     },
     {
       label: 'Status',
-      render: (data) => getStatus(data.expiredDate) || 'N/A',
+      render: (data) => (data.isSubscribed ? 'Active' : 'InActive'),
       tdProps: (data) => {
-        const status = getStatus(data.expiredDate);
         return {
-          className: `px-3 py-2 text-[14px] font-semibold tracking-wide whitespace-nowrap ${status === 'InActive' ? 'text-red-600' : 'text-green-700'}`,
+          className: `px-3 py-2 text-[14px] font-semibold tracking-wide whitespace-nowrap ${data.isSubscribed ? 'text-green-700' : 'text-red-600'}`,
         };
       },
-    },
-    {
-      label: 'Remaining Days',
-      render: (data) => getRemainingDays(data.expiredDate) ?? 'N/A',
     },
   ];
 
   return (
     <>
-      <InfiniteScrollTable<User>
+      <InfiniteScrollTable<UserDetails>
         columns={columns}
         data={tableData}
         tableCaption="User Subscriptions Table"
@@ -112,17 +104,17 @@ const UsersTable = ({
         onRowClick={(data, index) => {
           setSelectedRow({ data, index });
         }}
-        onRowDoubleClick={(data, index) => {
-          setEditingClient({ ...data, index });
+        onRowDoubleClick={(data) => {
+          setEditingUser({ ...data });
         }}
-        isLoading={false}
+        isLoading={tableQuery.isLoading}
       />
       <Pagination
-        currentPage={currentPage}
-        totalPages={Math.ceil(tableData.length / 10)}
-        totalItems={tableData.length}
-        itemsPerPage={10}
-        onPageChange={setCurrentPage}
+        currentPage={pageNumber}
+        totalPages={pagination?.totalPages ?? 1}
+        totalItems={pagination?.totalRecords ?? 0}
+        itemsPerPage={pagination?.limit ?? 10}
+        onPageChange={setPageNumber}
         itemLabel="users"
       />
     </>

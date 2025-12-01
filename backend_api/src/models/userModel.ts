@@ -40,6 +40,10 @@ const userSchema: Schema<IUser> = new Schema(
       type: Boolean,
       default: false,
     },
+    isForeverSubscribe: {
+      type: Boolean,
+      default: false,
+    },
     facebookId: {
       type: String,
       unique: true,

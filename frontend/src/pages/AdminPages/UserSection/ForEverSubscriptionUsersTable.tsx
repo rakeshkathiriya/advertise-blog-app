@@ -2,39 +2,43 @@ import { memo, useEffect, useMemo, useState } from 'react';
 // import { FaPlay } from 'react-icons/fa';
 import { InfiniteScrollTable, type TableColumn } from '../../../components/AdminPanel/InfiniteTable';
 import Pagination from '../../../components/AdminPanel/Pagination';
-import { initialForeEverUsers } from '../../../utils/staticData/staticData';
-
-export interface User {
-  firstName: string;
-  lastName: string;
-  email: string;
-  expiredDate: string;
-  foreEverSubscribe: boolean;
-}
-
-export interface UserWithIndex extends User {
-  index: number;
-}
+import { useGetSubScribeUserList } from '../../../queries/adminPanel/users.query';
+import type { UserDetails } from '../../../utils/types/users';
 
 const ForEverSubscriptionUsersTable = ({
-  setEditingClient,
-  currentPage,
-  setCurrentPage,
+  canRefresh,
+  setCanRefresh,
+  setEditingUser,
+  searchFilter,
 }: {
-  setEditingClient: React.Dispatch<React.SetStateAction<UserWithIndex | null>>;
-  currentPage: number;
-  setCurrentPage: React.Dispatch<React.SetStateAction<number>>;
+  canRefresh: boolean;
+  setCanRefresh: React.Dispatch<React.SetStateAction<boolean>>;
+  setEditingUser: React.Dispatch<React.SetStateAction<UserDetails | null>>;
+  searchFilter: {
+    email: string;
+    isSubscribed: string;
+  } | null;
 }) => {
   // States
-  const [selectedRow, setSelectedRow] = useState<{ data: User; index: number } | null>(null);
+  const [selectedRow, setSelectedRow] = useState<{ data: UserDetails; index: number } | null>(null);
+  const [pageNumber, setPageNumber] = useState<number>(1);
 
   // API hooks
-  //   const tableQuery = useGetTerritoryTableDetails();
+  const tableQuery = useGetSubScribeUserList({
+    email: searchFilter?.email ?? '',
+    isSubscribed: searchFilter?.isSubscribed ?? 'all',
+    isForeverSubscribe: 'true',
+    page: pageNumber,
+  });
 
   // Handlers
   const tableData = useMemo(() => {
-    return initialForeEverUsers;
-  }, [initialForeEverUsers]);
+    return tableQuery.data?.data ?? [];
+  }, [tableQuery.data]);
+
+  const pagination = useMemo(() => {
+    return tableQuery.data?.pagination;
+  }, [tableQuery.data]);
 
   // Effects
   useEffect(() => {
@@ -45,10 +49,19 @@ const ForEverSubscriptionUsersTable = ({
     }
   }, [tableData, selectedRow]);
 
-  const columns: TableColumn<User>[] = [
+  useEffect(() => {
+    if (canRefresh) {
+      tableQuery.refetch();
+      setCanRefresh(false);
+      setSelectedRow(null);
+      setPageNumber(1);
+    }
+  }, [canRefresh, setCanRefresh, tableQuery]);
+
+  const columns: TableColumn<UserDetails>[] = [
     {
       label: 'User Name',
-      render: (data) => `${data.firstName} ${data.lastName}`,
+      render: (data) => `${data.firstname} ${data.lastname}`,
     },
     {
       label: 'Email',
@@ -56,22 +69,13 @@ const ForEverSubscriptionUsersTable = ({
     },
     {
       label: 'Forever Subscribe',
-      render: (data) => (data.foreEverSubscribe ? 'Yes' : 'No'),
-    },
-    {
-      label: 'Status',
-      render: (data) => (data.foreEverSubscribe ? 'Active' : 'InActive'),
-      tdProps: (data) => {
-        return {
-          className: `px-3 py-2 text-[14px] font-semibold tracking-wide whitespace-nowrap ${data.foreEverSubscribe ? 'text-green-700' : 'text-red-600'}`,
-        };
-      },
+      render: (data) => (data.isForeverSubscribe ? 'Yes' : 'No'),
     },
   ];
 
   return (
     <>
-      <InfiniteScrollTable<User>
+      <InfiniteScrollTable<UserDetails>
         columns={columns}
         data={tableData}
         tableCaption="User ForEver Subscriptions Table"
@@ -80,17 +84,17 @@ const ForEverSubscriptionUsersTable = ({
         onRowClick={(data, index) => {
           setSelectedRow({ data, index });
         }}
-        onRowDoubleClick={(data, index) => {
-          setEditingClient({ ...data, index });
+        onRowDoubleClick={(data) => {
+          setEditingUser({ ...data });
         }}
-        isLoading={false}
+        isLoading={tableQuery.isLoading}
       />
       <Pagination
-        currentPage={currentPage}
-        totalPages={Math.ceil(tableData.length / 10)}
-        totalItems={tableData.length}
-        itemsPerPage={10}
-        onPageChange={setCurrentPage}
+        currentPage={pageNumber}
+        totalPages={pagination?.totalPages ?? 1}
+        totalItems={pagination?.totalRecords ?? 0}
+        itemsPerPage={pagination?.limit ?? 10}
+        onPageChange={setPageNumber}
         itemLabel="users"
       />
     </>

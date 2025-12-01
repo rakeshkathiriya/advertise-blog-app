@@ -9,19 +9,6 @@ import { useDeleteClient, useGetClientsList } from '../../../queries/adminPanel/
 import { getRemainingDays, getStatus } from '../../../utils/dateUtils';
 import type { ClientDetails } from '../../../utils/types/clients';
 
-export interface Client {
-  name: string;
-  poc: string;
-  email: string;
-  postLimit: string;
-  expiredDate: string;
-  contact: string;
-}
-
-export interface ClientWithIndex extends Client {
-  index: number;
-}
-
 const ClientsTable = ({
   canRefresh,
   setCanRefresh,
