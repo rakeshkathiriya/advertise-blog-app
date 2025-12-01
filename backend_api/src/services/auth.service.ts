@@ -10,7 +10,7 @@ const jwtSecret = process.env.ACCESS_TOKEN_SECRET as string;
 export const registerUser = async (data: IUser) => {
   //check if fields are empty
   if (!data.firstname || !data.lastname || !data.email || !data.password) {
-    throw createHttpError.BadRequest('All fields are required');
+    throw createHttpError.BadRequest('Required fields missing');
   }
 
   // Check if email already exists
@@ -36,7 +36,7 @@ export const registerUser = async (data: IUser) => {
 export const loginUser = async (email: string, password: string) => {
   //check if fields are empty
   if (!email || !password) {
-    throw createHttpError.BadRequest('All fields are required');
+    throw createHttpError.BadRequest('Required fields missing');
   }
 
   const normalizedEmail = email.toLowerCase();
@@ -46,7 +46,7 @@ export const loginUser = async (email: string, password: string) => {
 
   //check if user exist
   if (!user) {
-    throw createHttpError.NotFound('No account with this email has been registered.');
+    throw createHttpError.NotFound('Account not found');
   }
 
   // Check password
@@ -69,7 +69,7 @@ export async function handleFacebookLogin(payload: FacebookLoginPayload) {
     payload;
 
   if (!email) {
-    throw createHttpError.BadRequest('Email Is Required For FAcebookLogin');
+    throw createHttpError.BadRequest('Email Is Required For Facebook Login');
   }
   // 1️⃣ Determine role
   const role = email === adminEmail ? 'Admin' : 'User';

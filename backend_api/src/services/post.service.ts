@@ -15,28 +15,28 @@ export const handlePostCreation = async (data: Post) => {
   const adminUser = await UserModel.findOne({ email: adminEmail });
 
   if (!adminUser) {
-    throw createHttpError.Unauthorized('Admin user not found');
+    throw createHttpError.Unauthorized('Admin not found');
   }
 
   if (!adminUser.facebookAccessToken) {
-    throw createHttpError.Unauthorized('Admin Facebook access token not found');
+    throw createHttpError.Unauthorized('Facebook access token missing');
   }
 
   const client = await clientModel.findById(data.client);
   console.log('Client:-', client);
   if (!client) {
-    throw createHttpError.NotFound('Client not found');
+    throw createHttpError.NotFound('Client missing');
   }
 
   // Ensure posts is an array
   const postCount = Array.isArray(client.posts) ? client.posts.length : 0;
 
   if (client?.expiredDate && client.expiredDate <= new Date()) {
-    throw createHttpError.BadRequest('Client’s posting validity has expired');
+    throw createHttpError.BadRequest('Client posting validity expired');
   }
 
   if (client.postLimit !== undefined && postCount >= client.postLimit) {
-    throw createHttpError.BadRequest('Client has reached the maximum number of posts');
+    throw createHttpError.BadRequest('Client has reached the post limit');
   }
   const uploadedImage = await uploadToCloudinary(data.fileBuffer);
   const imageUrl = uploadedImage.secure_url;
@@ -47,7 +47,7 @@ export const handlePostCreation = async (data: Post) => {
   // Upload to Facebook if requested
   if (data.uploadOnFacebook) {
     if (!adminUser.facebookPageId) {
-      throw createHttpError.BadRequest('Facebook Page ID not configured');
+      throw createHttpError.BadRequest('Facebook Page ID missing');
     } else {
       fbPostId = await postToFacebook({
         pageId: adminUser.facebookPageId,
@@ -61,7 +61,7 @@ export const handlePostCreation = async (data: Post) => {
   // Upload to Instagram if requested
   if (data.uploadOnInstagram) {
     if (!adminUser.instagramBusinessAccountId) {
-      throw createHttpError.BadRequest('Instagram Business Account ID not configured');
+      throw createHttpError.BadRequest('Instagram Business Account ID missing');
     } else {
       igPostId = await postToInstagram({
         instagramAccountId: adminUser.instagramBusinessAccountId,
