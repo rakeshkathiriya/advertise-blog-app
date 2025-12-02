@@ -111,7 +111,11 @@ export async function handleFacebookLogin(payload: FacebookLoginPayload) {
   }
 
   // 5️⃣ Create JWT
-  const token = jwt.sign({ userId: user._id, role: user.role }, jwtSecret, { expiresIn: '7d' });
+  const token = jwt.sign(
+    { userId: user._id, role: user.role, isForeverSubscribe: user.isForeverSubscribe },
+    jwtSecret,
+    { expiresIn: '1d' }
+  );
 
   return { user, facebookAccessToken, token };
 }
