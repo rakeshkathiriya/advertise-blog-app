@@ -9,8 +9,9 @@ const MainLayout = lazy(() => import('../layout/userLayout/MainLayout'));
 const AdminLayout = lazy(() => import('../layout/adminLayout/AdminLayout'));
 
 const ArticlePage = lazy(() => import('../pages/Article'));
-const BlogPage = lazy(() => import('../pages/Blog'));
 const PricingPlanPage = lazy(() => import('../components/PricingCard'));
+const BlogPage = lazy(() => import('../pages/Blog/Blog'));
+const FullBlog = lazy(() => import('../pages/Blog/FullBlog'));
 const LoginPage = lazy(() => import('../components/common/Login'));
 const SignUpPage = lazy(() => import('../components/common/SignUp'));
 const PageNotFound = lazy(() => import('../pages/PageNotFound'));
@@ -37,6 +38,10 @@ const route = createBrowserRouter([
           {
             path: 'pricingPlan',
             element: <PricingPlanPage />,
+          },
+          {
+            path: 'blog/:id',
+            element: <FullBlog />,
           },
         ],
       },

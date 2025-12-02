@@ -1,4 +1,5 @@
 import React from 'react';
+import { NavLink } from 'react-router-dom';
 import { AdminButton } from '../../components/common/AdminButton';
 import { LogoutButton } from '../../components/common/LogoutButton';
 import { getUserRole } from '../../utils/helper';
@@ -19,14 +20,33 @@ export const Header: React.FC = () => {
           <h1 className="text-textTitleSecondary cursor-pointer text-lg font-semibold tracking-wide">Logo</h1>
 
           <ul>
-            <li className="group mx-4 inline-block cursor-pointer text-base font-semibold tracking-wide">
-              Advertisement
-              <div className={`bg-bgDefault h-0.5 w-0 transition-all duration-300 group-hover:w-full`} />
-            </li>
-            <li className="group mx-4 inline-block cursor-pointer text-base font-semibold tracking-wide">
-              Blogs
-              <div className={`bg-bgDefault h-0.5 w-0 transition-all duration-300 group-hover:w-full`} />
-            </li>
+            <NavLink
+              to="/"
+              className={({}) => `group mx-4 inline-block cursor-pointer text-base font-semibold tracking-wide`}
+            >
+              {({ isActive }) => (
+                <li className="inline-block">
+                  Advertisement
+                  <div
+                    className={`bg-bgDefault h-0.5 transition-all duration-300 ${isActive ? 'w-full' : 'w-0 group-hover:w-full'} `}
+                  />
+                </li>
+              )}
+            </NavLink>
+
+            <NavLink
+              to="/blog"
+              className={({}) => `group mx-4 inline-block cursor-pointer text-base font-semibold tracking-wide`}
+            >
+              {({ isActive }) => (
+                <li className="inline-block">
+                  Blogs
+                  <div
+                    className={`bg-bgDefault h-0.5 transition-all duration-300 ${isActive ? 'w-full' : 'w-0 group-hover:w-full'} `}
+                  />
+                </li>
+              )}
+            </NavLink>
           </ul>
 
           <div className="flex gap-5">
