@@ -3,7 +3,7 @@ import InteractiveFlipBook from '../components/FlipBookArticals/InteractiveFlipB
 
 const ArticlePage: React.FC = () => {
   return (
-    <div className="article-page main container flex h-[800px] w-full items-center justify-center overflow-hidden">
+    <div className="article-page main container flex h-[850px] w-full items-center justify-center overflow-hidden">
       <InteractiveFlipBook />
     </div>
   );
