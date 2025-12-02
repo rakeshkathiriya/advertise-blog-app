@@ -20,7 +20,7 @@ const FullBlog: React.FC = () => {
   if (isLoading) {
     return (
       <div className="article-page main container flex min-h-[850px] w-full items-center justify-center overflow-hidden">
-        <Spinner className="bg-transparent! backdrop-blur-none!" />;
+        <Spinner className="bg-transparent! backdrop-blur-none!" />
       </div>
     );
   }
