@@ -1,9 +1,11 @@
 import { Trash2 } from 'lucide-react';
 import { useCallback, useState } from 'react';
 import { toast } from 'react-toastify';
+import HeaderSection from '../../../components/AdminPanel/HeaderSection';
 import DeletePopup from '../../../components/common/DeletePopup';
 import { Spinner } from '../../../components/common/Spinner';
 import { useDeleteAdvertise, useGetAllAdvertise } from '../../../queries/adminPanel/advertise.query';
+import { advertiseSection } from '../../../utils/staticData/staticData';
 import AdvertisementForm from './AdvertisementForm';
 // <--- ADD THIS IMPORT
 
@@ -50,39 +52,10 @@ function Advertisement() {
     });
   }, [selectedPostId, deleteMutation, refetch]);
 
-  // const handleDelete = useCallback(
-  //   (id: string) => {
-  //     deleteMutation(id, {
-  //       onSuccess: (data) => {
-  //         if (data.status) {
-  //           toast.success(data.message ?? 'Advertisement deleted successfully');
-  //           refetch();
-  //           setShowDeletePopup(false);
-  //           setSelectedPostId(null);
-  //         } else {
-  //           toast.error(data.message ?? 'Delete failed');
-  //         }
-  //       },
-  //       onError: (error) => {
-  //         toast.error(error?.message ?? 'Something went wrong');
-  //       },
-  //     });
-  //   },
-  //   [deleteMutation, refetch],
-  // );
-
   return (
     <>
       {/* ===== HEADER ===== */}
-      <div className="mx-auto mb-6">
-        <h2 className="mb-2 text-center text-2xl font-bold text-[#3a4b66]/90 italic underline underline-offset-8">
-          Our Latest Creations
-        </h2>
-        <p className="mx-auto max-w-3xl text-center text-sm font-semibold text-[#3a4b66]/70">
-          Manage your client subscriptions and track expiration dates. Monitor active subscriptions, view remaining
-          days, and maintain up-to-date client information.
-        </p>
-      </div>
+      <HeaderSection title={advertiseSection.title} subTitle={advertiseSection.subTitle} />
 
       {/* Search and Filter Section */}
       <div className="mx-auto flex w-full max-w-7xl flex-wrap items-center justify-between gap-5 px-5">

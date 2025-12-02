@@ -1,5 +1,3 @@
-import type { User } from '../../pages/AdminPages/UserSection/UsersTable';
-
 interface SidebarMenuItem {
   name: string;
   icon: string;
@@ -13,175 +11,68 @@ export const sidebarMenu: SidebarMenuItem[] = [
   { name: 'Go to Advertise', icon: '🏠' },
 ];
 
-export const initialUsers: User[] = [
-  {
-    firstName: 'Nandor the Relentless',
-    lastName: 'User 1',
-    email: 'user1@mail.com',
-    expiredDate: '12/12/2023',
-    foreEverSubscribe: false,
-  },
-  {
-    firstName: 'Laszlo',
-    lastName: 'Cravensworth',
-    email: 'laszlo@mail.com',
-    expiredDate: '01/05/2025',
-    foreEverSubscribe: false,
-  },
-  {
-    firstName: 'Nadja',
-    lastName: 'of Antipaxos',
-    email: 'nadja@mail.com',
-    expiredDate: '03/08/2024',
-    foreEverSubscribe: false,
-  },
-  {
-    firstName: 'Guillermo',
-    lastName: 'de la Cruz',
-    email: 'gdelacruz@mail.com',
-    expiredDate: '09/15/2024',
-    foreEverSubscribe: false,
-  },
-  {
-    firstName: 'Colin',
-    lastName: 'Robinson',
-    email: 'colinr@mail.com',
-    expiredDate: '11/30/2026',
-    foreEverSubscribe: false,
-  },
-  {
-    firstName: 'Simon',
-    lastName: 'The Devious',
-    email: 'simon@mail.com',
-    expiredDate: '02/14/2024',
-    foreEverSubscribe: false,
-  },
-  {
-    firstName: 'Viago',
-    lastName: 'Vampire',
-    email: 'viago@mail.com',
-    expiredDate: '05/20/2025',
-    foreEverSubscribe: false,
-  },
-  {
-    firstName: 'Deacon',
-    lastName: 'Brücke',
-    email: 'deacon@mail.com',
-    expiredDate: '06/18/2024',
-    foreEverSubscribe: false,
-  },
-  {
-    firstName: 'Petyr',
-    lastName: 'Ancient One',
-    email: 'petyr@mail.com',
-    expiredDate: '08/01/2023',
-    foreEverSubscribe: false,
-  },
-  {
-    firstName: 'Jenna',
-    lastName: 'Human',
-    email: 'jenna@mail.com',
-    expiredDate: '04/10/2026',
-    foreEverSubscribe: false,
-  },
-  {
-    firstName: 'Jenna',
-    lastName: 'Human',
-    email: 'jenna@mail.com',
-    expiredDate: '04/10/2026',
-    foreEverSubscribe: false,
-  },
-  {
-    firstName: 'Jenna',
-    lastName: 'Human',
-    email: 'jenna@mail.com',
-    expiredDate: '04/10/2026',
-    foreEverSubscribe: false,
-  },
-  {
-    firstName: 'Jenna',
-    lastName: 'Human',
-    email: 'jenna@mail.com',
-    expiredDate: '04/10/2026',
-    foreEverSubscribe: false,
-  },
-];
-
-export const initialForeEverUsers: User[] = [
-  {
-    firstName: 'Nandor the Relentless',
-    lastName: 'User 1',
-    email: 'user1@mail.com',
-    expiredDate: '12/12/2023',
-    foreEverSubscribe: true,
-  },
-  {
-    firstName: 'Laszlo',
-    lastName: 'Cravensworth',
-    email: 'laszlo@mail.com',
-    expiredDate: '01/05/2025',
-    foreEverSubscribe: true,
-  },
-  {
-    firstName: 'Nadja',
-    lastName: 'of Antipaxos',
-    email: 'nadja@mail.com',
-    expiredDate: '03/08/2024',
-    foreEverSubscribe: true,
-  },
-  {
-    firstName: 'Guillermo',
-    lastName: 'de la Cruz',
-    email: 'gdelacruz@mail.com',
-    expiredDate: '09/15/2024',
-    foreEverSubscribe: true,
-  },
-  {
-    firstName: 'Colin',
-    lastName: 'Robinson',
-    email: 'colinr@mail.com',
-    expiredDate: '11/30/2026',
-    foreEverSubscribe: true,
-  },
-  {
-    firstName: 'Simon',
-    lastName: 'The Devious',
-    email: 'simon@mail.com',
-    expiredDate: '02/14/2024',
-    foreEverSubscribe: true,
-  },
-  {
-    firstName: 'Viago',
-    lastName: 'Vampire',
-    email: 'viago@mail.com',
-    expiredDate: '05/20/2025',
-    foreEverSubscribe: true,
-  },
-  {
-    firstName: 'Deacon',
-    lastName: 'Brücke',
-    email: 'deacon@mail.com',
-    expiredDate: '06/18/2024',
-    foreEverSubscribe: true,
-  },
-  {
-    firstName: 'Petyr',
-    lastName: 'Ancient One',
-    email: 'petyr@mail.com',
-    expiredDate: '08/01/2023',
-    foreEverSubscribe: true,
-  },
-  {
-    firstName: 'Jenna',
-    lastName: 'Human',
-    email: 'jenna@mail.com',
-    expiredDate: '04/10/2026',
-    foreEverSubscribe: true,
-  },
-];
+export const advertiseSection = {
+  title: 'Our Latest Creations',
+  subTitle:
+    'Manage your client subscriptions and track expiration dates. Monitor active subscriptions, view remaining days, and maintain up-to-date client information.',
+};
 
 export const userSection = {
   title: 'User Management',
   subTitle:
     'Manage your user subscriptions and track expiration dates. Monitor active subscriptions, view remaining days. Double-click on any row to edit user details.',
 };
+
+export const clientSection = {
+  title: 'Client Management',
+  subTitle:
+    'Manage your client subscriptions and track expiration dates. Monitor active subscriptions, view remaining days, and maintain up-to-date client information. Double-click on any row to edit client details.',
+};
+
+export const plans = [
+  {
+    name: 'Basic',
+    price: 29,
+    color: 'bg-bgPrimary/25 text-bgPrimaryDark border-borderMedium',
+    button: 'bg-bgPrimary hover:bg-bgPrimaryDark text-white',
+    features: [
+      'Access to all basic courses',
+      'Community support',
+      '10 practice projects',
+      'Course completion certificate',
+      'Basic code review',
+    ],
+  },
+  {
+    name: 'Pro',
+    price: 79,
+    highlight: true,
+    color: 'bg-bgPrimary text-white border-gray-500/30',
+    button: 'bg-white text-bgPrimary hover:bg-gray-200',
+    badge: 'Most Popular',
+    features: [
+      'Access to all Pro courses',
+      'Priority community support',
+      '30 practice projects',
+      'Course completion certificate',
+      'Advance code review',
+      '1-on-1 mentoring sessions',
+      'Job assistance',
+    ],
+  },
+  {
+    name: 'Enterprise',
+    price: 199,
+    color: 'bg-bgPrimary/25 text-bgPrimaryDark border-borderMedium',
+    button: 'bg-bgPrimary hover:bg-bgPrimaryDark text-white',
+    features: [
+      'Access to all courses',
+      'Dedicated support',
+      'Unlimited projects',
+      'Course completion certificate',
+      'Premium code review',
+      'Weekly 1-on-1 mentoring',
+      'Job guarantee',
+    ],
+  },
+];

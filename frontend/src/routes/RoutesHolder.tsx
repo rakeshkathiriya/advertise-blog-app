@@ -9,10 +9,12 @@ const MainLayout = lazy(() => import('../layout/userLayout/MainLayout'));
 const AdminLayout = lazy(() => import('../layout/adminLayout/AdminLayout'));
 
 const ArticlePage = lazy(() => import('../pages/Article'));
+const PricingPlanPage = lazy(() => import('../components/PricingCard'));
 const BlogPage = lazy(() => import('../pages/Blog/Blog'));
 const FullBlog = lazy(() => import('../pages/Blog/FullBlog'));
 const LoginPage = lazy(() => import('../components/common/Login'));
 const SignUpPage = lazy(() => import('../components/common/SignUp'));
+const PageNotFound = lazy(() => import('../pages/PageNotFound'));
 
 // Admin Pages
 const AdminDashboardPage = lazy(() => import('../pages/AdminPages/Dashboard'));
@@ -32,6 +34,10 @@ const route = createBrowserRouter([
           {
             path: 'blog',
             element: <BlogPage />,
+          },
+          {
+            path: 'pricingPlan',
+            element: <PricingPlanPage />,
           },
           {
             path: 'blog/:id',
@@ -76,6 +82,10 @@ const route = createBrowserRouter([
   {
     path: '/facebook-auth-success',
     element: <FacebookAuthSuccess />,
+  },
+  {
+    path: '*',
+    element: <PageNotFound />,
   },
 ]);
 

@@ -14,7 +14,9 @@ export const getAllUsersService = async (filters: Filters) => {
   const skip = (page - 1) * limit;
 
   // ------------ MATCH STAGE CONDITIONS ------------
-  const match: any = {};
+  const match: any = {
+    role: 'User',
+  };
 
   // Apply email filter only when value exists
   if (filters.email && filters.email.trim() !== '') {

@@ -1,4 +1,6 @@
 import { useCallback, useState } from 'react';
+import HeaderSection from '../../../components/AdminPanel/HeaderSection';
+import { clientSection } from '../../../utils/staticData/staticData';
 import type { ClientDetails } from '../../../utils/types/clients';
 import ClientForm from './ClientForm';
 import ClientsTable from './ClientsTable';
@@ -17,15 +19,8 @@ const MyClients = () => {
 
   return (
     <div className="h-full w-full">
-      <div className="mx-auto mb-6">
-        <h2 className="text-textColor/90 mb-2 text-center text-2xl font-bold italic underline underline-offset-8">
-          Client Management
-        </h2>
-        <p className="text-textColor/70 mx-auto max-w-3xl text-center text-sm font-semibold">
-          Manage your client subscriptions and track expiration dates. Monitor active subscriptions, view remaining
-          days, and maintain up-to-date client information. Double-click on any row to edit client details.
-        </p>
-      </div>
+      <HeaderSection title={clientSection.title} subTitle={clientSection.subTitle} />
+
       {/* Search and Filter Section */}
       <div className="mb-4 flex flex-wrap items-center justify-between gap-4">
         <div className="flex items-center gap-2">
@@ -50,6 +45,7 @@ const MyClients = () => {
               <option value="expired">Inactive</option>
             </select>
           </div>
+
           <button
             onClick={handleSearch}
             className="text-14 text-textColor flex items-center gap-2 rounded-full bg-[#aec2d1] px-6 py-2 font-semibold tracking-wide transition-all duration-500 ease-in-out hover:scale-105 hover:transform"
@@ -73,7 +69,6 @@ const MyClients = () => {
         setEditingClient={setEditingClient}
         searchFilter={searchFilter}
       />
-      Edit Modal
       {editingClient && (
         <ClientForm
           client={editingClient}
