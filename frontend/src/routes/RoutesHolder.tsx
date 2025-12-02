@@ -13,6 +13,7 @@ const BlogPage = lazy(() => import('../pages/Blog'));
 const PricingPlanPage = lazy(() => import('../components/PricingCard'));
 const LoginPage = lazy(() => import('../components/common/Login'));
 const SignUpPage = lazy(() => import('../components/common/SignUp'));
+const PageNotFound = lazy(() => import('../pages/PageNotFound'));
 
 // Admin Pages
 const AdminDashboardPage = lazy(() => import('../pages/AdminPages/Dashboard'));
@@ -76,6 +77,10 @@ const route = createBrowserRouter([
   {
     path: '/facebook-auth-success',
     element: <FacebookAuthSuccess />,
+  },
+  {
+    path: '*',
+    element: <PageNotFound />,
   },
 ]);
 
