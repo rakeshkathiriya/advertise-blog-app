@@ -12,3 +12,10 @@ export interface UserDetails {
   isSubscribed: boolean;
   isForeverSubscribe: boolean;
 }
+
+export interface UserFormProps {
+  user: UserDetails;
+  onCancel: () => void;
+  submitLabel: string;
+  setCanRefresh: React.Dispatch<React.SetStateAction<boolean>>;
+}

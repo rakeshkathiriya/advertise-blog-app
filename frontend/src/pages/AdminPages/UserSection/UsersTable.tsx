@@ -4,18 +4,6 @@ import Pagination from '../../../components/AdminPanel/Pagination';
 import { useGetSubScribeUserList } from '../../../queries/adminPanel/users.query';
 import type { UserDetails } from '../../../utils/types/users';
 
-export interface User {
-  firstName: string;
-  lastName: string;
-  email: string;
-  expiredDate: string;
-  foreEverSubscribe: boolean;
-}
-
-export interface UserWithIndex extends User {
-  index: number;
-}
-
 const UsersTable = ({
   canRefresh,
   setCanRefresh,

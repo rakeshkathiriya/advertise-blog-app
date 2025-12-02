@@ -11,10 +11,22 @@ export const sidebarMenu: SidebarMenuItem[] = [
   { name: 'Go to Advertise', icon: '🏠' },
 ];
 
+export const advertiseSection = {
+  title: 'Our Latest Creations',
+  subTitle:
+    'Manage your client subscriptions and track expiration dates. Monitor active subscriptions, view remaining days, and maintain up-to-date client information.',
+};
+
 export const userSection = {
   title: 'User Management',
   subTitle:
     'Manage your user subscriptions and track expiration dates. Monitor active subscriptions, view remaining days. Double-click on any row to edit user details.',
+};
+
+export const clientSection = {
+  title: 'Client Management',
+  subTitle:
+    'Manage your client subscriptions and track expiration dates. Monitor active subscriptions, view remaining days, and maintain up-to-date client information. Double-click on any row to edit client details.',
 };
 
 export const plans = [

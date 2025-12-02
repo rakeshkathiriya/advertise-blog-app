@@ -1,7 +1,7 @@
 import { useCallback, useEffect, useState } from 'react';
 import HeaderSection from '../../../components/AdminPanel/HeaderSection';
 import Modal from '../../../components/AdminPanel/Modal';
-import Tabs from '../../../components/AdminPanel/tabs';
+import Tabs from '../../../components/AdminPanel/Tabs';
 import { userSection } from '../../../utils/staticData/staticData';
 import type { UserDetails } from '../../../utils/types/users';
 import ForEverSubscriptionUsersTable from './ForEverSubscriptionUsersTable';

@@ -3,14 +3,7 @@ import { useCallback, useState } from 'react';
 import { toast } from 'react-toastify';
 import { Spinner } from '../../../components/common/Spinner';
 import { useChangeForeverSubscribeStatus } from '../../../queries/adminPanel/users.query';
-import type { UserDetails } from '../../../utils/types/users';
-
-interface UserFormProps {
-  user: UserDetails;
-  onCancel: () => void;
-  submitLabel: string;
-  setCanRefresh: React.Dispatch<React.SetStateAction<boolean>>;
-}
+import type { UserDetails, UserFormProps } from '../../../utils/types/users';
 
 const UserForm = ({ user, onCancel, submitLabel, setCanRefresh }: UserFormProps) => {
   const [initialValues] = useState<UserDetails>({
