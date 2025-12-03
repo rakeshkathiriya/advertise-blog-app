@@ -33,7 +33,15 @@ router.get(
 router.get(
   '/facebook/admin',
   passportAdmin.authenticate('facebook-admin', {
-    scope: ['email', 'pages_show_list', 'pages_manage_posts', 'instagram_basic', 'instagram_content_publish'],
+    scope: [
+      'email',
+      'public_profile',
+      'pages_show_list',
+      'pages_read_engagement',
+      'pages_manage_posts',
+      'instagram_basic',
+      'instagram_content_publish',
+    ],
     auth_type: 'rerequest',
     failureRedirect: process.env.FRONTEND_URL,
   } as any)

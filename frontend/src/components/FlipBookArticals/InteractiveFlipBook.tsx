@@ -74,7 +74,7 @@ const InteractiveFlipBook: React.FC = () => {
       initial={{ opacity: 0 }}
       animate={{ opacity: 1 }}
       transition={{ duration: 0.6 }}
-      className="relative flex min-h-screen w-screen flex-col items-center justify-center py-10"
+      className="relative flex min-h-screen w-screen flex-col items-center justify-center py-10 select-none"
     >
       {isLoading && <Spinner className="bg-transparent! backdrop-blur-none!" />}
       <AnimatePresence>
@@ -162,7 +162,7 @@ const InteractiveFlipBook: React.FC = () => {
             <div key="cover-page" className="relative flex">
               <div className="page bg-bgDefault border-borderMedium flex h-full w-full flex-col items-center justify-between overflow-hidden border px-3! py-4!">
                 <FlipBookPage imageUrl={'/first.png'} altText={'image'} />
-                <PageFooter index={0} fbPostId={''} igPostId={''} isShowPage={false} isShowIcon={false} />
+                <PageFooter index={0} fbPostLink={''} igPostLink={''} isShowPage={false} isShowIcon={false} />
               </div>
             </div>
 
@@ -174,7 +174,7 @@ const InteractiveFlipBook: React.FC = () => {
                     className="page bg-bgDefault border-borderMedium flex h-full w-full flex-col items-center justify-between overflow-hidden border px-3! py-4!"
                   >
                     <FlipBookPage imageUrl={book.image} altText={'image'} />
-                    <PageFooter index={index} fbPostId={book?.fbPostId ?? ''} igPostId={book?.igPostId ?? ''} />
+                    <PageFooter index={index} fbPostLink={book?.fbPostLink ?? ''} igPostLink={book?.igPostLink ?? ''} />
                   </div>
                 </div>
               ))}
@@ -184,8 +184,8 @@ const InteractiveFlipBook: React.FC = () => {
                 <div className="page bg-bgDefault border-borderMedium items-between flex h-full min-h-full w-full flex-col justify-end overflow-hidden border px-3! py-4!">
                   <PageFooter
                     index={adResponse?.data.length}
-                    fbPostId={''}
-                    igPostId={''}
+                    fbPostLink={''}
+                    igPostLink={''}
                     isShowPage={true}
                     isShowIcon={false}
                   />
@@ -198,7 +198,7 @@ const InteractiveFlipBook: React.FC = () => {
             <div key="last-page" className="relative flex">
               <div className="page bg-bgDefault border-borderMedium flex h-full w-full flex-col items-center justify-between overflow-hidden border px-3! py-4!">
                 <FlipBookPage imageUrl={'/Last.png'} altText={'image'} />
-                <PageFooter index={0} fbPostId={''} igPostId={''} isShowPage={false} isShowIcon={false} />
+                <PageFooter index={0} fbPostLink={''} igPostLink={''} isShowPage={false} isShowIcon={false} />
               </div>
             </div>
           </HTMLFlipBook>
@@ -211,14 +211,14 @@ export default InteractiveFlipBook;
 
 const PageFooter = ({
   index,
-  fbPostId,
-  igPostId,
+  fbPostLink,
+  igPostLink,
   isShowPage = true,
   isShowIcon = true,
 }: {
   index: number;
-  fbPostId: string;
-  igPostId: string;
+  fbPostLink: string;
+  igPostLink: string;
   isShowPage?: boolean;
   isShowIcon?: boolean;
 }) => {
@@ -226,13 +226,13 @@ const PageFooter = ({
     <div className="flex min-h-[30px] w-full items-center justify-center">
       {isShowIcon && (
         <div className="flex cursor-pointer items-center justify-center gap-3">
-          {fbPostId && (
-            <Link to={'/facebook'}>
+          {fbPostLink && (
+            <Link to={`${fbPostLink}`} target="_blank">
               <Facebook size={20} color="#4B5563" strokeWidth={2.5} />
             </Link>
           )}
-          {igPostId && (
-            <Link to={'/instagram'}>
+          {igPostLink && (
+            <Link to={`${igPostLink}`} target="_blank">
               <Instagram size={20} color="#4B5563" strokeWidth={2.5} />
             </Link>
           )}

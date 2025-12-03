@@ -28,6 +28,8 @@ export interface Post {
   uploadOnInstagram: boolean;
   fbPostId: string;
   igPostId: string;
+  fbPostLink?: string;
+  igPostLink?: string;
   client: mongoose.Schema.Types.ObjectId;
 }
 

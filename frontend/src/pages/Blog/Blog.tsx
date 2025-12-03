@@ -75,6 +75,7 @@ const BlogPage: React.FC = () => {
                     <img
                       src={image}
                       alt={post.title}
+                      loading="lazy"
                       className="h-52 w-full object-cover transition-transform duration-500 group-hover:scale-110"
                     />
                   ) : (

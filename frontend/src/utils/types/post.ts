@@ -21,6 +21,8 @@ export interface Advertise {
   fbPostId: string | null;
   igPostId: string | null;
   client: AdvertiseClient;
+  fbPostLink: string | null;
+  igPostLink: string | null;
   createdAt: string;
   updatedAt: string;
   __v: number;
