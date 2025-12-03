@@ -43,18 +43,25 @@ export const handlePostCreation = async (data: Post) => {
 
   let fbPostId: string | null = data.fbPostId;
   let igPostId: string | null = data.igPostId;
+  let fbPostLink: string | null = null;
+  let igPostLink: string | null = null;
 
   // Upload to Facebook if requested
   if (data.uploadOnFacebook) {
     if (!adminUser.facebookPageId) {
       throw createHttpError.BadRequest('Facebook Page ID missing');
     } else {
-      fbPostId = await postToFacebook({
+      const fbResponse = await postToFacebook({
         pageId: adminUser.facebookPageId,
         accessToken: adminUser.facebookAccessToken,
         imageUrl,
         message: data.description,
       });
+
+      // fbResponse = { postId: string, permalink: string | null }
+
+      fbPostId = fbResponse.postId; // Save post ID
+      fbPostLink = fbResponse.permalink; // Save FB link (if you want)
     }
   }
 
@@ -63,12 +70,15 @@ export const handlePostCreation = async (data: Post) => {
     if (!adminUser.instagramBusinessAccountId) {
       throw createHttpError.BadRequest('Instagram Business Account ID missing');
     } else {
-      igPostId = await postToInstagram({
+      const igResponse = await postToInstagram({
         instagramAccountId: adminUser.instagramBusinessAccountId,
-        accessToken: adminUser.facebookAccessToken,
+        accessToken: adminUser.facebookAccessToken, // IG uses Page Access Token
         imageUrl,
         caption: data.description,
       });
+
+      igPostId = igResponse.postId; // Save Instagram Post ID
+      igPostLink = igResponse.permalink; // Save Instagram Permalink
     }
   }
 
@@ -80,6 +90,8 @@ export const handlePostCreation = async (data: Post) => {
     uploadOnInstagram: data.uploadOnInstagram,
     fbPostId,
     igPostId,
+    fbPostLink,
+    igPostLink,
     client: data.client,
   });
 

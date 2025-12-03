@@ -23,7 +23,13 @@ const postSchema: Schema<Post> = new Schema(
     fbPostId: {
       type: String,
     },
+    fbPostLink: {
+      type: String,
+    },
     igPostId: {
+      type: String,
+    },
+    igPostLink: {
       type: String,
     },
     client: {
