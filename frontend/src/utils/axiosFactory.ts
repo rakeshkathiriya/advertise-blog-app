@@ -1,9 +1,10 @@
 import axios from 'axios';
 
 import type { AxiosError, AxiosInstance, AxiosResponse } from 'axios';
+const backendUrl = import.meta.env.VITE_BACKEND_URL;
 
 const api: AxiosInstance = axios.create({
-  baseURL: 'http://localhost:8000/aba/',
+  baseURL: `${backendUrl}/aba/`,
   timeout: 15000,
   headers: { 'Content-Type': 'application/json' },
   withCredentials: true,

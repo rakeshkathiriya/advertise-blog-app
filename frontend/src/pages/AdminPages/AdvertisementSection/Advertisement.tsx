@@ -135,7 +135,9 @@ function Advertisement() {
             <div className="p-5">
               <h1 className="mb-1 text-lg font-bold tracking-wide text-gray-900">{post.client?.name}</h1>
 
-              <p className="line-clamp-2 text-sm text-gray-500">{post.description || 'No description available.'}</p>
+              <p className="line-clamp-2 text-sm text-gray-500">
+                {(post.description || 'No description available.').slice(0, 25) + '....'}
+              </p>
 
               {/* Bottom Glow Line */}
               <div className="absolute right-0 bottom-0 left-0 h-[3px] bg-linear-to-r from-transparent via-red-500/60 to-transparent opacity-0 transition duration-500 group-hover:opacity-100" />
