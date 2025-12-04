@@ -121,3 +121,45 @@ export async function handleFacebookLogin(payload: FacebookLoginPayload) {
 
   return { user, facebookAccessToken, token };
 }
+
+export const changePasswordService = async (
+  confirmPassword: string,
+  newPassword: string,
+  currentPassword: string,
+  email: string
+) => {
+  if (!confirmPassword || !newPassword || !currentPassword || !email) {
+    throw createHttpError.BadRequest('Required fields missing');
+  }
+
+  // ❗ Use findOne instead of find (find returns an array)
+  const user = await UserModel.findOne({ email });
+  if (!user) {
+    throw createHttpError.NotFound('User not found');
+  }
+
+  // 🛑 Validate old password
+  const isMatch = await bcrypt.compare(currentPassword, user.password);
+  if (!isMatch) {
+    throw createHttpError.BadRequest('Current password is incorrect');
+  }
+
+  // 🛑 Ensure new password is not the same as old password
+  if (currentPassword === newPassword) {
+    throw createHttpError.BadRequest('New password cannot be the same as the current password');
+  }
+
+  // 🛑 Validate new + confirm password
+  if (newPassword !== confirmPassword) {
+    throw createHttpError.BadRequest('New password and confirm password do not match');
+  }
+
+  // 🔐 Hash new password
+  const hashedPassword = await bcrypt.hash(newPassword, 10);
+
+  // 💾 Save to DB
+  user.password = hashedPassword;
+  await user.save();
+
+  return user;
+};

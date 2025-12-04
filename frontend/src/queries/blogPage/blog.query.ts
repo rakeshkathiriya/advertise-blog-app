@@ -12,9 +12,7 @@ export const useGetAllBlogs = () => {
     queryKey: ['useGetAllBlogs'],
     queryFn: async () => {
       try {
-        const response = await axios.get(
-          `https://www.googleapis.com/blogger/v3/blogs/${blogId}/posts?labels=FoodNProcessing&key=${key}`,
-        );
+        const response = await axios.get(`https://www.googleapis.com/blogger/v3/blogs/${blogId}/posts?key=${key}`);
 
         const mappedItems: BloggerPost[] =
           response?.data?.items?.map((post: any) => ({

@@ -35,7 +35,10 @@ export const LogoutButton = () => {
       title="Logout"
       className="text-textWhite cursor-pointer rounded-lg px-4 py-2 font-semibold"
     >
-      <LogOut />
+      <div className="flex gap-3">
+        <span className="text-bgPrimaryDark">Logout</span>
+        <LogOut color="#044241" />
+      </div>
     </button>
   );
 };

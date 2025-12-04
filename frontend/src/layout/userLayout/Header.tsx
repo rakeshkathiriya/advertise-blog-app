@@ -1,12 +1,18 @@
-import React from 'react';
+import { User } from 'lucide-react';
+import React, { useState } from 'react';
 import { NavLink } from 'react-router-dom';
+import ChangePasswordForm from '../../components/ChangePasswordForm';
 import { AdminButton } from '../../components/common/AdminButton';
 import { LogoutButton } from '../../components/common/LogoutButton';
+import { useAppSelector } from '../../store/hooks';
 import { getUserRole } from '../../utils/helper';
 
 export const Header: React.FC = () => {
+  const [showDropdown, setShowDropdown] = useState<boolean>(false);
+  const [showChangePasswordModal, setShowChangePasswordModal] = useState<boolean>(false);
   const role = getUserRole();
-
+  const logInUser = useAppSelector((state) => state.auth);
+  console.log(logInUser);
   return (
     <div className="header_container w-full">
       <div className="bg-bgDefault py-1.5 text-center font-medium">
@@ -48,14 +54,54 @@ export const Header: React.FC = () => {
               )}
             </NavLink>
           </ul>
+          <div className="flex flex-row items-center justify-center">
+            <div className="flex gap-5">{role === 'Admin' && <AdminButton />}</div>
 
-          <div className="flex gap-5">
-            {/* Show AdminButton only for Admin */}
-            {role === 'Admin' && <AdminButton />}
-            <LogoutButton />
+            <div className="relative cursor-pointer">
+              <div className="flex items-center justify-between space-x-5 px-4">
+                <div
+                  onClick={() => {
+                    setShowDropdown(!showDropdown);
+                  }}
+                  className="cursor-pointer"
+                >
+                  <User />
+                </div>
+              </div>
+
+              {showDropdown && (
+                <div className="animate-fadeIn absolute top-12 right-0 z-50 flex min-w-48 flex-col rounded-2xl border border-white/10 bg-white/80 py-2 shadow-2xl backdrop-blur-xl">
+                  <div className="hover:bg-bgPrimary/20 hover:text-bgPrimaryDark text-bgPrimaryDark w-full rounded-xl px-4 py-4 text-start font-semibold transition-all duration-200">
+                    <span>Welcome,&nbsp;&nbsp;</span>
+                    {logInUser.user?.firstname}
+                  </div>
+                  {/* Change Password */}
+                  {logInUser.user?.loginType !== 'facebook' && (
+                    <div
+                      onClick={() => {
+                        setShowChangePasswordModal(!showChangePasswordModal);
+                      }}
+                      className="hover:bg-bgPrimary/20 hover:text-bgPrimaryDark text-bgPrimaryDark w-full rounded-xl px-4 py-4 text-start font-semibold transition-all duration-200"
+                    >
+                      Change Password
+                    </div>
+                  )}
+
+                  {/* Divider */}
+                  <div className="mx-3 my-1 h-px bg-gray-300/50"></div>
+
+                  {/* Logout */}
+                  <div className="rounded-xl px-4 py-2 font-semibold transition-all duration-200 hover:bg-red-100 hover:text-red-600">
+                    <LogoutButton />
+                  </div>
+                </div>
+              )}
+            </div>
           </div>
         </nav>
       </header>
+
+      {showChangePasswordModal && <ChangePasswordForm onCancel={() => setShowChangePasswordModal(false)} />}
     </div>
   );
 };

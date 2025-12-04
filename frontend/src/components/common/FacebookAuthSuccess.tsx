@@ -15,7 +15,7 @@ export const FacebookAuthSuccess = () => {
     const user = params.get('user');
     const role = getUserRole();
     const userData = user ? JSON.parse(user) : null;
-
+    console.log('UserData :-', userData);
     // console.log('Token in faceBook Auth Success', fba);
     if (token) localStorage.setItem('accessToken', token);
     // if (fba) localStorage.setItem('fba', fba);s
@@ -26,6 +26,7 @@ export const FacebookAuthSuccess = () => {
       lastname: userData?.lastname,
       email: userData?.email,
       role: userData?.role,
+      loginType: 'facebook',
     };
 
     dispatch(setUser(payload));
