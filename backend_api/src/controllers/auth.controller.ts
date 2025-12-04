@@ -1,5 +1,5 @@
 import { NextFunction, Request, Response } from 'express';
-import { loginUser, registerUser } from '../services/auth.service';
+import { changePasswordService, loginUser, registerUser } from '../services/auth.service';
 import { PassportFacebookResult } from '../utils/types/type';
 
 // ******************* Register ************************
@@ -117,5 +117,20 @@ export const facebookAdminCallback = (req: Request, res: Response, next: NextFun
   } catch (err) {
     console.error('Admin callback error:', err);
     return res.redirect(`${process.env.FRONTEND_URL}/login`);
+  }
+};
+
+export const changePasswordController = async (req: Request, res: Response, next: NextFunction) => {
+  try {
+    const { confirmPassword, newPassword, currentPassword, email } = req.body;
+    await changePasswordService(confirmPassword, newPassword, currentPassword, email);
+
+    res.status(200).json({
+      status: true,
+      message: 'Password Change Successfully',
+      data: null,
+    });
+  } catch (error) {
+    next(error);
   }
 };

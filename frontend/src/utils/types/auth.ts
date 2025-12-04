@@ -32,6 +32,7 @@ export interface UserData {
   lastname: string;
   role: 'Admin' | 'User';
   expireAt?: number;
+  loginType?: string | undefined;
 }
 
 export interface AuthState {

@@ -46,6 +46,7 @@ const LoginPage = () => {
               lastname: userDetail?.lastname,
               email: userDetail?.email,
               role: userDetail?.role,
+              loginType: 'normal',
             };
             localStorage.setItem('accessToken', data?.accessToken ?? '');
 
