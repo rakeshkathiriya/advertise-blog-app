@@ -1,5 +1,5 @@
 import { User } from 'lucide-react';
-import React, { useState } from 'react';
+import React, { useEffect, useRef, useState } from 'react';
 import { NavLink } from 'react-router-dom';
 import ChangePasswordForm from '../../components/ChangePasswordForm';
 import { AdminButton } from '../../components/common/AdminButton';
@@ -8,10 +8,29 @@ import { useAppSelector } from '../../store/hooks';
 import { getUserRole } from '../../utils/helper';
 
 export const Header: React.FC = () => {
+  const dropdownRef = useRef<HTMLDivElement>(null);
   const [showDropdown, setShowDropdown] = useState<boolean>(false);
   const [showChangePasswordModal, setShowChangePasswordModal] = useState<boolean>(false);
   const role = getUserRole();
   const logInUser = useAppSelector((state) => state.auth);
+
+  useEffect(() => {
+    function handleClickOutside(e: MouseEvent) {
+      if (dropdownRef.current && !dropdownRef.current.contains(e.target as Node)) {
+        setShowDropdown(false);
+      }
+    }
+
+    document.addEventListener('mousedown', handleClickOutside);
+
+    return () => {
+      document.removeEventListener('mousedown', handleClickOutside);
+    };
+  }, []);
+
+  const handleClose = () => {
+    setShowDropdown(false);
+  };
   console.log(logInUser);
   return (
     <div className="header_container w-full">
@@ -70,7 +89,10 @@ export const Header: React.FC = () => {
               </div>
 
               {showDropdown && (
-                <div className="animate-fadeIn absolute top-12 right-0 z-50 flex min-w-48 flex-col rounded-2xl border border-white/10 bg-white/80 py-2 shadow-2xl backdrop-blur-xl">
+                <div
+                  ref={dropdownRef}
+                  className="animate-fadeIn absolute top-12 right-0 z-50 flex min-w-48 flex-col rounded-2xl border border-white/10 bg-white/80 py-2 shadow-2xl backdrop-blur-xl"
+                >
                   <div className="hover:bg-bgPrimary/20 hover:text-bgPrimaryDark text-bgPrimaryDark w-full rounded-xl px-4 py-4 text-start font-semibold transition-all duration-200">
                     <span>Welcome,&nbsp;&nbsp;</span>
                     {logInUser.user?.firstname}
@@ -79,6 +101,7 @@ export const Header: React.FC = () => {
                   {logInUser.user?.loginType !== 'facebook' && (
                     <div
                       onClick={() => {
+                        handleClose();
                         setShowChangePasswordModal(!showChangePasswordModal);
                       }}
                       className="hover:bg-bgPrimary/20 hover:text-bgPrimaryDark text-bgPrimaryDark w-full rounded-xl px-4 py-4 text-start font-semibold transition-all duration-200"
