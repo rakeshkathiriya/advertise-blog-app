@@ -18,14 +18,14 @@ export const AppProvider = () => {
       <RoutesHolder />
       <ToastContainer
         position="top-right"
-        autoClose={2000}
-        hideProgressBar={false}
-        newestOnTop={true}
+        autoClose={1500}
+        hideProgressBar={true}
+        newestOnTop={false}
         closeOnClick={false}
         pauseOnFocusLoss
         draggable
-        pauseOnHover={false}
-        theme="light"
+        pauseOnHover={true}
+        theme="colored"
       />
       <ReactQueryDevtools initialIsOpen={false} />
     </QueryClientProvider>

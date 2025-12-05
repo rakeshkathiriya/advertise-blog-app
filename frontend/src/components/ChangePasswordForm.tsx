@@ -5,6 +5,7 @@ import { useUserChangePassword } from '../queries/password/changePassword';
 import { useAppSelector } from '../store/hooks';
 import { changePasswordSchema, type ChangePassValues } from '../utils/validationSchema/changePassword';
 import Modal from './AdminPanel/Modal';
+import PasswordField from './common/PasswordField';
 import { Spinner } from './common/Spinner';
 
 interface ChangePasswordFormProps {
@@ -72,18 +73,15 @@ const ChangePasswordForm: React.FC<ChangePasswordFormProps> = ({ onCancel }) => 
           <label className="block text-sm font-semibold text-[#3a4b66]">
             Current Password <span className="text-red-600">*</span>
           </label>
-          <input
-            type="password"
+
+          <PasswordField
             name="currentPassword"
-            placeholder="Enter new password"
             value={values.currentPassword}
             onChange={handleChange}
             onBlur={handleBlur}
-            className={`w-full rounded-xl border bg-gray-100 px-4 py-3 text-sm text-gray-700 focus:ring-2 focus:ring-[#aec2d1] focus:outline-none ${
-              touched.currentPassword && errors.currentPassword ? 'border-red-500' : 'border-gray-300'
-            } `}
+            touched={touched.currentPassword}
+            error={errors.currentPassword}
           />
-          <p className="min-h-5 text-xs text-red-500">{touched.currentPassword && errors.currentPassword}</p>
         </div>
 
         {/* New Password */}
@@ -91,18 +89,14 @@ const ChangePasswordForm: React.FC<ChangePasswordFormProps> = ({ onCancel }) => 
           <label className="block text-sm font-semibold text-[#3a4b66]">
             New Password <span className="text-red-600">*</span>
           </label>
-          <input
-            type="password"
+          <PasswordField
             name="newPassword"
-            placeholder="Enter new password"
             value={values.newPassword}
             onChange={handleChange}
             onBlur={handleBlur}
-            className={`w-full rounded-xl border bg-gray-100 px-4 py-3 text-sm text-gray-700 focus:ring-2 focus:ring-[#aec2d1] focus:outline-none ${
-              touched.newPassword && errors.newPassword ? 'border-red-500' : 'border-gray-300'
-            }`}
+            touched={touched.newPassword}
+            error={errors.newPassword}
           />
-          <p className="min-h-5 text-xs text-red-500">{touched.newPassword && errors.newPassword}</p>
         </div>
 
         {/* Confirm Password */}
@@ -110,18 +104,14 @@ const ChangePasswordForm: React.FC<ChangePasswordFormProps> = ({ onCancel }) => 
           <label className="block text-sm font-semibold text-[#3a4b66]">
             Confirm Password <span className="text-red-600">*</span>
           </label>
-          <input
-            type="password"
+          <PasswordField
             name="confirmPassword"
-            placeholder="Confirm new password"
             value={values.confirmPassword}
             onChange={handleChange}
             onBlur={handleBlur}
-            className={`w-full rounded-xl border bg-gray-100 px-4 py-3 text-sm text-gray-700 focus:ring-2 focus:ring-[#aec2d1] focus:outline-none ${
-              touched.confirmPassword && errors.confirmPassword ? 'border-red-500' : 'border-gray-300'
-            }`}
+            touched={touched.confirmPassword}
+            error={errors.confirmPassword}
           />
-          <p className="min-h-5 text-xs text-red-500">{touched.confirmPassword && errors.confirmPassword}</p>
         </div>
 
         {/* Submit */}

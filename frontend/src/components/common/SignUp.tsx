@@ -7,6 +7,7 @@ import { useUserRegistration } from '../../queries/auth.query';
 import type { RegisterUserPayload } from '../../utils/types/auth';
 import { registerSchema } from '../../utils/validationSchema/registerSchema';
 import { FacebookLoginButton } from './FacebookLoginButton';
+import PasswordField from './PasswordField';
 
 const SignUpPage = () => {
   const navigate = useNavigate();
@@ -69,7 +70,7 @@ const SignUpPage = () => {
             {/* FIRST NAME */}
             <div>
               <label htmlFor="firstname" className="text-sm font-medium text-gray-700">
-                First Name
+                First Name <span className="text-red-600">*</span>
               </label>
               <input
                 name="firstname"
@@ -87,7 +88,7 @@ const SignUpPage = () => {
             {/* LAST NAME */}
             <div>
               <label htmlFor="lastname" className="text-sm font-medium text-gray-700">
-                Last Name
+                Last Name <span className="text-red-600">*</span>
               </label>
               <input
                 name="lastname"
@@ -106,7 +107,7 @@ const SignUpPage = () => {
           {/* EMAIL */}
           <div>
             <label htmlFor="email" className="text-sm font-medium text-gray-700">
-              Email
+              Email <span className="text-red-600">*</span>
             </label>
             <input
               name="email"
@@ -125,20 +126,16 @@ const SignUpPage = () => {
           {/* PASSWORD */}
           <div>
             <label htmlFor="password" className="text-sm font-medium text-gray-700">
-              Password
+              Password <span className="text-red-600">*</span>
             </label>
-            <input
+            <PasswordField
               name="password"
-              type="password"
               value={values.password}
               onChange={handleChange}
               onBlur={handleBlur}
-              className={`mt-1 w-full rounded-lg border bg-gray-50 p-3 ${
-                touched.password && errors.password ? 'border-red-500' : 'border-gray-300'
-              }`}
-              placeholder="••••••"
+              touched={touched.password}
+              error={errors.password}
             />
-            <p className="min-h-5 text-xs text-red-500">{touched.password && errors.password}</p>
           </div>
 
           {/* SUBMIT */}

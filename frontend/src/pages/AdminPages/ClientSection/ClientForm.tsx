@@ -124,7 +124,9 @@ const ClientForm = ({ client, onCancel, submitLabel, setCanRefresh }: ClientForm
           </div>
         )}
         <div className="space-y-1">
-          <label className="mb-1 block text-sm font-semibold text-[#3a4b66]">Company Name</label>
+          <label className="mb-1 block text-sm font-semibold text-[#3a4b66]">
+            Company Name <span className="text-red-600">*</span>
+          </label>
           <input
             type="text"
             name="name"
@@ -138,7 +140,9 @@ const ClientForm = ({ client, onCancel, submitLabel, setCanRefresh }: ClientForm
           <p className="min-h-5 text-xs text-red-500">{touched.name && errors.name}</p>
         </div>
         <div>
-          <label className="mb-1 block text-sm font-semibold text-[#3a4b66]">POC</label>
+          <label className="mb-1 block text-sm font-semibold text-[#3a4b66]">
+            POC <span className="text-red-600">*</span>
+          </label>
           <input
             type="text"
             name="poc"
@@ -151,7 +155,9 @@ const ClientForm = ({ client, onCancel, submitLabel, setCanRefresh }: ClientForm
           <p className="min-h-5 text-xs text-red-500">{touched.poc && errors.poc}</p>
         </div>
         <div>
-          <label className="mb-1 block text-sm font-semibold text-[#3a4b66]">Mobile No.</label>
+          <label className="mb-1 block text-sm font-semibold text-[#3a4b66]">
+            Mobile No. <span className="text-red-600">*</span>
+          </label>
           <input
             type="tel"
             name="contact"
@@ -164,7 +170,9 @@ const ClientForm = ({ client, onCancel, submitLabel, setCanRefresh }: ClientForm
           <p className="min-h-5 text-xs text-red-500">{touched.contact && errors.contact}</p>
         </div>
         <div>
-          <label className="mb-1 block text-sm font-semibold text-[#3a4b66]">Email</label>
+          <label className="mb-1 block text-sm font-semibold text-[#3a4b66]">
+            Email <span className="text-red-600">*</span>
+          </label>
           <input
             type="email"
             name="email"
@@ -177,7 +185,9 @@ const ClientForm = ({ client, onCancel, submitLabel, setCanRefresh }: ClientForm
           <p className="min-h-5 text-xs text-red-500">{touched.email && errors.email}</p>
         </div>
         <div>
-          <label className="mb-1 block text-sm font-semibold text-[#3a4b66]">Post Limit</label>
+          <label className="mb-1 block text-sm font-semibold text-[#3a4b66]">
+            Post Limit <span className="text-red-600">*</span>
+          </label>
           <input
             type="number"
             name="postLimit"
@@ -190,7 +200,9 @@ const ClientForm = ({ client, onCancel, submitLabel, setCanRefresh }: ClientForm
           <p className="min-h-5 text-xs text-red-500">{touched.postLimit && errors.postLimit}</p>
         </div>
         <div>
-          <label className="mb-1 block text-sm font-semibold text-[#3a4b66]">Expiration Date (DD/MM/YYYY)</label>
+          <label className="mb-1 block text-sm font-semibold text-[#3a4b66]">
+            Expiration Date (DD/MM/YYYY) <span className="text-red-600">*</span>
+          </label>
           <input
             type="date"
             min={dateUtils.yesterday()}
