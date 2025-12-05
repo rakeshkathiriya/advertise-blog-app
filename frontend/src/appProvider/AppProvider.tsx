@@ -18,7 +18,7 @@ export const AppProvider = () => {
       <RoutesHolder />
       <ToastContainer
         position="top-right"
-        autoClose={1500}
+        autoClose={1000}
         hideProgressBar={true}
         newestOnTop={false}
         closeOnClick={false}
