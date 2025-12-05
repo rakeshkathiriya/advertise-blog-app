@@ -7,6 +7,12 @@ export interface ChangePassValues {
   email?: string;
 }
 
+export interface ResetPasswordPayload {
+  token: string | null;
+  userId: string | null;
+  newPassword: string;
+  confirmPassword: string;
+}
 const passwordRules = Yup.string()
   .required('Password is required')
   .matches(/[A-Z]/, 'Must contain at least one uppercase letter')
@@ -24,6 +30,18 @@ export const changePasswordSchema = Yup.object({
     .test('passwords-not-same', 'New Password cannot be the same as Current Password', function (value) {
       return value !== this.parent.currentPassword;
     }),
+
+  confirmPassword: Yup.string()
+    .required('Confirm Password is required')
+    .oneOf([Yup.ref('newPassword')], 'New Password and Confirm Password must match'),
+});
+
+export const forgotPassSchema = Yup.object({
+  email: Yup.string().email('Invalid email format').required('Email is required'),
+});
+
+export const resetPasswordSchema = Yup.object({
+  newPassword: passwordRules.label('New Password').required('New Password is Required'),
 
   confirmPassword: Yup.string()
     .required('Confirm Password is required')

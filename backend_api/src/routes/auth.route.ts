@@ -5,9 +5,11 @@ import {
   changePasswordController,
   facebookAdminCallback,
   facebookCallback,
+  forgotPasswordController,
   login,
   logout,
   register,
+  updatePasswordController,
 } from '../controllers/auth.controller';
 import { authMiddleware } from '../middlewares/auth.middleware';
 import validate from '../middlewares/validate.middleware';
@@ -19,6 +21,8 @@ router.route('/register').post(validate(userSignupSchema), register);
 router.route('/login').post(login);
 router.route('/logout').post(logout);
 router.post('/changePassword', authMiddleware, changePasswordController);
+router.post('/resetPassword', forgotPasswordController);
+router.post('/updatePassword', updatePasswordController);
 
 // Facebook Login Routes
 router.get(

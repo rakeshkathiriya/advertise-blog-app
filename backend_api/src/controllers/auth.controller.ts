@@ -1,5 +1,11 @@
 import { NextFunction, Request, Response } from 'express';
-import { changePasswordService, loginUser, registerUser } from '../services/auth.service';
+import {
+  changePasswordService,
+  forgotPasswordService,
+  loginUser,
+  registerUser,
+  updatePasswordService,
+} from '../services/auth.service';
 import { PassportFacebookResult } from '../utils/types/type';
 
 // ******************* Register ************************
@@ -85,7 +91,6 @@ export const facebookCallback = (req: Request, res: Response, next: NextFunction
 
     return res.redirect(`${process.env.BACKEND_URL}/aba/auth/facebook/admin`);
   } catch (error) {
-    console.error('Admin callback error:', error);
     return res.redirect(`${process.env.FRONTEND_URL}/login`);
   }
 };
@@ -95,7 +100,6 @@ export const facebookAdminCallback = (req: Request, res: Response, next: NextFun
     const data = req.user as PassportFacebookResult;
 
     if (!data) {
-      console.error('No user data from passport');
       return res.redirect(`${process.env.FRONTEND_URL}/login?error=admin-auth-failed`);
     }
 
@@ -115,7 +119,6 @@ export const facebookAdminCallback = (req: Request, res: Response, next: NextFun
       )}`
     );
   } catch (err) {
-    console.error('Admin callback error:', err);
     return res.redirect(`${process.env.FRONTEND_URL}/login`);
   }
 };
@@ -128,6 +131,38 @@ export const changePasswordController = async (req: Request, res: Response, next
     res.status(200).json({
       status: true,
       message: 'Password Change Successfully',
+      data: null,
+    });
+  } catch (error) {
+    next(error);
+  }
+};
+
+export const forgotPasswordController = async (req: Request, res: Response, next: NextFunction) => {
+  try {
+    const { email } = req.body;
+    const response = await forgotPasswordService(email);
+
+    res.status(200).json({
+      status: true,
+      message: response.message,
+      data: null,
+    });
+  } catch (error) {
+    next(error);
+  }
+};
+
+// Step 3: Update password
+export const updatePasswordController = async (req: Request, res: Response, next: NextFunction) => {
+  try {
+    const { token, userId, newPassword } = req.body;
+
+    const response = await updatePasswordService(token, userId, newPassword);
+
+    res.status(200).json({
+      status: true,
+      message: response.message,
       data: null,
     });
   } catch (error) {

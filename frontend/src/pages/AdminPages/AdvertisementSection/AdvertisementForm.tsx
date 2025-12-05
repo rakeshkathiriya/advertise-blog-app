@@ -106,7 +106,7 @@ const AdvertisementForm = ({
           {/* Image Upload */}
           <div className="space-y-1">
             <label htmlFor="image" className="block text-sm font-semibold text-[#3a4b66]">
-              Advertise Image
+              Advertise Image <span className="text-red-600">*</span>
             </label>
             <input
               type="file"
@@ -124,7 +124,7 @@ const AdvertisementForm = ({
           {/* Description */}
           <div className="space-y-1">
             <label htmlFor="description" className="block text-sm font-semibold text-[#3a4b66]">
-              Description
+              Description <span className="text-red-600">*</span>
             </label>
             <div className="relative">
               <textarea
@@ -144,7 +144,9 @@ const AdvertisementForm = ({
 
           {/* Client Select */}
           <div className="space-y-1">
-            <label className="block text-sm font-semibold text-[#3a4b66]">Choose a Client</label>
+            <label className="block text-sm font-semibold text-[#3a4b66]">
+              Choose a Client <span className="text-red-600">*</span>
+            </label>
 
             <FormControl fullWidth>
               <Select

@@ -1,7 +1,7 @@
 import { useFormik } from 'formik';
 import { motion } from 'framer-motion';
 import { useCallback, useState } from 'react';
-import { useNavigate } from 'react-router-dom';
+import { Link, useNavigate } from 'react-router-dom';
 import { toast } from 'react-toastify';
 import { useUserLogin } from '../../queries/auth.query';
 import { setUser } from '../../store/authSlice';
@@ -9,6 +9,7 @@ import { useAppDispatch } from '../../store/hooks';
 import type { LoginUserPayload } from '../../utils/types/auth';
 import { loginSchema, type LoginFormValues } from '../../utils/validationSchema/loginSchema';
 import { FacebookLoginButton } from './FacebookLoginButton';
+import PasswordField from './PasswordField';
 
 const LoginPage = () => {
   const [initialValues] = useState<LoginFormValues>({
@@ -92,7 +93,7 @@ const LoginPage = () => {
           {/* Email */}
           <div>
             <label htmlFor="email" className="block text-sm font-medium text-gray-700">
-              Email
+              Email <span className="text-red-600">*</span>
             </label>
             <input
               name="email"
@@ -110,21 +111,25 @@ const LoginPage = () => {
 
           {/* Password */}
           <div>
-            <label htmlFor="password" className="block text-sm font-medium text-gray-700">
-              Password
-            </label>
-            <input
+            <div className="flex items-center justify-between">
+              <label htmlFor="password" className="block text-sm font-medium text-gray-700">
+                Password <span className="text-red-600">*</span>
+              </label>
+
+              {/* Forgot Password Link */}
+              <Link to="/forgot-password" className="text-sm font-medium text-[#1877F2] hover:underline">
+                Forgot Password?
+              </Link>
+            </div>
+
+            <PasswordField
               name="password"
-              type="password"
               value={values.password}
               onChange={handleChange}
               onBlur={handleBlur}
-              className={`mt-1 w-full rounded-lg border bg-gray-50 p-3 ${
-                touched.password && errors.password ? 'border-red-500' : 'border-gray-300'
-              }`}
-              placeholder="••••••••"
+              touched={touched.password}
+              error={errors.password}
             />
-            <p className="min-h-5 text-xs text-red-500">{touched.password && errors.password}</p>
           </div>
 
           {/* Login Button */}

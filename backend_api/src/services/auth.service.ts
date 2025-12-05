@@ -1,6 +1,9 @@
 import bcrypt from 'bcryptjs';
 import createHttpError from 'http-errors';
 import jwt from 'jsonwebtoken';
+import nodemailer from 'nodemailer';
+import { resetPasswordTemplate } from '../configs/resetPasswordTemplate';
+import { UsedToken } from '../models/usedTokenModel';
 import { UserModel } from '../models/userModel';
 import { FacebookLoginPayload, IUser } from '../utils/types/type';
 
@@ -132,34 +135,101 @@ export const changePasswordService = async (
     throw createHttpError.BadRequest('Required fields missing');
   }
 
-  // ❗ Use findOne instead of find (find returns an array)
+  // Use findOne instead of find (find returns an array)
   const user = await UserModel.findOne({ email });
   if (!user) {
-    throw createHttpError.NotFound('User not found');
+    throw createHttpError.NotFound('No account found with this email.');
   }
 
-  // 🛑 Validate old password
+  //  Validate old password
   const isMatch = await bcrypt.compare(currentPassword, user.password);
   if (!isMatch) {
-    throw createHttpError.BadRequest('Current password is incorrect');
+    throw createHttpError.BadRequest('The current password you entered is wrong.');
   }
 
-  // 🛑 Ensure new password is not the same as old password
+  //  Ensure new password is not the same as old password
   if (currentPassword === newPassword) {
-    throw createHttpError.BadRequest('New password cannot be the same as the current password');
+    throw createHttpError.BadRequest('You can’t reuse your current password.');
   }
 
-  // 🛑 Validate new + confirm password
+  //  Validate new + confirm password
   if (newPassword !== confirmPassword) {
-    throw createHttpError.BadRequest('New password and confirm password do not match');
+    throw createHttpError.BadRequest('New password and confirm password don’t match.');
   }
 
-  // 🔐 Hash new password
+  //  Hash new password
   const hashedPassword = await bcrypt.hash(newPassword, 10);
 
-  // 💾 Save to DB
+  //  Save to DB
   user.password = hashedPassword;
   await user.save();
 
   return user;
+};
+
+export const forgotPasswordService = async (email: string) => {
+  if (!email) throw createHttpError.BadRequest('Required fields missing');
+
+  const user = await UserModel.findOne({ email });
+  if (!user) throw createHttpError.NotFound('No account found with this email.');
+
+  if (user.facebookAccessToken) throw createHttpError.NotFound('You signed up with SOS for this account.');
+
+  const token = jwt.sign({ id: user._id, email: user.email }, process.env.ACCESS_TOKEN_SECRET as string, {
+    expiresIn: '5m',
+  });
+
+  const resetURL = `${process.env.FRONTEND_URL}/reset-password?token=${encodeURIComponent(token)}&id=${user._id}`;
+
+  const transporter = nodemailer.createTransport({
+    service: 'Gmail',
+    auth: {
+      user: process.env.EMAIL_USER,
+      pass: process.env.EMAIL_PASS,
+    },
+  });
+
+  const mailOptions = {
+    from: process.env.EMAIL_USER,
+    to: user.email,
+    subject: 'Password Reset Request',
+    html: resetPasswordTemplate(resetURL),
+  };
+
+  await transporter.sendMail(mailOptions);
+
+  return { message: 'Reset link sent! Check your inbox.' };
+};
+
+export const updatePasswordService = async (token: string, userId: string, newPassword: string) => {
+  if (!token || !userId || !newPassword) throw createHttpError.BadRequest('Missing required fields');
+  let decoded: any;
+
+  const existing = await UsedToken.findOne({ token });
+  if (existing) throw createHttpError.BadRequest('Link already used. Request a new link.');
+
+  const user = await UserModel.findById(userId);
+  if (!user) throw createHttpError.NotFound('No account found with this email.');
+
+  try {
+    decoded = jwt.verify(token, process.env.ACCESS_TOKEN_SECRET as string);
+  } catch (err: any) {
+    if (err.name === 'TokenExpiredError') {
+      throw createHttpError.BadRequest('Link expired. Request a new link.');
+    }
+    throw createHttpError.BadRequest('This link can’t be used. Get a new one.');
+  }
+
+  if (decoded.id !== userId) {
+    throw createHttpError.Unauthorized('This reset link isn’t valid for your account.');
+  }
+
+  const hashedPassword = await bcrypt.hash(newPassword, 10);
+  user.password = hashedPassword;
+
+  await user.save();
+  await UsedToken.create({ token });
+  return {
+    message: 'Password updated successfully',
+  };
 };

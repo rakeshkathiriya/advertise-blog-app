@@ -23,7 +23,6 @@ export const handlePostCreation = async (data: Post) => {
   }
 
   const client = await clientModel.findById(data.client);
-  console.log('Client:-', client);
   if (!client) {
     throw createHttpError.NotFound('Client missing');
   }
