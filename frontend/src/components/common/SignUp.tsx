@@ -55,21 +55,21 @@ const SignUpPage = () => {
   );
 
   return (
-    <div className="flex min-h-screen items-center justify-center bg-linear-to-br from-[#f7f7f7] to-[#eaeaea] p-6">
+    <div className="from-bgPrimaryDark to-bgPrimary/70 flex min-h-screen items-center justify-center bg-linear-to-br p-6">
       <motion.div
         initial={{ opacity: 0, y: 40 }}
         animate={{ opacity: 1, y: 0 }}
         transition={{ duration: 0.7 }}
-        className="w-full max-w-xl rounded-2xl border border-gray-200 p-10 shadow-xl"
+        className="w-full max-w-xl rounded-2xl border border-gray-200 bg-slate-200 p-10 shadow-xl"
       >
-        <h2 className="mb-8 text-center text-4xl font-extrabold text-gray-900">Create Account</h2>
+        <h2 className="text-bgPrimary mb-8 text-center text-4xl font-extrabold">Create Account</h2>
 
         <form onSubmit={handleSubmit} className="space-y-3">
           {/* GRID */}
           <div className="grid grid-cols-1 gap-6 md:grid-cols-2">
             {/* FIRST NAME */}
             <div>
-              <label htmlFor="firstname" className="text-sm font-medium text-gray-700">
+              <label htmlFor="firstname" className="text-bgPrimary text-sm font-medium">
                 First Name <span className="text-red-600">*</span>
               </label>
               <input
@@ -87,7 +87,7 @@ const SignUpPage = () => {
 
             {/* LAST NAME */}
             <div>
-              <label htmlFor="lastname" className="text-sm font-medium text-gray-700">
+              <label htmlFor="lastname" className="text-bgPrimary text-sm font-medium">
                 Last Name <span className="text-red-600">*</span>
               </label>
               <input
@@ -106,7 +106,7 @@ const SignUpPage = () => {
 
           {/* EMAIL */}
           <div>
-            <label htmlFor="email" className="text-sm font-medium text-gray-700">
+            <label htmlFor="email" className="text-bgPrimary text-sm font-medium">
               Email <span className="text-red-600">*</span>
             </label>
             <input
@@ -125,7 +125,7 @@ const SignUpPage = () => {
 
           {/* PASSWORD */}
           <div>
-            <label htmlFor="password" className="text-sm font-medium text-gray-700">
+            <label htmlFor="password" className="text-bgPrimary text-sm font-medium">
               Password <span className="text-red-600">*</span>
             </label>
             <PasswordField
@@ -144,7 +144,7 @@ const SignUpPage = () => {
             whileTap={{ scale: 0.95 }}
             whileHover={{ scale: 1.03 }}
             disabled={resRegisterPending}
-            className="w-full rounded-lg bg-[#E4B85A] py-3 font-semibold text-gray-900 shadow-lg"
+            className="bg-bgPrimary w-full rounded-lg py-3 font-semibold text-white shadow-lg"
           >
             {resRegisterPending ? 'Creating Account...' : 'Create Account'}
           </motion.button>
