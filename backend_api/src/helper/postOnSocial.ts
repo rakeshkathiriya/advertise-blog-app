@@ -46,8 +46,6 @@ async function postToFacebook(params: {
 
   const permalink = linkRes.data.permalink_url || null;
 
-  console.log('FB Permalink:', permalink);
-
   return { postId: upload.data.id, permalink };
 }
 
@@ -99,9 +97,6 @@ async function postToInstagram(params: {
   });
 
   const permalink = linkRes.data.permalink || null;
-
-  console.log('IG Post ID:', postId);
-  console.log('IG Permalink:', permalink);
 
   return { postId, permalink };
 }

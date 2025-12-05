@@ -138,7 +138,6 @@ export const deleteClientService = async (id: string) => {
     const deletedClient = await clientModel.findByIdAndDelete(id);
     return deletedClient;
   } else {
-    console.log('Deleted Client', client);
     throw createHttpError.BadRequest('Client has active ads ');
   }
 };

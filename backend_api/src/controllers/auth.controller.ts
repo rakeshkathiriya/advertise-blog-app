@@ -91,7 +91,6 @@ export const facebookCallback = (req: Request, res: Response, next: NextFunction
 
     return res.redirect(`${process.env.BACKEND_URL}/aba/auth/facebook/admin`);
   } catch (error) {
-    console.error('Admin callback error:', error);
     return res.redirect(`${process.env.FRONTEND_URL}/login`);
   }
 };
@@ -101,7 +100,6 @@ export const facebookAdminCallback = (req: Request, res: Response, next: NextFun
     const data = req.user as PassportFacebookResult;
 
     if (!data) {
-      console.error('No user data from passport');
       return res.redirect(`${process.env.FRONTEND_URL}/login?error=admin-auth-failed`);
     }
 
@@ -121,7 +119,6 @@ export const facebookAdminCallback = (req: Request, res: Response, next: NextFun
       )}`
     );
   } catch (err) {
-    console.error('Admin callback error:', err);
     return res.redirect(`${process.env.FRONTEND_URL}/login`);
   }
 };
