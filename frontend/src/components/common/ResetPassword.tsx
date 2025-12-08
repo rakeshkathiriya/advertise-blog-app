@@ -1,6 +1,6 @@
 import { useFormik } from 'formik';
 import { motion } from 'framer-motion';
-import { useNavigate } from 'react-router-dom';
+import { Link, useNavigate } from 'react-router-dom';
 import { toast } from 'react-toastify';
 import { useResetPassword } from '../../queries/password/changePassword';
 import { resetPasswordSchema } from '../../utils/validationSchema/changePassword';
@@ -49,23 +49,23 @@ const ResetPassword = () => {
   const { errors, touched, handleChange, handleSubmit, values, handleBlur } = formik;
 
   return (
-    <div className="from-bgPrimaryDark to-bgPrimary/70 flex min-h-screen items-center justify-center bg-linear-to-br p-6">
+    <div className="from-bgPrimaryDark to-bgPrimary/70 flex min-h-screen items-center justify-center bg-linear-to-br p-2">
       <motion.div
         initial={{ opacity: 0, y: 40 }}
         animate={{ opacity: 1, y: 0 }}
         transition={{ duration: 0.7, ease: 'easeOut' }}
-        className="w-full max-w-lg rounded-2xl border border-gray-200 bg-slate-200 p-10 shadow-xl"
+        className="w-full max-w-lg rounded-2xl border border-gray-200 bg-slate-200 p-5 shadow-xl md:p-10"
       >
         <motion.h2
           initial={{ opacity: 0 }}
           animate={{ opacity: 1 }}
           transition={{ delay: 0.2, duration: 0.6 }}
-          className="text-bgPrimary mb-4 text-center text-4xl font-extrabold tracking-wide"
+          className="text-bgPrimary mb-4 text-center text-2xl font-extrabold tracking-wide md:text-4xl"
         >
           Reset Password
         </motion.h2>
 
-        <p className="mb-8 text-center text-sm text-gray-600">Set a new password for your account.</p>
+        <p className="mb-8 text-center text-xs text-gray-600 md:text-sm">Set a new password for your account.</p>
 
         {/* Token Invalid Message */}
 
@@ -115,9 +115,9 @@ const ResetPassword = () => {
 
         <p className="mt-6 text-center text-sm text-gray-600">
           Remember your password?{' '}
-          <a href="/login" className="font-semibold text-[#1877F2] hover:underline">
+          <Link to="/login" className="font-semibold text-[#1877F2] hover:underline">
             Login
-          </a>
+          </Link>
         </p>
       </motion.div>
     </div>

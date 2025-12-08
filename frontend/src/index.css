@@ -98,3 +98,14 @@ button {
   font-weight: 600;
   letter-spacing: 1px;
 }
+
+
+@media (max-width: 768px) {
+
+  .Toastify>.Toastify__toast-container>.Toastify__toast {
+    min-width: 100% !important;
+    font-weight: 400;
+    font-size: 14px;
+    letter-spacing: 1px;
+  }
+}

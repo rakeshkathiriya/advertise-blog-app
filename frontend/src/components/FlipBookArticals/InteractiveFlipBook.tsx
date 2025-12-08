@@ -11,24 +11,19 @@ import FlipBookPage from './FlipBookPage';
 
 const InteractiveFlipBook: React.FC = () => {
   const navigate = useNavigate();
-  // States
   const [currentPageNumber, setCurrentPageNumber] = useState(0);
   const [isShowCover, setIsShowCover] = useState(true);
   const isForeverSubscribe = isUserForeverSubscribed();
 
-  // Refs
   const flipBookRef = useRef<any>(null);
 
-  // Api hooks
   const { data: adResponse, isLoading } = useGetAllAdvertise();
 
-  // handlers
   const flipRight = useCallback(() => {
     const nextPage = currentPageNumber + 1;
-    // Check if trying to go beyond free pages without subscription
     if (!isForeverSubscribe && nextPage > freePageCount) {
       setCurrentPageNumber(nextPage);
-      return; // Don't flip
+      return;
     }
     flipBookRef.current?.pageFlip()?.flipNext();
   }, [currentPageNumber, isForeverSubscribe]);
@@ -44,17 +39,15 @@ const InteractiveFlipBook: React.FC = () => {
   const handlePageFlip = useCallback(
     (e: any) => {
       const nextPage = e.data + 1;
-      // Check if trying to go beyond free pages without subscription
       if (!isForeverSubscribe && nextPage > freePageCount) {
         setCurrentPageNumber(nextPage);
-        return; // Don't flip
+        return;
       }
       setCurrentPageNumber(nextPage);
     },
     [isForeverSubscribe],
   );
 
-  // effects
   useEffect(() => {
     if (!isLoading && adResponse?.data) {
       setIsShowCover(true);
@@ -77,6 +70,7 @@ const InteractiveFlipBook: React.FC = () => {
       className="relative flex min-h-screen w-screen flex-col items-center justify-center py-10 select-none"
     >
       {isLoading && <Spinner className="bg-transparent! backdrop-blur-none!" />}
+
       <AnimatePresence>
         {!isLoading && isOnRestrictedPage && (
           <motion.div
@@ -95,12 +89,11 @@ const InteractiveFlipBook: React.FC = () => {
               <Lock size={64} className="mx-auto text-gray-400" />
               <h1 className="text-3xl font-bold text-gray-800">Subscribe to Continue</h1>
               <p className="text-lg text-gray-600">Unlock full access to all pages</p>
+
               <motion.button
                 whileHover={{ scale: 1.03 }}
                 whileTap={{ scale: 0.97 }}
-                onClick={() => {
-                  navigate('/pricingPlan');
-                }}
+                onClick={() => navigate('/pricingPlan')}
                 className="bg-bgPrimary hover:bg-bgPrimaryDark mt-4 cursor-pointer rounded-lg px-8 py-3 font-semibold text-white shadow-lg transition-colors"
               >
                 Choose a Plan
@@ -109,40 +102,49 @@ const InteractiveFlipBook: React.FC = () => {
           </motion.div>
         )}
       </AnimatePresence>
+
       {!isLoading && !isOnRestrictedPage && (
         <>
+          {/* Left Arrow */}
           {currentPageNumber > 1 && (
             <motion.div
               initial={{ opacity: 0, x: -30 }}
               animate={{ opacity: 1, x: 0 }}
               transition={{ duration: 0.4 }}
-              className="absolute top-[50%] left-[calc(50%-550px)] z-10 -translate-y-1/2"
+              className="absolute top-[50%] left-0.5 z-10 -translate-y-1/2 md:left-[calc(50%-370px)] lg:left-[calc(50%-500px)]"
             >
-              <ChevronLeft onClick={flipLeft} size={35} className="bg-bgPrimary/30 cursor-pointer! rounded-full p-1" />
+              <ChevronLeft
+                onClick={flipLeft}
+                className="bg-bgPrimary/30 h-6 w-6 cursor-pointer rounded-full p-1 md:h-[35px] md:w-[35px]"
+              />
             </motion.div>
           )}
+
+          {/* Right Arrow */}
           {currentPageNumber < (adResponse?.data?.length || 0) + 2 && (
             <motion.div
               initial={{ opacity: 0, x: 30 }}
               animate={{ opacity: 1, x: 0 }}
               transition={{ duration: 0.4 }}
-              className="absolute top-[50%] right-[calc(50%-550px)] z-10 -translate-y-1/2"
+              className="absolute top-[50%] right-0.5 z-10 -translate-y-1/2 md:right-[calc(50%-370px)] lg:right-[calc(50%-500px)]"
             >
               <ChevronRight
                 onClick={flipRight}
-                size={35}
-                className="bg-bgPrimary/30 cursor-pointer! rounded-full p-1"
+                className="bg-bgPrimary/30 h-6 w-6 cursor-pointer rounded-full p-1 md:h-[35px] md:w-[35px]"
               />
             </motion.div>
           )}
+
           <HTMLFlipBook
             {...({
               Key: 'flipBook',
               width: 500,
-              height: 750,
-              size: 'fixed',
-              maxWidth: '100%',
-              maxHeight: '100%',
+              height: 700,
+              size: 'stretch',
+              minWidth: 250,
+              maxWidth: 500,
+              minHeight: 350,
+              maxHeight: 900,
               maxShadowOpacity: 0.5,
               drawShadow: true,
               showCover: isShowCover,
@@ -156,49 +158,49 @@ const InteractiveFlipBook: React.FC = () => {
               useMouseEvents: false,
               clickEventForward: true,
               disableFlipByClick: false,
+
               usePortrait: true,
             } as any)}
           >
+            {/* ======================= COVER PAGE ======================= */}
             <div key="cover-page" className="relative flex">
-              <div className="page bg-bgDefault border-borderMedium flex h-full w-full flex-col items-center justify-between overflow-hidden border px-3! py-4!">
-                <FlipBookPage imageUrl={'/first.png'} altText={'image'} />
-                <PageFooter index={0} fbPostLink={''} igPostLink={''} isShowPage={false} isShowIcon={false} />
+              <div className="page bg-bgDefault border-borderMedium flex h-full w-full flex-col items-center justify-between overflow-hidden border p-4">
+                <FlipBookPage imageUrl="/first.png" altText="image" />
+                <PageFooter index={0} fbPostLink="" igPostLink="" isShowPage={false} isShowIcon={false} />
               </div>
             </div>
 
+            {/* ======================= MAIN PAGES ======================= */}
             {adResponse &&
               (adResponse?.data ?? []).map((book, index) => (
                 <div className="relative flex" key={book._id}>
-                  <div
-                    key={book._id}
-                    className="page bg-bgDefault border-borderMedium flex h-full w-full flex-col items-center justify-between overflow-hidden border px-3! py-4!"
-                  >
-                    <FlipBookPage imageUrl={book.image} altText={'image'} />
+                  <div className="page bg-bgDefault border-borderMedium flex h-full w-full flex-col items-center justify-between overflow-hidden border p-4">
+                    <FlipBookPage imageUrl={book.image} altText="image" />
                     <PageFooter index={index} fbPostLink={book?.fbPostLink ?? ''} igPostLink={book?.igPostLink ?? ''} />
                   </div>
                 </div>
               ))}
 
+            {/* Extra filler page for odd page count */}
             {adResponse && adResponse.data.length % 2 !== 0 ? (
               <div key={'second-last-page'} className="relative flex">
-                <div className="page bg-bgDefault border-borderMedium items-between flex h-full min-h-full w-full flex-col justify-end overflow-hidden border px-3! py-4!">
+                <div className="page bg-bgDefault border-borderMedium flex h-full w-full flex-col justify-end overflow-hidden border p-4">
                   <PageFooter
                     index={adResponse?.data.length}
-                    fbPostLink={''}
-                    igPostLink={''}
+                    fbPostLink=""
+                    igPostLink=""
                     isShowPage={true}
                     isShowIcon={false}
                   />
                 </div>
               </div>
-            ) : (
-              <></>
-            )}
+            ) : null}
 
+            {/* ======================= LAST PAGE ======================= */}
             <div key="last-page" className="relative flex">
-              <div className="page bg-bgDefault border-borderMedium flex h-full w-full flex-col items-center justify-between overflow-hidden border px-3! py-4!">
-                <FlipBookPage imageUrl={'/Last.png'} altText={'image'} />
-                <PageFooter index={0} fbPostLink={''} igPostLink={''} isShowPage={false} isShowIcon={false} />
+              <div className="page bg-bgDefault border-borderMedium flex h-full w-full flex-col items-center justify-between overflow-hidden border p-4">
+                <FlipBookPage imageUrl="/Last.png" altText="image" />
+                <PageFooter index={0} fbPostLink="" igPostLink="" isShowPage={false} isShowIcon={false} />
               </div>
             </div>
           </HTMLFlipBook>
@@ -207,7 +209,8 @@ const InteractiveFlipBook: React.FC = () => {
     </motion.div>
   );
 };
-export default InteractiveFlipBook;
+
+/* ======================= Footer Component ======================= */
 
 const PageFooter = ({
   index,
@@ -225,25 +228,29 @@ const PageFooter = ({
   return (
     <div className="flex min-h-[30px] w-full items-center justify-center">
       {isShowIcon && (
-        <div className="flex cursor-pointer items-center justify-center gap-3">
+        <div className="text-textSecondary/50 flex cursor-pointer items-center justify-center gap-3">
           {fbPostLink && (
-            <Link to={`${fbPostLink}`} target="_blank">
-              <Facebook size={20} color="#4B5563" strokeWidth={2.5} />
+            <Link to={fbPostLink} target="_blank">
+              <Facebook className="h-[15px] w-[15px] md:h-5 md:w-5" color="#4B556380" strokeWidth={2.5} />
             </Link>
           )}
           {igPostLink && (
-            <Link to={`${igPostLink}`} target="_blank">
-              <Instagram size={20} color="#4B5563" strokeWidth={2.5} />
+            <Link to={igPostLink} target="_blank">
+              <Instagram className="h-[15px] w-[15px] md:h-5 md:w-5" color="#4B556380" strokeWidth={2.5} />
             </Link>
           )}
         </div>
       )}
+
       {isShowPage && (
         <div className="flex w-[45%]">
-          <p className="text-textSecondary ml-auto text-sm font-semibold">{'Page ' + (index + 1)} </p>
+          <p className="text-textSecondary/50 ml-auto text-xs font-semibold md:text-sm">{'Page ' + (index + 1)}</p>
         </div>
       )}
-      <h4 className="text-textSecondary ml-auto text-sm font-semibold">© Food N Processing 2025</h4>
+
+      <h4 className="text-textSecondary/50 ml-auto text-xs font-semibold md:text-sm">Food N Processing</h4>
     </div>
   );
 };
+
+export default InteractiveFlipBook;

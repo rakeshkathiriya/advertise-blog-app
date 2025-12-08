@@ -1,4 +1,4 @@
-import { User } from 'lucide-react';
+import { Menu, User, X } from 'lucide-react';
 import React, { useEffect, useRef, useState } from 'react';
 import { NavLink } from 'react-router-dom';
 import ChangePasswordForm from '../../components/ChangePasswordForm';
@@ -9,7 +9,9 @@ import { getUserRole } from '../../utils/helper';
 
 export const Header: React.FC = () => {
   const dropdownRef = useRef<HTMLDivElement>(null);
+  const menuRef = useRef<HTMLUListElement>(null);
   const [showDropdown, setShowDropdown] = useState<boolean>(false);
+  const [showMenu, setShowMenu] = useState<boolean>(false);
   const [showChangePasswordModal, setShowChangePasswordModal] = useState<boolean>(false);
   const role = getUserRole();
   const logInUser = useAppSelector((state) => state.auth);
@@ -18,6 +20,10 @@ export const Header: React.FC = () => {
     function handleClickOutside(e: MouseEvent) {
       if (dropdownRef.current && !dropdownRef.current.contains(e.target as Node)) {
         setShowDropdown(false);
+        setShowMenu(false);
+      }
+      if (menuRef.current && !menuRef.current.contains(e.target as Node)) {
+        setShowMenu(false);
       }
     }
 
@@ -31,20 +37,19 @@ export const Header: React.FC = () => {
   const handleClose = () => {
     setShowDropdown(false);
   };
-  console.log(logInUser);
+
   return (
     <div className="header_container w-full">
       <div className="bg-bgDefault py-1.5 text-center font-medium">
         {/* <div className="from-orange to-orangeLight bg-linear-to-r py-1.5 text-center font-medium"> */}
-        <p className="text-textSecondary ml-auto text-sm font-semibold tracking-wide">
+        <p className="text-textSecondary ml-auto text-xs font-semibold tracking-wide md:text-sm">
           Exclusive Price Drop! Hurry, <span className="underline underline-offset-4">Offer Ends Soon!</span>
         </p>
       </div>
       <header className="text-textWhite from-bgPrimaryDark to-bgPrimary flex w-full items-center justify-center bg-linear-to-r transition-all">
-        <nav className="container flex w-full items-center justify-between px-4 py-1">
+        <nav className="container flex w-full items-center justify-between px-4 py-3">
           <h1 className="text-textTitleSecondary cursor-pointer text-lg font-semibold tracking-wide">Logo</h1>
-
-          <ul>
+          <ul className="hidden md:flex">
             <NavLink
               to="/"
               className={({}) => `group mx-4 inline-block cursor-pointer text-base font-semibold tracking-wide`}
@@ -120,8 +125,70 @@ export const Header: React.FC = () => {
                 </div>
               )}
             </div>
+
+            <div
+              onClick={() => {
+                setShowMenu(!showMenu);
+              }}
+              className="md:hidden"
+            >
+              {showMenu ? (
+                <div>
+                  {' '}
+                  <X />
+                </div>
+              ) : (
+                <div>
+                  {' '}
+                  <Menu />
+                </div>
+              )}
+            </div>
           </div>
         </nav>
+        {/* Mobile Menu */}{' '}
+        <div
+          className={`${
+            showMenu ? 'max-h-90 py-4' : 'max-h-0 py-0'
+          } from-bgPrimaryDark to-bgPrimary absolute top-20 left-0 z-999 w-full overflow-hidden bg-linear-to-r text-center transition-all duration-300 ease-in-out md:hidden`}
+        >
+          <hr className="mx-auto my-2 size-2 w-[90%] text-white/30" />
+          <ul ref={menuRef}>
+            <NavLink
+              to="/"
+              className={({}) => `group block w-full py-2 text-base font-semibold tracking-wide`}
+              onClick={() => setShowMenu(false)}
+            >
+              {({ isActive }) => (
+                <li className="inline-block">
+                  Advertisement
+                  <div
+                    className={`bg-bgDefault h-0.5 transition-all duration-300 ${
+                      isActive ? 'w-full' : 'w-0 group-hover:w-full'
+                    } `}
+                  />
+                </li>
+              )}
+            </NavLink>
+
+            <NavLink
+              to="/blog"
+              className={({}) => `group block w-full py-2 text-base font-semibold tracking-wide`}
+              onClick={() => setShowMenu(false)}
+            >
+              {({ isActive }) => (
+                <li className="inline-block">
+                  Blog
+                  <div
+                    className={`bg-bgDefault h-0.5 transition-all duration-300 ${
+                      isActive ? 'w-full' : 'w-0 group-hover:w-full'
+                    } `}
+                  />
+                </li>
+              )}
+            </NavLink>
+          </ul>
+        </div>
       </header>
 
       {showChangePasswordModal && <ChangePasswordForm onCancel={() => setShowChangePasswordModal(false)} />}
