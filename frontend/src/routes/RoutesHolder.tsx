@@ -2,6 +2,7 @@ import React, { lazy } from 'react';
 import { createBrowserRouter, RouterProvider } from 'react-router-dom';
 import { FacebookAuthSuccess } from '../components/common/FacebookAuthSuccess';
 import ForgotPassword from '../components/common/ForgotPassword';
+import { AdminRoute } from './AdminRoute';
 import { IsAuthenticate } from './IsAuthenticate';
 import { ProtectedRoute } from './ProtectedRoute';
 
@@ -51,7 +52,7 @@ const route = createBrowserRouter([
   },
 
   {
-    // element: <AdminRoute />,
+    element: <AdminRoute />,
     children: [
       {
         path: '/aba-admin',

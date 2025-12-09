@@ -84,9 +84,6 @@ const AdvertisementForm = ({
     [resAdvertiseMutate, resetForm, onCancel],
   );
 
-  // useEffect(() => {
-  //   clientReFetch();
-  // }, []);
   return (
     <Modal onClose={onCancel} isLoading={resAdvertisePending}>
       <h3 className="mb-4 text-center text-lg font-bold tracking-wide text-[#3a4b66] underline underline-offset-8">
@@ -94,7 +91,7 @@ const AdvertisementForm = ({
       </h3>
       <form
         onSubmit={handleSubmit}
-        className="mx-auto w-full max-w-2xl space-y-8 rounded-3xl border border-[#aec2d1]/40 bg-white/90 p-8 shadow-xl backdrop-blur-xl"
+        className="mx-auto w-full max-w-2xl space-y-4 rounded-3xl border border-[#aec2d1]/40 bg-white/90 p-8 shadow-xl backdrop-blur-xl"
       >
         {resAdvertisePending && (
           <div className="absolute inset-0 z-50 flex h-full w-full items-center justify-center rounded-3xl backdrop-blur-xs">
@@ -145,7 +142,7 @@ const AdvertisementForm = ({
           {/* Client Select */}
           <div className="space-y-1">
             <label className="block text-sm font-semibold text-[#3a4b66]">
-              Choose a Client <span className="text-red-600">*</span>
+              Client <span className="text-red-600">*</span>
             </label>
 
             <FormControl fullWidth>

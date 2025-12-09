@@ -55,7 +55,7 @@ function Sidebar({
           showSideBar
             ? 'fixed h-full translate-x-0 md:translate-x-0'
             : 'fixed h-full -translate-x-full md:fixed md:translate-x-0'
-        } fixed z-9999 flex h-full w-64 flex-col justify-between bg-[#d8e1e8] p-6 transition-all duration-300 ease-in-out`}
+        } fixed z-49 flex h-full w-64 flex-col justify-between bg-[#d8e1e8] p-6 transition-all duration-300 ease-in-out`}
       >
         {/* Logo */}
         <div>
@@ -97,7 +97,7 @@ function Sidebar({
         {showSideBar ? (
           <div> </div>
         ) : (
-          <div className="absolute top-5 left-5 border">
+          <div className="fixed top-5 left-5 border bg-[#aec2d1]">
             {' '}
             <Menu />
           </div>

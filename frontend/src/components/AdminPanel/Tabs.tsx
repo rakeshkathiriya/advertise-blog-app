@@ -21,7 +21,7 @@ const Tabs = ({
             }`}
             onClick={() => handleTabOpen('subscribe_users')}
           >
-            Subscribe Users
+            SubscribeUsers
           </button>
 
           <button
@@ -34,7 +34,7 @@ const Tabs = ({
             }`}
             onClick={() => handleTabOpen('forever_subscribe_users')}
           >
-            ForEver Subscribe Users
+            ForEverUsers
           </button>
         </div>
       </div>

@@ -34,38 +34,45 @@ const MyUsers = () => {
         {/* Search and Filter Section */}
         {activeTab === 'subscribe_users' && (
           <>
-            <div className="flex flex-wrap items-center justify-between gap-4">
-              <div className="flex items-center gap-2">
+            {/* SEARCH SECTION */}
+            <div className="2md:flex-row 2md:items-center 2md:justify-between flex flex-col gap-4">
+              {/* LEFT SIDE: Search + Filters */}
+              <div className="2md:flex-row 2md:items-center flex w-full flex-col items-start gap-2">
+                {/* Search Input */}
                 <input
                   type="text"
-                  placeholder="Search by userName..."
+                  placeholder="Search by Email"
                   value={searchUser}
                   onChange={(e) => setSearchUser(e.target.value)}
-                  className="text-textSecondary border-borderMedium focus:ring-borderMedium flex-1 rounded-lg border px-4 py-2 text-sm font-semibold focus:ring-2 focus:outline-none"
+                  className="focus:ring-textColor 2md:w-[200px] w-full rounded-lg border border-gray-300 px-4 py-2 text-sm font-semibold text-gray-600 focus:ring-2 focus:outline-none"
                 />
-                <div className="flex items-center gap-2">
+
+                {/* Status Filter */}
+                <div className="2md:w-auto flex w-full items-center gap-2">
                   <label className="text-textSecondary text-sm font-semibold">Status:</label>
+
                   <select
                     value={statusFilter}
-                    onChange={(e) => {
-                      setStatusFilter(e.target.value);
-                    }}
-                    className="text-textSecondary border-borderMedium focus:ring-borderMedium rounded-lg border px-1 py-2 text-sm font-semibold focus:ring-2 focus:outline-none"
+                    onChange={(e) => setStatusFilter(e.target.value)}
+                    className="2md:w-[140px] border-borderMedium text-textSecondary focus:ring-borderMedium w-full rounded-lg border px-2 py-2 text-sm font-semibold focus:ring-2"
                   >
                     <option value="all">All</option>
                     <option value="true">Subscribe</option>
                     <option value="false">UnSubscribe</option>
                   </select>
                 </div>
+
+                {/* Search Button */}
                 <button
                   onClick={handleSearch}
-                  className="text-14 flex items-center gap-2 rounded-full bg-[#aec2d1] px-6 py-2 font-semibold tracking-wide text-[#3a4b66] transition-all duration-500 ease-in-out hover:scale-105 hover:transform"
+                  className="2md:w-auto flex w-full items-center justify-center gap-2 rounded-full bg-[#aec2d1] px-6 py-2 font-semibold tracking-wide text-[#3a4b66] transition-all duration-500 hover:scale-105"
                 >
                   Search
                 </button>
               </div>
             </div>
 
+            {/* TABLE */}
             <UsersTable
               setEditingUser={setEditingUser}
               canRefresh={canRefresh}
@@ -78,23 +85,26 @@ const MyUsers = () => {
         {/* Search and Filter Section */}
         {activeTab === 'forever_subscribe_users' && (
           <>
-            <div className="flex flex-wrap items-center justify-between gap-4">
-              <div className="flex items-center gap-2">
+            <div className="2md:flex-row 2md:items-center 2md:justify-between flex flex-col gap-4">
+              {/* LEFT SIDE: Search Input */}
+              <div className="2md:flex-row 2md:items-center flex w-full flex-col items-start gap-2">
                 <input
                   type="text"
-                  placeholder="Search by userName..."
+                  placeholder="Search by Email"
                   value={searchUser}
                   onChange={(e) => setSearchUser(e.target.value)}
-                  className="flex-1 rounded-lg border border-gray-300 px-4 py-2 text-sm font-semibold text-gray-600 focus:ring-2 focus:ring-[#3a4b66] focus:outline-none"
+                  className="focus:ring-textColor 2md:w-[200px] w-full rounded-lg border border-gray-300 px-4 py-2 text-sm font-semibold text-gray-600 focus:ring-2 focus:outline-none"
                 />
+
                 <button
                   onClick={handleSearch}
-                  className="text-14 flex items-center gap-2 rounded-full bg-[#aec2d1] px-6 py-2 font-semibold tracking-wide text-[#3a4b66] transition-all duration-500 ease-in-out hover:scale-105 hover:transform"
+                  className="2md:w-auto flex w-full items-center justify-center gap-2 rounded-full bg-[#aec2d1] px-6 py-2 font-semibold tracking-wide text-[#3a4b66] transition-all duration-500 hover:scale-105"
                 >
                   Search
                 </button>
               </div>
             </div>
+
             <ForEverSubscriptionUsersTable
               setEditingUser={setEditingUser}
               canRefresh={canRefresh}

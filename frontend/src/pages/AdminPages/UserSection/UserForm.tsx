@@ -60,7 +60,7 @@ const UserForm = ({ user, onCancel, submitLabel, setCanRefresh }: UserFormProps)
   return (
     <form
       onSubmit={handleSubmit}
-      className="mx-auto w-full max-w-2xl space-y-3 rounded-3xl border border-[#aec2d1]/40 bg-white/90 p-8 shadow-xl backdrop-blur-xl"
+      className="mx-auto w-full max-w-2xl space-y-1 rounded-3xl border border-[#aec2d1]/40 bg-white/90 p-8 shadow-xl backdrop-blur-xl"
     >
       {updateIsPending && (
         <div className="absolute inset-0 z-50 flex h-full w-full items-center justify-center rounded-3xl backdrop-blur-xs">

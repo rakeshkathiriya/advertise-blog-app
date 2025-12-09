@@ -46,6 +46,8 @@
   --color-info: "#3B82F6";
 }
 
+@custom-variant 2md (@media (width>=860px)) {}
+
 body {
   margin: 0;
   padding: 0;
