@@ -26,99 +26,100 @@ const MyUsers = () => {
   }, [activeTab]);
 
   return (
-    <div className="h-full w-full space-y-4">
+    <>
       <HeaderSection title={userSection.title} subTitle={userSection.subTitle} />
+      <div className="h-full w-full space-y-4">
+        <Tabs activeTab={activeTab} setActiveTab={setActiveTab} />
 
-      <Tabs activeTab={activeTab} setActiveTab={setActiveTab} />
-
-      {/* Search and Filter Section */}
-      {activeTab === 'subscribe_users' && (
-        <>
-          <div className="flex flex-wrap items-center justify-between gap-4">
-            <div className="flex items-center gap-2">
-              <input
-                type="text"
-                placeholder="Search by userName..."
-                value={searchUser}
-                onChange={(e) => setSearchUser(e.target.value)}
-                className="text-textSecondary border-borderMedium focus:ring-borderMedium flex-1 rounded-lg border px-4 py-2 text-sm font-semibold focus:ring-2 focus:outline-none"
-              />
+        {/* Search and Filter Section */}
+        {activeTab === 'subscribe_users' && (
+          <>
+            <div className="flex flex-wrap items-center justify-between gap-4">
               <div className="flex items-center gap-2">
-                <label className="text-textSecondary text-sm font-semibold">Status:</label>
-                <select
-                  value={statusFilter}
-                  onChange={(e) => {
-                    setStatusFilter(e.target.value);
-                  }}
-                  className="text-textSecondary border-borderMedium focus:ring-borderMedium rounded-lg border px-1 py-2 text-sm font-semibold focus:ring-2 focus:outline-none"
+                <input
+                  type="text"
+                  placeholder="Search by userName..."
+                  value={searchUser}
+                  onChange={(e) => setSearchUser(e.target.value)}
+                  className="text-textSecondary border-borderMedium focus:ring-borderMedium flex-1 rounded-lg border px-4 py-2 text-sm font-semibold focus:ring-2 focus:outline-none"
+                />
+                <div className="flex items-center gap-2">
+                  <label className="text-textSecondary text-sm font-semibold">Status:</label>
+                  <select
+                    value={statusFilter}
+                    onChange={(e) => {
+                      setStatusFilter(e.target.value);
+                    }}
+                    className="text-textSecondary border-borderMedium focus:ring-borderMedium rounded-lg border px-1 py-2 text-sm font-semibold focus:ring-2 focus:outline-none"
+                  >
+                    <option value="all">All</option>
+                    <option value="true">Subscribe</option>
+                    <option value="false">UnSubscribe</option>
+                  </select>
+                </div>
+                <button
+                  onClick={handleSearch}
+                  className="text-14 flex items-center gap-2 rounded-full bg-[#aec2d1] px-6 py-2 font-semibold tracking-wide text-[#3a4b66] transition-all duration-500 ease-in-out hover:scale-105 hover:transform"
                 >
-                  <option value="all">All</option>
-                  <option value="true">Subscribe</option>
-                  <option value="false">UnSubscribe</option>
-                </select>
+                  Search
+                </button>
               </div>
-              <button
-                onClick={handleSearch}
-                className="text-14 flex items-center gap-2 rounded-full bg-[#aec2d1] px-6 py-2 font-semibold tracking-wide text-[#3a4b66] transition-all duration-500 ease-in-out hover:scale-105 hover:transform"
-              >
-                Search
-              </button>
             </div>
-          </div>
 
-          <UsersTable
-            setEditingUser={setEditingUser}
-            canRefresh={canRefresh}
-            setCanRefresh={setCanRefresh}
-            searchFilter={searchFilter}
-          />
-        </>
-      )}
+            <UsersTable
+              setEditingUser={setEditingUser}
+              canRefresh={canRefresh}
+              setCanRefresh={setCanRefresh}
+              searchFilter={searchFilter}
+            />
+          </>
+        )}
 
-      {/* Search and Filter Section */}
-      {activeTab === 'forever_subscribe_users' && (
-        <>
-          <div className="flex flex-wrap items-center justify-between gap-4">
-            <div className="flex items-center gap-2">
-              <input
-                type="text"
-                placeholder="Search by userName..."
-                value={searchUser}
-                onChange={(e) => setSearchUser(e.target.value)}
-                className="flex-1 rounded-lg border border-gray-300 px-4 py-2 text-sm font-semibold text-gray-600 focus:ring-2 focus:ring-[#3a4b66] focus:outline-none"
-              />
-              <button
-                onClick={handleSearch}
-                className="text-14 flex items-center gap-2 rounded-full bg-[#aec2d1] px-6 py-2 font-semibold tracking-wide text-[#3a4b66] transition-all duration-500 ease-in-out hover:scale-105 hover:transform"
-              >
-                Search
-              </button>
+        {/* Search and Filter Section */}
+        {activeTab === 'forever_subscribe_users' && (
+          <>
+            <div className="flex flex-wrap items-center justify-between gap-4">
+              <div className="flex items-center gap-2">
+                <input
+                  type="text"
+                  placeholder="Search by userName..."
+                  value={searchUser}
+                  onChange={(e) => setSearchUser(e.target.value)}
+                  className="flex-1 rounded-lg border border-gray-300 px-4 py-2 text-sm font-semibold text-gray-600 focus:ring-2 focus:ring-[#3a4b66] focus:outline-none"
+                />
+                <button
+                  onClick={handleSearch}
+                  className="text-14 flex items-center gap-2 rounded-full bg-[#aec2d1] px-6 py-2 font-semibold tracking-wide text-[#3a4b66] transition-all duration-500 ease-in-out hover:scale-105 hover:transform"
+                >
+                  Search
+                </button>
+              </div>
             </div>
-          </div>
-          <ForEverSubscriptionUsersTable
-            setEditingUser={setEditingUser}
-            canRefresh={canRefresh}
-            setCanRefresh={setCanRefresh}
-            searchFilter={searchFilter}
-          />
-        </>
-      )}
+            <ForEverSubscriptionUsersTable
+              setEditingUser={setEditingUser}
+              canRefresh={canRefresh}
+              setCanRefresh={setCanRefresh}
+              searchFilter={searchFilter}
+            />
+          </>
+        )}
 
-      {/* Edit Modal */}
-      {editingUser && (
-        <Modal onClose={() => setEditingUser(null)}>
-          <h3 className="mb-4 text-center text-lg font-bold tracking-wide text-[#3a4b66] underline underline-offset-8">
-            Edit User
-          </h3>
-          <UserForm
-            user={editingUser}
-            onCancel={() => setEditingUser(null)}
-            submitLabel="Update"
-            setCanRefresh={setCanRefresh}
-          />
-        </Modal>
-      )}
-    </div>
+        {/* Edit Modal */}
+        {editingUser && (
+          <Modal onClose={() => setEditingUser(null)}>
+            <h3 className="mb-4 text-center text-lg font-bold tracking-wide text-[#3a4b66] underline underline-offset-8">
+              Edit User
+            </h3>
+            <UserForm
+              user={editingUser}
+              onCancel={() => setEditingUser(null)}
+              submitLabel="Update"
+              setCanRefresh={setCanRefresh}
+            />
+          </Modal>
+        )}
+      </div>
+    </>
   );
 };
 

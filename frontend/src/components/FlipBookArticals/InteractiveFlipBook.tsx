@@ -194,7 +194,9 @@ const InteractiveFlipBook: React.FC = () => {
                   />
                 </div>
               </div>
-            ) : null}
+            ) : (
+              <></>
+            )}
 
             {/* ======================= LAST PAGE ======================= */}
             <div key="last-page" className="relative flex">

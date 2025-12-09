@@ -161,7 +161,7 @@ const ClientsTable = ({
         columns={columns}
         data={tableData}
         tableCaption="Subscribed Clients"
-        containerClassName="w-full overflow-x-auto rounded-lg border border-gray-200 shadow-2xl"
+        containerClassName="w-full overflow-x-auto overflow-y-scroll rounded-lg border border-gray-200 shadow-2xl"
         selectedRowIndex={selectedRow?.index ?? -1}
         onRowClick={(data, index) => {
           setSelectedRow({ data, index });

@@ -114,7 +114,13 @@ export const getAllAdvertiseService = async (filters: { name?: string }) => {
     });
 
     clientIds = matchingClients.map((c) => c._id as Types.ObjectId);
+
+    if (clientIds.length === 0) {
+      return clientIds;
+    }
   }
+
+  console.log('Matching Client IDs:', clientIds);
 
   // Step 2: Build post query
   const query: any = {};

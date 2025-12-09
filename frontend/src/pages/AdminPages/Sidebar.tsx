@@ -79,7 +79,7 @@ function Sidebar({
                 className={`flex cursor-pointer items-center gap-3 rounded-lg p-2 text-[14px] font-semibold tracking-wide text-[#3a4b66] transition-all duration-500 ease-in-out hover:bg-[#aec2d1] ${
                   activeMenu === menu.name ? 'bg-[#aec2d1]' : ''
                 }`}
-                onClick={() => setActiveMenu(menu.name)}
+                onClick={() => (setActiveMenu(menu.name), setShowSideBar(false))}
               >
                 <span>{menu.icon}</span>
                 {menu.name}

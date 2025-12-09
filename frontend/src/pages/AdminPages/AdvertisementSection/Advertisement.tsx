@@ -82,13 +82,13 @@ function Advertisement() {
             className="flex cursor-pointer items-center rounded-full bg-[#aec2d1] px-4 py-2 text-base font-semibold tracking-wide text-[#3a4b66] transition-all duration-500 ease-in-out hover:scale-105 hover:transform"
           >
             <Plus className="lg:hidden" />
-            <span className="hidden lg:inline">Request an Appointment</span>
+            <span className="hidden lg:inline">Create Advertisement</span>
           </button>
         </div>
       </div>
 
       {/* ===== GRID OF POSTS ===== */}
-      <div className="xl:mx-auto mt-12 grid w-full max-w-7xl gap-8 px-4 sm:grid-cols-2 md:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4">
+      <div className="mt-12 grid w-full max-w-7xl gap-8 px-4 sm:grid-cols-2 md:grid-cols-2 lg:grid-cols-3 xl:mx-auto xl:grid-cols-4">
         {/* Loading */}
         {isLoading && (
           <div className="col-span-full text-center text-lg font-semibold text-gray-600">

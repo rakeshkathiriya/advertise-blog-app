@@ -110,7 +110,7 @@ const ClientForm = ({ client, onCancel, submitLabel, setCanRefresh }: ClientForm
       <form
         onSubmit={handleSubmit}
         onBlur={handleBlur}
-        className="mx-auto w-full max-w-2xl space-y-3 rounded-3xl border border-[#aec2d1]/40 bg-white/90 p-8 shadow-xl backdrop-blur-xl"
+        className="mx-auto w-full max-w-2xl space-y-0 rounded-3xl border border-[#aec2d1]/40 bg-white/90 p-8 shadow-xl backdrop-blur-xl"
       >
         {createIsPending && (
           <div className="absolute inset-0 z-50 flex h-full w-full items-center justify-center rounded-3xl backdrop-blur-xs">
@@ -209,7 +209,7 @@ const ClientForm = ({ client, onCancel, submitLabel, setCanRefresh }: ClientForm
             name="expiredDate"
             value={values.expiredDate ? format(values.expiredDate, 'yyyy-MM-dd') : ''}
             onChange={(e) => setFieldValue('expiredDate', e.target.value)}
-            placeholder="31/12/2025"
+            placeholder="31/Jan/2025"
             className={`w-full rounded-lg border border-gray-300 px-3 py-2 text-sm font-semibold text-gray-600 focus:ring-2 focus:ring-[#3a4b66] focus:outline-none ${
               touched.expiredDate && errors.expiredDate ? 'border-red-500' : 'border-gray-300'
             } `}
