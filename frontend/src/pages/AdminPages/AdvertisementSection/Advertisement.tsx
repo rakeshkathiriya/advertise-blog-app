@@ -1,4 +1,4 @@
-import { Trash2 } from 'lucide-react';
+import { Plus, Search, Trash2 } from 'lucide-react';
 import { useCallback, useState } from 'react';
 import { toast } from 'react-toastify';
 import HeaderSection from '../../../components/AdminPanel/HeaderSection';
@@ -58,7 +58,7 @@ function Advertisement() {
       <HeaderSection title={advertiseSection.title} subTitle={advertiseSection.subTitle} />
 
       {/* Search and Filter Section */}
-      <div className="mx-auto flex w-full max-w-7xl flex-wrap items-center justify-between gap-5 px-5">
+      <div className="mx-auto flex w-full max-w-7xl items-center justify-between gap-5 px-5">
         <div className="flex items-center gap-2">
           <input
             type="text"
@@ -71,7 +71,7 @@ function Advertisement() {
             className="text-14 text-textColor flex items-center gap-2 rounded-full bg-[#aec2d1] px-6 py-2 font-semibold tracking-wide transition-all duration-500 ease-in-out hover:scale-105 hover:transform"
             onClick={handleSearch}
           >
-            Search
+            <Search className="size-5" />
           </button>
         </div>
 
@@ -81,13 +81,14 @@ function Advertisement() {
             onClick={() => setShowAddModal(true)}
             className="flex cursor-pointer items-center rounded-full bg-[#aec2d1] px-4 py-2 text-base font-semibold tracking-wide text-[#3a4b66] transition-all duration-500 ease-in-out hover:scale-105 hover:transform"
           >
-            Add Advertisement
+            <Plus className="lg:hidden" />
+            <span className="hidden lg:inline">Request an Appointment</span>
           </button>
         </div>
       </div>
 
       {/* ===== GRID OF POSTS ===== */}
-      <div className="mx-auto mt-12 grid w-full max-w-7xl gap-8 px-4 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-4">
+      <div className="xl:mx-auto mt-12 grid w-full max-w-7xl gap-8 px-4 sm:grid-cols-2 md:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4">
         {/* Loading */}
         {isLoading && (
           <div className="col-span-full text-center text-lg font-semibold text-gray-600">
