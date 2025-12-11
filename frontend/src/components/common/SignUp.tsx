@@ -1,7 +1,7 @@
 import { useFormik } from 'formik';
 import { motion } from 'framer-motion';
 import { useCallback, useState } from 'react';
-import { useNavigate } from 'react-router-dom';
+import { Link, useNavigate } from 'react-router-dom';
 import { toast } from 'react-toastify';
 import { useUserRegistration } from '../../queries/auth.query';
 import type { RegisterUserPayload } from '../../utils/types/auth';
@@ -55,18 +55,18 @@ const SignUpPage = () => {
   );
 
   return (
-    <div className="from-bgPrimaryDark to-bgPrimary/70 flex min-h-screen items-center justify-center bg-linear-to-br p-6">
+    <div className="from-bgPrimaryDark to-bgPrimary/70 flex min-h-screen items-center justify-center bg-linear-to-br p-2">
       <motion.div
         initial={{ opacity: 0, y: 40 }}
         animate={{ opacity: 1, y: 0 }}
         transition={{ duration: 0.7 }}
-        className="w-full max-w-xl rounded-2xl border border-gray-200 bg-slate-200 p-10 shadow-xl"
+        className="w-full max-w-xl rounded-2xl border border-gray-200 bg-slate-200 p-5 shadow-xl md:p-10"
       >
-        <h2 className="text-bgPrimary mb-8 text-center text-4xl font-extrabold">Create Account</h2>
+        <h2 className="text-bgPrimary mb-8 text-center text-2xl font-extrabold md:text-4xl">Create Account</h2>
 
-        <form onSubmit={handleSubmit} className="space-y-3">
+        <form onSubmit={handleSubmit} className="space-y-2">
           {/* GRID */}
-          <div className="grid grid-cols-1 gap-6 md:grid-cols-2">
+          <div className="grid grid-cols-1 gap-3 md:grid-cols-2">
             {/* FIRST NAME */}
             <div>
               <label htmlFor="firstname" className="text-bgPrimary text-sm font-medium">
@@ -153,9 +153,9 @@ const SignUpPage = () => {
           <FacebookLoginButton />
           <p className="mt-4 text-center text-sm text-gray-600">
             Already an account?{' '}
-            <a href="/login" className="font-semibold text-[#1877F2] hover:underline">
+            <Link to="/login" className="font-semibold text-[#1877F2] hover:underline">
               Login
-            </a>
+            </Link>
           </p>
         </form>
       </motion.div>

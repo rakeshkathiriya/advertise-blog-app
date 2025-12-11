@@ -1,7 +1,7 @@
 import React, { lazy } from 'react';
 import { createBrowserRouter, RouterProvider } from 'react-router-dom';
 import { FacebookAuthSuccess } from '../components/common/FacebookAuthSuccess';
-import ForgotPassword from '../components/common/ForgotPassword';
+// import ForgotPassword from '../components/common/ForgotPassword';
 import { AdminRoute } from './AdminRoute';
 import { IsAuthenticate } from './IsAuthenticate';
 import { ProtectedRoute } from './ProtectedRoute';
@@ -16,6 +16,7 @@ const FullBlog = lazy(() => import('../pages/Blog/FullBlog'));
 const LoginPage = lazy(() => import('../components/common/Login'));
 const SignUpPage = lazy(() => import('../components/common/SignUp'));
 const PageNotFound = lazy(() => import('../pages/PageNotFound'));
+const ForgotPassword = lazy(() => import('../components/common/ForgotPassword'));
 
 const ResetPassword = lazy(() => import('../components/common/ResetPassword'));
 

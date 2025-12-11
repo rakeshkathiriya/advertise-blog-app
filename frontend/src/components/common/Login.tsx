@@ -73,18 +73,18 @@ const LoginPage = () => {
   );
 
   return (
-    <div className="from-bgPrimaryDark to-bgPrimary/70 flex min-h-screen items-center justify-center bg-linear-to-br p-6">
+    <div className="from-bgPrimaryDark to-bgPrimary/70 flex min-h-screen items-center justify-center bg-linear-to-br p-2">
       <motion.div
         initial={{ opacity: 0, y: 40 }}
         animate={{ opacity: 1, y: 0 }}
         transition={{ duration: 0.7, ease: 'easeOut' }}
-        className="w-full max-w-md rounded-2xl border border-gray-200 bg-slate-200 p-10 shadow-xl"
+        className="w-full max-w-md rounded-2xl border border-gray-200 bg-slate-200 p-5 shadow-xl md:p-10"
       >
         <motion.h2
           initial={{ opacity: 0 }}
           animate={{ opacity: 1 }}
           transition={{ delay: 0.2, duration: 0.6 }}
-          className="text-bgPrimary mb-8 text-center text-4xl font-extrabold tracking-wide"
+          className="text-bgPrimary mb-8 text-center text-2xl font-extrabold tracking-wide md:text-4xl"
         >
           Welcome Back
         </motion.h2>
@@ -117,7 +117,7 @@ const LoginPage = () => {
               </label>
 
               {/* Forgot Password Link */}
-              <Link to="/forgot-password" className="text-sm font-medium text-[#1877F2] hover:underline">
+              <Link to="/forgot-password" className="text-xs font-medium text-[#1877F2] hover:underline">
                 Forgot Password?
               </Link>
             </div>
@@ -146,11 +146,11 @@ const LoginPage = () => {
           {/* Facebook Button */}
           <FacebookLoginButton />
 
-          <p className="mt-4 text-center text-sm text-gray-600">
+          <p className="mt-4 text-center text-xs text-gray-600">
             Don't have an account?{' '}
-            <a href="/signup" className="font-semibold text-[#1877F2] hover:underline">
+            <Link to="/signup" className="font-semibold text-[#1877F2] hover:underline">
               Sign up
-            </a>
+            </Link>
           </p>
         </form>
       </motion.div>

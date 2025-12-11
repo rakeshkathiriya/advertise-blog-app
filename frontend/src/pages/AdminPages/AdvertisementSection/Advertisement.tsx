@@ -1,4 +1,4 @@
-import { Trash2 } from 'lucide-react';
+import { Plus, Search, Trash2 } from 'lucide-react';
 import { useCallback, useState } from 'react';
 import { toast } from 'react-toastify';
 import HeaderSection from '../../../components/AdminPanel/HeaderSection';
@@ -58,36 +58,39 @@ function Advertisement() {
       <HeaderSection title={advertiseSection.title} subTitle={advertiseSection.subTitle} />
 
       {/* Search and Filter Section */}
-      <div className="mx-auto flex w-full max-w-7xl flex-wrap items-center justify-between gap-5 px-5">
-        <div className="flex items-center gap-2">
+      <div className="2md:flex-row 2md:items-center 2md:justify-between mx-auto flex w-full max-w-7xl flex-col gap-5 px-5">
+        {/* LEFT SIDE: Search Input */}
+        <div className="2md:flex-row 2md:items-center flex w-full flex-col items-start gap-2">
           <input
             type="text"
             value={searchCompany}
             onChange={(e) => setSearchCompany(e.target.value)}
-            placeholder="Search by companyName..."
-            className="focus:ring-textColor flex-1 rounded-lg border border-gray-300 px-4 py-2 text-sm font-semibold text-gray-600 focus:ring-2 focus:outline-none"
+            placeholder="Company Name"
+            className="focus:ring-textColor 2md:w-[200px] w-full rounded-lg border border-gray-300 px-4 py-2 text-sm font-semibold text-gray-600 focus:ring-2 focus:outline-none"
           />
+
           <button
-            className="text-14 text-textColor flex items-center gap-2 rounded-full bg-[#aec2d1] px-6 py-2 font-semibold tracking-wide transition-all duration-500 ease-in-out hover:scale-105 hover:transform"
+            className="2md:w-auto text-textColor flex w-full items-center justify-center gap-2 rounded-full bg-[#aec2d1] px-6 py-2 font-semibold transition-all duration-500 hover:scale-105"
             onClick={handleSearch}
           >
-            Search
+            <Search className="size-5" />
           </button>
         </div>
 
-        {/* ===== ADD BUTTON ===== */}
-        <div className="flex justify-end">
+        {/* RIGHT SIDE BUTTON */}
+        <div className="2md:min-w-[200px] flex w-full justify-end">
           <button
             onClick={() => setShowAddModal(true)}
-            className="flex cursor-pointer items-center rounded-full bg-[#aec2d1] px-4 py-2 text-base font-semibold tracking-wide text-[#3a4b66] transition-all duration-500 ease-in-out hover:scale-105 hover:transform"
+            className="2md:w-auto flex w-full items-center justify-center gap-2 rounded-full bg-[#aec2d1] px-4 py-2 text-base font-semibold tracking-wide text-[#3a4b66] transition-all duration-500 hover:scale-105"
           >
-            Add Advertisement
+            <Plus className="lg:hidden" />
+            <span className="hidden lg:inline">Create Advertisement</span>
           </button>
         </div>
       </div>
 
       {/* ===== GRID OF POSTS ===== */}
-      <div className="mx-auto mt-12 grid w-full max-w-7xl gap-8 px-4 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-4">
+      <div className="mt-12 grid w-full max-w-7xl gap-8 px-4 sm:grid-cols-2 md:grid-cols-2 lg:grid-cols-3 xl:mx-auto xl:grid-cols-4">
         {/* Loading */}
         {isLoading && (
           <div className="col-span-full text-center text-lg font-semibold text-gray-600">

@@ -1,6 +1,7 @@
 import { useFormik } from 'formik';
 import { motion } from 'framer-motion';
 import { useCallback, useState } from 'react';
+import { Link } from 'react-router-dom';
 import { toast } from 'react-toastify';
 import { useResetPasswordEmail } from '../../queries/password/changePassword';
 import { forgotPassSchema } from '../../utils/validationSchema/changePassword';
@@ -44,18 +45,18 @@ const ForgotPassword = () => {
     [resResetPassMutate, resetForm],
   );
   return (
-    <div className="from-bgPrimaryDark to-bgPrimary/70 flex min-h-screen items-center justify-center bg-linear-to-br p-6">
+    <div className="from-bgPrimaryDark to-bgPrimary/70 flex min-h-screen items-center justify-center bg-linear-to-br p-2">
       <motion.div
         initial={{ opacity: 0, y: 40 }}
         animate={{ opacity: 1, y: 0 }}
         transition={{ duration: 0.7, ease: 'easeOut' }}
-        className="w-full max-w-lg rounded-2xl border border-gray-200 bg-slate-200 p-10 shadow-xl"
+        className="w-full max-w-lg rounded-2xl border border-gray-200 bg-slate-200 p-5 shadow-xl md:p-10"
       >
         <motion.h2
           initial={{ opacity: 0 }}
           animate={{ opacity: 1 }}
           transition={{ delay: 0.2, duration: 0.6 }}
-          className="text-bgPrimary mb-4 text-center text-4xl font-extrabold tracking-wide"
+          className="text-bgPrimary mb-4 text-center text-xl font-extrabold tracking-wide md:text-4xl"
         >
           Forgot Password
         </motion.h2>
@@ -99,18 +100,18 @@ const ForgotPassword = () => {
           <motion.div
             initial={{ opacity: 0 }}
             animate={{ opacity: 1 }}
-            className="mt-6 rounded-lg border border-green-200 bg-green-50 p-4 text-center text-green-700"
+            className="mt-6 rounded-lg border border-green-200 bg-green-50 p-4 text-center text-xs text-green-700 md:text-sm"
           >
             A reset password link has been sent to your registered email.
           </motion.div>
         )}
 
         {/* Back to Login */}
-        <p className="mt-6 text-center text-sm text-gray-600">
+        <p className="md:text:sm mt-6 text-center text-xs text-gray-600">
           Remember your password?{' '}
-          <a href="/login" className="font-semibold text-[#1877F2] hover:underline">
+          <Link to="/login" className="font-semibold text-[#1877F2] hover:underline">
             Login
-          </a>
+          </Link>
         </p>
       </motion.div>
     </div>

@@ -6,7 +6,7 @@ const Dashboard = () => {
   const [activeMenu, setActiveMenu] = useState<string>('Advertisement');
 
   return (
-    <div className="flex h-full w-full bg-white">
+    <div className="flex h-full w-full overflow-x-hidden bg-white">
       <Sidebar activeMenu={activeMenu} setActiveMenu={setActiveMenu} />
       <ContentArea activeMenu={activeMenu} />
     </div>

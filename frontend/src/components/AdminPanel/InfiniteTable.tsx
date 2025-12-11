@@ -89,7 +89,7 @@ export function InfiniteScrollTable<T>({
   return (
     <div
       ref={containerRef}
-      className={`custom-scroll custom-caption relative flex h-[470px] flex-col overflow-y-auto ${containerClassName}`}
+      className={`custom-scroll custom-caption relative flex h-[470px] w-full! flex-col overflow-y-auto md:w-full! ${containerClassName}`}
     >
       <table ref={tableRef} className={`min-w-full divide-y divide-black/50 ${tableClassName}`}>
         <caption className="sticky top-0 bg-[#aec2d1] px-3 py-2 text-base font-semibold tracking-wide text-nowrap whitespace-nowrap text-[#3a4b66]">
