@@ -14,7 +14,7 @@ function Sidebar({
   activeMenu: string;
   setActiveMenu: React.Dispatch<React.SetStateAction<string>>;
 }) {
-  const [showSideBar, setShowSideBar] = useState<boolean>(true);
+  const [showSideBar, setShowSideBar] = useState<boolean>(false);
   const navigate = useNavigate();
   const dispatch = useAppDispatch();
 
@@ -65,7 +65,7 @@ function Sidebar({
               onClick={() => {
                 setShowSideBar(false);
               }}
-              className="md:hidden"
+              className="cursor-pointer md:hidden"
             >
               <X />
             </div>
@@ -97,7 +97,7 @@ function Sidebar({
         {showSideBar ? (
           <div> </div>
         ) : (
-          <div className="fixed top-5 left-5 border bg-[#aec2d1]">
+          <div className="fixed top-5 left-5 cursor-pointer border bg-[#aec2d1]">
             {' '}
             <Menu />
           </div>

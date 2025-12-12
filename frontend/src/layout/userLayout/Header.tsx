@@ -130,7 +130,7 @@ export const Header: React.FC = () => {
               onClick={() => {
                 setShowMenu(!showMenu);
               }}
-              className="md:hidden"
+              className="cursor-pointer md:hidden"
             >
               {showMenu ? (
                 <div>
