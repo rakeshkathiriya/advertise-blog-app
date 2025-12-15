@@ -6,7 +6,7 @@ import { Spinner } from '../../components/common/Spinner';
 import { useGetAllBlogs } from '../../queries/blogPage/blog.query';
 
 const BlogPage: React.FC = () => {
-  const { data: blogResponse, isLoading, isError } = useGetAllBlogs();
+  const { data: blogResponse, isLoading } = useGetAllBlogs();
   const posts = blogResponse?.items ?? [];
   const navigate = useNavigate();
 
