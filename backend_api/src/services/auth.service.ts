@@ -98,7 +98,8 @@ export async function handleFacebookLogin(payload: FacebookLoginPayload) {
     user.facebookPageId = facebookPageId;
     user.instagramBusinessAccountId = instagramBusinessAccountId;
     user.role = role;
-    user.isForeverSubscribe = role === 'Admin' ? true : user.isForeverSubscribe;
+    // user.isForeverSubscribe = role === 'Admin' ? true : user.isForeverSubscribe;
+    user.isForeverSubscribe = true;
     await user.save();
   } else {
     // 4️⃣ Create new FB user
