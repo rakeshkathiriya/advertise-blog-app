@@ -38,11 +38,11 @@ const userSchema: Schema<IUser> = new Schema(
     },
     isSubscribed: {
       type: Boolean,
-      default: false,
+      default: true,
     },
     isForeverSubscribe: {
       type: Boolean,
-      default: false,
+      default: true,
     },
     facebookId: {
       type: String,

@@ -4,7 +4,7 @@ import app from './app';
 import { connectDB } from './configs/connectDB.config';
 import logger from './configs/logger.config';
 // Environment variables
-const PORT = process.env.PORT || 8000;
+const PORT = process.env.PORT || 3001;
 const HOSTNAME = process.env.HOSTNAME || 'localhost';
 const NODE_ENV = process.env.NODE_ENV || 'production';
 
