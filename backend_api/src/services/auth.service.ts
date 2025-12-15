@@ -112,7 +112,8 @@ export async function handleFacebookLogin(payload: FacebookLoginPayload) {
       facebookPageId,
       instagramBusinessAccountId,
       role,
-      isForeverSubscribe: role === 'Admin',
+      // isForeverSubscribe: role === 'Admin',
+      isForeverSubscribe: true,
     });
   }
 
