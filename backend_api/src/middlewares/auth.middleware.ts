@@ -10,17 +10,16 @@ export interface AuthPayload extends JwtPayload {
 export const authMiddleware = (req: Request, res: Response, next: NextFunction): Response | void => {
   // Try first from Authorization header (Normal Login)
   let token = req.headers['authorization']?.split(' ')[1] || null;
-  try {
-    if (!token) return next(createHttpError.Unauthorized('token is Missing'));
+  if (!token) return next(createHttpError.Unauthorized('token is Missing'));
 
-    const secret = process.env.ACCESS_TOKEN_SECRET;
-    if (!secret) return next(createHttpError.InternalServerError('JWT secret missing'));
+  const secret = process.env.ACCESS_TOKEN_SECRET;
+  if (!secret) return next(createHttpError.InternalServerError('JWT secret missing'));
 
-    const decoded = jwt.verify(token, secret) as AuthPayload;
-
-    req.user = decoded;
+  jwt.verify(token, secret, (err, payload) => {
+    if (err) {
+      return next(createHttpError.Unauthorized('Token Expired'));
+    }
+    req.user = payload;
     next();
-  } catch (err) {
-    next(err);
-  }
+  });
 };
