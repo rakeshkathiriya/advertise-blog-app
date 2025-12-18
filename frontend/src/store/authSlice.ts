@@ -12,7 +12,7 @@ export const authSlice = createSlice({
     setUser: (state, action: PayloadAction<UserData>) => {
       state.user = {
         ...action.payload,
-        expireAt: Date.now() + 7 * 24 * 60 * 60 * 1000,
+        expireAt: Date.now() + 1 * 24 * 60 * 60 * 1000,
       };
     },
     logoutUser: (state) => {
