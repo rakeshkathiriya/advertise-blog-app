@@ -51,7 +51,7 @@ export const getAllAdvertise = async (req: Request, res: Response, next: NextFun
 
 export const deleteAdvertise = async (req: Request, res: Response, next: NextFunction) => {
   try {
-    const { id } = req.params;
+    const id = req.params.id as string;
 
     const deleteAdd = await deleteAdvertiseService(id);
 
