@@ -12,7 +12,7 @@ dist
 dist-ssr
 dev-dist
 .yarn
-.yarnrc.yml
+
 *.local
 .env
 /.env.test

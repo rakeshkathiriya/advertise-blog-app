@@ -30,7 +30,7 @@ export const getAllUsers = async (req: Request, res: Response, next: NextFunctio
 
 export const changeUserSubscription = async (req: Request, res: Response, next: NextFunction) => {
   try {
-    const { id } = req.params;
+    const id = req.params.id as string;
     const user = await changeUserSubscriptionService(id);
 
     res.status(200).json({

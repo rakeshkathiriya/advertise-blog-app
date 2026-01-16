@@ -1,8 +1,9 @@
 # dependencies
 /node_modules
 .env
-
+dist/
 # yarn
 .yarn/
-.yarnrc.yml
+
 yarn.lock
+dist

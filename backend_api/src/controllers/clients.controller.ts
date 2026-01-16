@@ -75,7 +75,7 @@ export const getFilteredClient = async (req: Request, res: Response, next: NextF
 
 export const updateClient = async (req: Request, res: Response, next: NextFunction) => {
   try {
-    const { id } = req.params;
+    const id = req.params.id as string;
     const { poc, email, expiredDate, postLimit, contact } = req.body;
 
     const data: ClientUpdate = {
@@ -100,7 +100,7 @@ export const updateClient = async (req: Request, res: Response, next: NextFuncti
 
 export const deleteClient = async (req: Request, res: Response, next: NextFunction) => {
   try {
-    const { id } = req.params;
+    const id = req.params.id as string;
     const deletedClient = await deleteClientService(id);
     res.status(201).json({
       status: true,

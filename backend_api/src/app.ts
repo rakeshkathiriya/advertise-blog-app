@@ -35,7 +35,7 @@ app.use(cookieParser());
 // Enable CORS
 app.use(
   cors({
-    origin: ['http://localhost:5173', 'http://localhost:4173', 'https://advertise-blog-app-leww.vercel.app'],
+    origin: ['http://localhost:5173', 'http://192.168.1.10:5173', 'https://advertise-blog-app-leww.vercel.app'],
     credentials: true,
   })
 );
