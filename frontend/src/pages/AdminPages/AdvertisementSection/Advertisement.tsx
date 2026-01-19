@@ -119,7 +119,7 @@ function Advertisement() {
               <img
                 src={post.image}
                 alt={post.client?.name}
-                className="h-72 w-full rounded-t-3xl object-cover transition-transform duration-500 group-hover:scale-105"
+                className="h-72 w-full rounded-t-3xl object-fill transition-transform duration-500 group-hover:scale-105"
               />
 
               {/* Floating Delete Icon */}
